@@ -1,0 +1,1 @@
+# functii neimportante pentru views.py
