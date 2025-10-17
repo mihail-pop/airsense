@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 import requests
 import json
+from transformers import pipeline
 
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -58,3 +59,23 @@ def get_weather_data(request):
         return JsonResponse(data)
     except:
         return JsonResponse({'error': 'Failed to fetch weather data'})
+
+def analyze_sentiment(request):
+    if request.method == 'POST':
+        feeling_text = request.POST.get('feeling')
+        selected_pollens = request.POST.getlist('pollens')
+        
+        if feeling_text:
+            try:
+                sentiment = pipeline("sentiment-analysis")
+                result = sentiment(feeling_text)[0]
+                
+                return JsonResponse({
+                    'sentiment': result['label'],
+                    'confidence': result['score'],
+                    'selected_pollens': selected_pollens
+                })
+            except:
+                return JsonResponse({'error': 'Failed to analyze sentiment'})
+    
+    return JsonResponse({'error': 'Invalid request'})
