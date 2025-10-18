@@ -340,6 +340,11 @@ def profile_view(request):
                     request.user.date_of_birth = None
             else:
                 request.user.date_of_birth = None
+            request.user.timezone = request.POST.get('timezone', 'UTC')
+            request.user.webhook_url = request.POST.get('webhook_url') or None
+            request.user.email_reminders = 'email_reminders' in request.POST
+            request.user.webhook_reminders = 'webhook_reminders' in request.POST
+            request.user.telegram_reminders = 'telegram_reminders' in request.POST
             request.user.allergies = request.POST.getlist('allergies')
             
             # Update password if provided
@@ -373,5 +378,18 @@ def history_view(request):
     if not request.user.is_authenticated:
         return redirect('/login/')
     
+    from django.utils import timezone
+    import pytz
+    
     interactions = UserInteraction.objects.filter(user=request.user).order_by('-timestamp')
+    
+    # Convert timestamps to user's timezone
+    try:
+        user_tz = pytz.timezone(request.user.timezone)
+        for interaction in interactions:
+            interaction.local_timestamp = interaction.timestamp.astimezone(user_tz)
+    except:
+        for interaction in interactions:
+            interaction.local_timestamp = interaction.timestamp
+    
     return render(request, 'history.html', {'interactions': interactions})

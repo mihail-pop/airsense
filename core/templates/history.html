@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load tz %}
 
 {% block title %}History - AirSense{% endblock %}
 
@@ -10,7 +11,7 @@
             {% for interaction in interactions %}
                 <div class="interaction-card">
                     <div class="interaction-header">
-                        <strong>{{ interaction.timestamp|date:"M d, Y H:i" }}</strong>
+                        <strong>{{ interaction.local_timestamp|date:"M d, Y H:i" }} ({{ user.timezone }})</strong>
                     </div>
                     
                     <div class="interaction-content">

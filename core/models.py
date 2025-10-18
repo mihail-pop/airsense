@@ -8,6 +8,11 @@ class User(AbstractUser):
     date_of_birth = models.DateField(null=True, blank=True)
     allergies = models.JSONField(default=list, blank=True)
     gdpr_consent = models.BooleanField(default=False)
+    timezone = models.CharField(max_length=50, default='UTC')
+    webhook_url = models.URLField(blank=True, null=True)
+    email_reminders = models.BooleanField(default=False)
+    webhook_reminders = models.BooleanField(default=False)
+    telegram_reminders = models.BooleanField(default=False)
     
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'full_name']
