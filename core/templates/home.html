@@ -1,16 +1,27 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>AirSense - Weather & Pollen Tracker</title>
-    <link rel="stylesheet" href="/static/core/css/home.css">
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}AirSense - Weather & Pollen Tracker{% endblock %}
+
+{% block extra_css %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
     <div class="container">
         <h1>AirSense</h1>
         <p>Weather & Pollen Tracker</p>
         
         <div class="weather-section">
             <h2>Weather Forecast</h2>
+            
+            <div class="city-search">
+                <div class="city-input-container">
+                    <input type="text" id="cityInput" placeholder="Enter city name...">
+                    <div id="cityDropdown" class="city-dropdown"></div>
+                </div>
+                <button id="searchCity">Search</button>
+                <span id="selectedCity"></span>
+            </div>
             
             <div id="currentCityName"></div>
             
@@ -36,11 +47,21 @@
                         <tr>
                             <th>Hour</th>
                             <th>Temperature</th>
+                            <th>Humidity</th>
+                            <th>Wind Speed</th>
                             <th>Condition</th>
                         </tr>
                     </thead>
                     <tbody id="hourly-container"></tbody>
                 </table>
+                <div class="weather-chart-controls">
+                    <label><input type="checkbox" id="temperature-chart" checked> Temperature</label>
+                    <label><input type="checkbox" id="humidity-chart"> Humidity</label>
+                    <label><input type="checkbox" id="windspeed-chart"> Wind Speed</label>
+                </div>
+                <div class="weather-chart">
+                    <canvas id="weatherChart"></canvas>
+                </div>
             </div>
         </div>
         
@@ -68,6 +89,17 @@
                     </thead>
                     <tbody id="pollen-hourly-container"></tbody>
                 </table>
+                <div class="pollen-type-selector">
+                    <label><input type="checkbox" id="alder-chart" checked> Alder</label>
+                    <label><input type="checkbox" id="birch-chart" checked> Birch</label>
+                    <label><input type="checkbox" id="grass-chart" checked> Grass</label>
+                    <label><input type="checkbox" id="mugwort-chart" checked> Mugwort</label>
+                    <label><input type="checkbox" id="olive-chart" checked> Olive</label>
+                    <label><input type="checkbox" id="ragweed-chart" checked> Ragweed</label>
+                </div>
+                <div class="pollen-chart">
+                    <canvas id="pollenChart"></canvas>
+                </div>
             </div>
         </div>
         
@@ -95,11 +127,15 @@
             <div id="sentimentResult"></div>
         </div>
     </div>
-    
+{% endblock %}
+
+{% block extra_js %}
     <script>
         const weatherData = {{ weather_data|safe }};
         const pollenData = {{ pollen_data|safe }};
+        const currentLat = {{ lat }};
+        const currentLon = {{ lon }};
+        const userAuthenticated = {{ user.is_authenticated|yesno:"true,false" }};
     </script>
     <script src="/static/core/js/home.js"></script>
-</body>
-</html>
+{% endblock %}

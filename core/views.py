@@ -1,8 +1,13 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 import requests
 import json
 from transformers import pipeline
+from .forms import RegisterForm
+from .models import User, UserInteraction
 
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -27,7 +32,7 @@ def home(request):
     lat, lon = get_location_from_ip(ip)
     
     # Get current weather
-    weather_url = f'https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current=temperature_2m,relative_humidity_2m,weather_code&hourly=temperature_2m,relative_humidity_2m,weather_code&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto&forecast_days=7'
+    weather_url = f'https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current=temperature_2m,relative_humidity_2m,weather_code&hourly=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto&forecast_days=7'
     
     try:
         weather_response = requests.get(weather_url)
@@ -44,9 +49,15 @@ def home(request):
     except:
         pollen_data = {}
     
+    # Get user allergies if logged in
+    user_allergies = []
+    if request.user.is_authenticated:
+        user_allergies = request.user.allergies or []
+    
     context = {
         'weather_data': json.dumps(weather_data),
         'pollen_data': json.dumps(pollen_data),
+        'user_allergies': user_allergies,
         'lat': lat,
         'lon': lon
     }
@@ -90,7 +101,7 @@ def get_weather_data(lat=None, lon=None, request=None):
         else:
             return None
     
-    weather_url = f'https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current=temperature_2m,relative_humidity_2m,weather_code&hourly=temperature_2m,relative_humidity_2m,weather_code&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto&forecast_days=7'
+    weather_url = f'https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current=temperature_2m,relative_humidity_2m,weather_code&hourly=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto&forecast_days=7'
     
     try:
         response = requests.get(weather_url)
@@ -227,6 +238,36 @@ def analyze_sentiment(feeling_text):
     result = sentiment(feeling_text)[0]
     return result['label'], result['score']
 
+def register_view(request):
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('/')
+    else:
+        form = RegisterForm()
+    return render(request, 'register.html', {'form': form})
+
+def login_view(request):
+    if request.method == 'POST':
+        email = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=email, password=password)
+        if user:
+            login(request, user)
+            return redirect('/')
+        else:
+            messages.error(request, 'Invalid credentials')
+    return render(request, 'login.html')
+
+def logout_view(request):
+    logout(request)
+    return redirect('/login/')
+
+def gdpr_view(request):
+    return render(request, 'gdpr.html')
+
 def get_rec_data(request):
     if request.method == 'POST':
         feeling_text = request.POST.get('feeling')
@@ -251,6 +292,35 @@ def get_rec_data(request):
                 # Generate recommendation
                 recommendation = make_recommendation(weather_data, pollen_levels, sentiment_label, selected_pollens)
                 
+                # Save interaction if user is logged in
+                if request.user.is_authenticated:
+                    # Extract current hour data
+                    current_weather = weather_data.get('current', {}) if weather_data else {}
+                    current_pollen = {}
+                    if pollen_data and 'hourly' in pollen_data:
+                        from datetime import datetime
+                        current_hour = datetime.now().hour
+                        hourly = pollen_data['hourly']
+                        if hourly.get('time') and len(hourly['time']) > current_hour:
+                            current_pollen = {
+                                'time': hourly['time'][current_hour],
+                                'alder_pollen': hourly.get('alder_pollen', [None])[current_hour],
+                                'birch_pollen': hourly.get('birch_pollen', [None])[current_hour],
+                                'grass_pollen': hourly.get('grass_pollen', [None])[current_hour],
+                                'mugwort_pollen': hourly.get('mugwort_pollen', [None])[current_hour],
+                                'olive_pollen': hourly.get('olive_pollen', [None])[current_hour],
+                                'ragweed_pollen': hourly.get('ragweed_pollen', [None])[current_hour]
+                            }
+                    
+                    UserInteraction.objects.create(
+                        user=request.user,
+                        user_input=feeling_text,
+                        selected_allergies=selected_pollens,
+                        ai_output=recommendation,
+                        weather_data=current_weather,
+                        pollen_data=current_pollen
+                    )
+                
                 return JsonResponse({
                     'sentiment': sentiment_label,
                     'confidence': sentiment_score,
@@ -261,3 +331,97 @@ def get_rec_data(request):
                 return JsonResponse({'error': f'Failed to analyze: {str(e)}'})
     
     return JsonResponse({'error': 'Invalid request'})
+
+def profile_view(request):
+    if not request.user.is_authenticated:
+        return redirect('/login/')
+    
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        current_password = request.POST.get('current_password')
+        
+        # Verify current password
+        if not request.user.check_password(current_password):
+            messages.error(request, 'Current password is incorrect')
+            return render(request, 'profile.html')
+        
+        if action == 'delete':
+            request.user.delete()
+            messages.success(request, 'Account deleted successfully')
+            return redirect('/register/')
+        
+        elif action == 'delete_data':
+            UserInteraction.objects.filter(user=request.user).delete()
+            messages.success(request, 'AI interaction history deleted successfully')
+            return render(request, 'profile.html')
+        
+        elif action == 'update':
+            # Update user fields
+            request.user.username = request.POST.get('username')
+            request.user.email = request.POST.get('email')
+            request.user.full_name = request.POST.get('full_name')
+            # Handle date of birth
+            day = request.POST.get('birth_day')
+            month = request.POST.get('birth_month')
+            year = request.POST.get('birth_year')
+            if day and month and year:
+                from datetime import date
+                try:
+                    request.user.date_of_birth = date(int(year), int(month), int(day))
+                except ValueError:
+                    request.user.date_of_birth = None
+            else:
+                request.user.date_of_birth = None
+            request.user.timezone = request.POST.get('timezone', 'UTC')
+            request.user.webhook_url = request.POST.get('webhook_url') or None
+            request.user.email_reminders = 'email_reminders' in request.POST
+            request.user.webhook_reminders = 'webhook_reminders' in request.POST
+            request.user.telegram_reminders = 'telegram_reminders' in request.POST
+            request.user.allergies = request.POST.getlist('allergies')
+            
+            # Update password if provided
+            new_password = request.POST.get('new_password')
+            confirm_password = request.POST.get('confirm_password')
+            if new_password:
+                if new_password == confirm_password:
+                    request.user.set_password(new_password)
+                else:
+                    messages.error(request, 'New passwords do not match')
+                    return render(request, 'profile.html')
+            
+            request.user.save()
+            messages.success(request, 'Profile updated successfully')
+            
+            # Re-login if password was changed
+            if new_password:
+                login(request, request.user)
+    
+    return render(request, 'profile.html')
+
+def update_allergies(request):
+    if request.method == 'POST' and request.user.is_authenticated:
+        allergies = request.POST.getlist('allergies')
+        request.user.allergies = allergies
+        request.user.save()
+        return JsonResponse({'success': True})
+    return JsonResponse({'error': 'Invalid request'})
+
+def history_view(request):
+    if not request.user.is_authenticated:
+        return redirect('/login/')
+    
+    from django.utils import timezone
+    import pytz
+    
+    interactions = UserInteraction.objects.filter(user=request.user).order_by('-timestamp')
+    
+    # Convert timestamps to user's timezone
+    try:
+        user_tz = pytz.timezone(request.user.timezone)
+        for interaction in interactions:
+            interaction.local_timestamp = interaction.timestamp.astimezone(user_tz)
+    except:
+        for interaction in interactions:
+            interaction.local_timestamp = interaction.timestamp
+    
+    return render(request, 'history.html', {'interactions': interactions})
