@@ -74,7 +74,12 @@ def get_pollen_data(request):
         return JsonResponse({'error': 'Failed to fetch pollen data'})
 
 def get_weather_data(lat=None, lon=None, request=None):
-    if request:
+    # When called as URL endpoint, request is the first parameter
+    if lat is not None and hasattr(lat, 'GET'):
+        request = lat
+        lat = request.GET.get('lat')
+        lon = request.GET.get('lon')
+    elif request:
         lat = request.GET.get('lat')
         lon = request.GET.get('lon')
     
