@@ -627,17 +627,50 @@ document.addEventListener('DOMContentLoaded', function() {
                 const sentimentClass = data.sentiment.toLowerCase() === 'positive' ? 'sentiment-positive' : 
                                      data.sentiment.toLowerCase() === 'negative' ? 'sentiment-negative' : 'sentiment-neutral';
                 
-                let recommendationsHtml = '';
-                if (data.recommendations && data.recommendations.length > 0) {
-                    recommendationsHtml = data.recommendations.map(rec => `<p>${rec}</p>`).join('');
+                let alertHtml = '';
+                if (data.alert_level) {
+                    alertHtml = `
+                        <br><div style="margin: 15px 0; padding: 15px; background: #e8f4fd; border-left: 4px solid #007bff; border-radius: 5px;">
+                            <strong>${data.alert_level.icon} ${data.alert_level.title}</strong><br>
+                            <strong>Tips:</strong>
+                            <ol style="margin: 10px 0; padding-left: 20px;">
+                                ${data.alert_level.tips.map(tip => `<li>${tip}</li>`).join('')}
+                            </ol>
+                        </div>
+                    `;
+                }
+                
+                let combinedHtml = '';
+                if (data.risk_analysis && Object.keys(data.risk_analysis).length > 0) {
+                    combinedHtml = '<br><strong>Analysis & Recommendations:</strong><br>';
+                    Object.keys(data.risk_analysis).forEach(pollen => {
+                        const analysis = data.risk_analysis[pollen];
+                        const recommendation = data.recommendations ? data.recommendations.find(rec => rec.toLowerCase().includes(pollen.toLowerCase())) : null;
+                        
+                        combinedHtml += `
+                            <div style="margin: 10px 0; padding: 10px; background: #f9f9f9; border-radius: 5px;">
+                                <strong>${pollen.charAt(0).toUpperCase() + pollen.slice(1)} Pollen Recommendations:</strong><br>
+                                ${recommendation ? `<p style="margin: 5px 0; font-style: italic;">${recommendation}</p>` : ''}
+                                <strong>Today:</strong> ${analysis.today.risk} risk (avg: ${analysis.today.avg}), Peak at ${analysis.today.peak_time} (${analysis.today.peak_value})<br>
+                                <strong>Tomorrow:</strong> ${analysis.tomorrow.risk} risk (avg: ${analysis.tomorrow.avg}), Peak at ${analysis.tomorrow.peak_time} (${analysis.tomorrow.peak_value})
+                            </div>
+                        `;
+                    });
                 } else {
-                    recommendationsHtml = '<p>No recommendations available</p>';
+                    let recommendationsHtml = '';
+                    if (data.recommendations && data.recommendations.length > 0) {
+                        recommendationsHtml = data.recommendations.map(rec => `<p>${rec}</p>`).join('');
+                    } else {
+                        recommendationsHtml = '<p>No recommendations available</p>';
+                    }
+                    combinedHtml = '<br><strong>Recommendations:</strong><br>' + recommendationsHtml;
                 }
                 
                 resultDiv.innerHTML = `
                     <div>
                         Sentiment: ${data.sentiment} (${Math.round(data.confidence * 100)}% confidence)
-                        <br><br><strong>Recommendations:</strong><br>${recommendationsHtml}
+                        ${alertHtml}
+                        ${combinedHtml}
                     </div>
                 `;
             } else {

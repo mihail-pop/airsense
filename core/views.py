@@ -226,6 +226,136 @@ def make_recommendation(weather_data, pollen_levels, sentiment, selected_pollens
     
     return recommendations
 
+def get_alert_level(sentiment, risk_analysis):
+    if not risk_analysis:
+        return None
+    
+    # Check overall pollen levels
+    today_high_count = sum(1 for pollen in risk_analysis.values() if pollen['today']['risk'] == 'High')
+    tomorrow_high_count = sum(1 for pollen in risk_analysis.values() if pollen['tomorrow']['risk'] == 'High')
+    today_low_count = sum(1 for pollen in risk_analysis.values() if pollen['today']['risk'] == 'Low')
+    
+    symptoms_high = sentiment == 'NEGATIVE'
+    pollen_high_today = today_high_count > 0
+    pollen_low_today = today_low_count == len(risk_analysis)
+    forecast_rising = tomorrow_high_count > today_high_count
+    
+    if symptoms_high and (pollen_high_today or not pollen_low_today):
+        return {
+            'level': 'Critical',
+            'icon': '🚨',
+            'title': 'CRITICAL THREAT: Symptoms are spiking severely!',
+            'tips': [
+                'Rescue Action: Take rescue medication and perform a full saline nasal rinse immediately.',
+                'Find Cause: Check your other triggers if the listed triggers are low.',
+                'No Outdoors: Do not go outside until your symptoms are under control. Run the HEPA filter on maximum.'
+            ]
+        }
+    elif pollen_high_today and not symptoms_high:
+        return {
+            'level': 'High Risk',
+            'icon': '⚠️',
+            'title': 'High Risk Today: Pollen is high, but you\'re handling it well!',
+            'tips': [
+                'Stay Protected: Wear a hat and sunglasses if you go outside to shield your face and eyes.',
+                'Indoor Safety: Use the recirculate setting on your car A/C.',
+                'Change Clothes: Immediately change out of clothes worn outside to avoid tracking pollen indoors.'
+            ]
+        }
+    elif pollen_low_today and forecast_rising:
+        return {
+            'level': 'Proactive',
+            'icon': '🟢',
+            'title': 'Prepare for Spike: Pollen is low now, but we forecast a major rise in the next 48 hours.',
+            'tips': [
+                'Medicate Early: Start your full dose of medication today for maximum effect when the count spikes.',
+                'Clean Air: Run your HEPA filter now to purify indoor air before the threat arrives.',
+                'Avoid Laundry: Plan to dry all laundry indoors for the next three days.'
+            ]
+        }
+    elif pollen_low_today and not symptoms_high:
+        return {
+            'level': 'Clear',
+            'icon': '✅',
+            'title': 'All Clear: All your triggers are very low.',
+            'tips': [
+                'Enjoy Outdoors: A great day for a longer walk or light exercise.',
+                'Home Prep: Change filters now while the air is clear.',
+                'Consistency: Don\'t skip your preventative nasal spray even on a good day.'
+            ]
+        }
+    else:
+        return {
+            'level': 'Maintenance',
+            'icon': '🔄',
+            'title': 'Stick to Routine: Low counts, but consistency is key to symptom control.',
+            'tips': [
+                'Rinse: Use a simple saline nasal spray before bed to clear out minor irritants.',
+                'Review: Are you following your treatment plan exactly? Small lapses can cause minor symptoms.',
+                'Check Indoor: Run your dehumidifier to control mold/dust mite levels.'
+            ]
+        }
+
+def calculate_risk_analysis(pollen_data, selected_pollens):
+    if not pollen_data or 'hourly' not in pollen_data:
+        return {}
+    
+    hourly = pollen_data['hourly']
+    analysis = {}
+    
+    for pollen in selected_pollens:
+        pollen_key = f"{pollen}_pollen"
+        if pollen_key not in hourly:
+            continue
+            
+        values = hourly[pollen_key]
+        times = hourly['time']
+        
+        # Today (first 24 hours)
+        today_values = [v for v in values[:24] if v is not None]
+        today_times = times[:24]
+        
+        # Tomorrow (next 24 hours)
+        tomorrow_values = [v for v in values[24:48] if v is not None]
+        tomorrow_times = times[24:48]
+        
+        if today_values:
+            today_avg = sum(today_values) / len(today_values)
+            today_max = max(today_values)
+            today_peak_idx = values[:24].index(today_max)
+            today_peak_time = today_times[today_peak_idx].split('T')[1][:5]
+            
+            today_risk = 'Low' if today_avg < 21 else 'Medium' if today_avg < 51 else 'High'
+        else:
+            today_avg, today_max, today_peak_time, today_risk = 0, 0, 'N/A', 'Low'
+            
+        if tomorrow_values:
+            tomorrow_avg = sum(tomorrow_values) / len(tomorrow_values)
+            tomorrow_max = max(tomorrow_values)
+            tomorrow_peak_idx = values[24:48].index(tomorrow_max)
+            tomorrow_peak_time = tomorrow_times[tomorrow_peak_idx].split('T')[1][:5]
+            
+            tomorrow_risk = 'Low' if tomorrow_avg < 21 else 'Medium' if tomorrow_avg < 51 else 'High'
+        else:
+            tomorrow_avg, tomorrow_max, tomorrow_peak_time, tomorrow_risk = 0, 0, 'N/A', 'Low'
+            
+        analysis[pollen] = {
+            'today': {
+                'risk': today_risk,
+                'avg': round(today_avg, 1),
+                'peak_value': today_max,
+                'peak_time': today_peak_time
+            },
+            'tomorrow': {
+                'risk': tomorrow_risk,
+                'avg': round(tomorrow_avg, 1),
+                'peak_value': tomorrow_max,
+                'peak_time': tomorrow_peak_time
+            }
+        }
+    
+    return analysis
+
 def analyze_sentiment(feeling_text):
     global sentiment_pipeline
     try:
@@ -284,9 +414,21 @@ def get_rec_data(request):
                 # Get weather data
                 weather_data = get_weather_data(lat, lon)
                 
-                # Get pollen data
-                pollen_data = pollen_data_rec(lat, lon)
+                # Get pollen data (2 days for risk analysis)
+                pollen_url = f'https://air-quality-api.open-meteo.com/v1/air-quality?latitude={lat}&longitude={lon}&hourly=alder_pollen,birch_pollen,grass_pollen,mugwort_pollen,olive_pollen,ragweed_pollen&forecast_days=2'
+                try:
+                    pollen_response = requests.get(pollen_url)
+                    pollen_data = pollen_response.json()
+                except:
+                    pollen_data = {}
+                    
                 pollen_levels = pollen_data.get('hourly', {}) if pollen_data else {}
+                
+                # Calculate risk analysis
+                risk_analysis = calculate_risk_analysis(pollen_data, selected_pollens)
+                
+                # Get alert level
+                alert_level = get_alert_level(sentiment_label, risk_analysis)
                 
                 # Generate recommendations
                 recommendations = make_recommendation(weather_data, pollen_levels, sentiment_label, selected_pollens)
@@ -326,6 +468,8 @@ def get_rec_data(request):
                     'sentiment': sentiment_label,
                     'confidence': sentiment_score,
                     'selected_pollens': selected_pollens,
+                    'alert_level': alert_level,
+                    'risk_analysis': risk_analysis,
                     'recommendations': recommendations
                 })
             except Exception as e:
