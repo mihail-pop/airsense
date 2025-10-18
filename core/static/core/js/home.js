@@ -148,7 +148,11 @@ function updateWeatherChart(dayIndex) {
                     type: 'linear',
                     display: true,
                     position: 'left',
-                    beginAtZero: false
+                    beginAtZero: false,
+                    title: {
+                        display: true,
+                        text: `Temperature (°${isFahrenheit ? 'F' : 'C'}) / Wind Speed (km/h)`
+                    }
                 },
                 y1: {
                     type: 'linear',
@@ -158,6 +162,10 @@ function updateWeatherChart(dayIndex) {
                     max: 100,
                     grid: {
                         drawOnChartArea: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Humidity (%)'
                     }
                 }
             }
@@ -329,7 +337,11 @@ function updatePollenChart(dayIndex, data = currentPollenData) {
             maintainAspectRatio: false,
             scales: {
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Pollen Concentration (grains/m³)'
+                    }
                 }
             }
         }
