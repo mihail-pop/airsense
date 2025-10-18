@@ -6,6 +6,16 @@
 </head>
 <body>
     <div class="container">
+        <div class="nav-links">
+            {% if user.is_authenticated %}
+                <span class="user-status">✓ Logged in as {{ user.full_name }}</span>
+                <a href="/logout/">Logout</a>
+            {% else %}
+                <span class="user-status">Not logged in</span>
+                <a href="/login/">Login</a>
+                <a href="/register/">Register</a>
+            {% endif %}
+        </div>
         <h1>AirSense</h1>
         <p>Weather & Pollen Tracker</p>
         
@@ -75,12 +85,12 @@
             <h2>Pollen Allergies</h2>
             <form id="pollenForm">
                 <div class="pollen-checkboxes">
-                    <label><input type="checkbox" name="pollens" value="alder"> Alder Pollen</label>
-                    <label><input type="checkbox" name="pollens" value="birch"> Birch Pollen</label>
-                    <label><input type="checkbox" name="pollens" value="grass"> Grass Pollen</label>
-                    <label><input type="checkbox" name="pollens" value="mugwort"> Mugwort Pollen</label>
-                    <label><input type="checkbox" name="pollens" value="olive"> Olive Pollen</label>
-                    <label><input type="checkbox" name="pollens" value="ragweed"> Ragweed Pollen</label>
+                    <label><input type="checkbox" name="pollens" value="alder" {% if 'alder' in user_allergies %}checked{% endif %}> Alder Pollen</label>
+                    <label><input type="checkbox" name="pollens" value="birch" {% if 'birch' in user_allergies %}checked{% endif %}> Birch Pollen</label>
+                    <label><input type="checkbox" name="pollens" value="grass" {% if 'grass' in user_allergies %}checked{% endif %}> Grass Pollen</label>
+                    <label><input type="checkbox" name="pollens" value="mugwort" {% if 'mugwort' in user_allergies %}checked{% endif %}> Mugwort Pollen</label>
+                    <label><input type="checkbox" name="pollens" value="olive" {% if 'olive' in user_allergies %}checked{% endif %}> Olive Pollen</label>
+                    <label><input type="checkbox" name="pollens" value="ragweed" {% if 'ragweed' in user_allergies %}checked{% endif %}> Ragweed Pollen</label>
                 </div>
             </form>
         </div>
@@ -99,6 +109,7 @@
     <script>
         const weatherData = {{ weather_data|safe }};
         const pollenData = {{ pollen_data|safe }};
+        const userAuthenticated = {{ user.is_authenticated|yesno:"true,false" }};
     </script>
     <script src="/static/core/js/home.js"></script>
 </body>

@@ -1,8 +1,13 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 import requests
 import json
 from transformers import pipeline
+from .forms import RegisterForm
+from .models import User, UserInteraction
 
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -44,9 +49,15 @@ def home(request):
     except:
         pollen_data = {}
     
+    # Get user allergies if logged in
+    user_allergies = []
+    if request.user.is_authenticated:
+        user_allergies = request.user.allergies or []
+    
     context = {
         'weather_data': json.dumps(weather_data),
         'pollen_data': json.dumps(pollen_data),
+        'user_allergies': user_allergies,
         'lat': lat,
         'lon': lon
     }
@@ -194,6 +205,36 @@ def analyze_sentiment(feeling_text):
     result = sentiment(feeling_text)[0]
     return result['label'], result['score']
 
+def register_view(request):
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('/')
+    else:
+        form = RegisterForm()
+    return render(request, 'register.html', {'form': form})
+
+def login_view(request):
+    if request.method == 'POST':
+        email = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=email, password=password)
+        if user:
+            login(request, user)
+            return redirect('/')
+        else:
+            messages.error(request, 'Invalid credentials')
+    return render(request, 'login.html')
+
+def logout_view(request):
+    logout(request)
+    return redirect('/login/')
+
+def gdpr_view(request):
+    return render(request, 'gdpr.html')
+
 def get_rec_data(request):
     if request.method == 'POST':
         feeling_text = request.POST.get('feeling')
@@ -219,6 +260,17 @@ def get_rec_data(request):
                 # Generate recommendation
                 recommendation = make_recommendation(weather_code, pollen_levels, sentiment_label, selected_pollens)
                 
+                # Save interaction if user is logged in
+                if request.user.is_authenticated:
+                    UserInteraction.objects.create(
+                        user=request.user,
+                        user_input=feeling_text,
+                        selected_allergies=selected_pollens,
+                        ai_output=recommendation,
+                        weather_data=weather_data or {},
+                        pollen_data=pollen_data or {}
+                    )
+                
                 return JsonResponse({
                     'sentiment': sentiment_label,
                     'confidence': sentiment_score,
@@ -228,4 +280,12 @@ def get_rec_data(request):
             except Exception as e:
                 return JsonResponse({'error': f'Failed to analyze: {str(e)}'})
     
+    return JsonResponse({'error': 'Invalid request'})
+
+def update_allergies(request):
+    if request.method == 'POST' and request.user.is_authenticated:
+        allergies = request.POST.getlist('allergies')
+        request.user.allergies = allergies
+        request.user.save()
+        return JsonResponse({'success': True})
     return JsonResponse({'error': 'Invalid request'})
