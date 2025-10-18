@@ -193,7 +193,7 @@ function createDayBar() {
     }
 }
 
-let currentPollenData = pollenData;
+let currentPollenData;
 let weatherChart = null;
 let pollenChart = null;
 //Optiune get Pollen Level pentru alt tip
@@ -369,7 +369,7 @@ function createPollenDayBar() {
             const dateString = targetDate.toISOString().split('T')[0];
             
             if (dayOffset === 0) {
-                currentPollenData = pollenData;
+                currentPollenData = window.pollenData;
                 updateHourlyPollen(0);
             } else {
                 fetchPollenForDate(dateString, 0);
@@ -435,24 +435,43 @@ function selectCity(city) {
     
     Promise.all([fetch(weatherUrl), fetch(pollenUrl)])
         .then(responses => Promise.all(responses.map(r => r.json())))
-        .then(([weatherData, pollenData]) => {
+        .then(([newWeatherData, newPollenData]) => {
+            // Clear existing data
             document.getElementById('hourly-container').innerHTML = '';
             document.getElementById('dayBar').innerHTML = '';
             document.getElementById('pollen-hourly-container').innerHTML = '';
             document.getElementById('pollenDayBar').innerHTML = '';
             
-            window.weatherData = weatherData;
-            window.pollenData = pollenData;
-            currentPollenData = pollenData;
+            // Destroy existing charts
+            if (weatherChart) {
+                weatherChart.destroy();
+                weatherChart = null;
+            }
+            if (pollenChart) {
+                pollenChart.destroy();
+                pollenChart = null;
+            }
             
-            updateCurrentWeather();
-            updateDailyWeather(0);
-            updateHourlyWeather(0);
-            createDayBar();
-            createPollenDayBar();
-            updateHourlyPollen(0);
+            // Update global data
+            window.weatherData = newWeatherData;
+            window.pollenData = newPollenData;
+            currentPollenData = newPollenData;
+            
+            // Rebuild all components
+            if (newWeatherData && newWeatherData.current) {
+                updateCurrentWeather();
+                updateDailyWeather(0);
+                updateHourlyWeather(0);
+                createDayBar();
+            }
+            
+            if (newPollenData && newPollenData.hourly) {
+                createPollenDayBar();
+                updateHourlyPollen(0);
+            }
         })
         .catch(error => {
+            console.error('Error fetching data:', error);
             alert('Error fetching weather or pollen data');
         });
 }
@@ -473,21 +492,43 @@ function searchCityWeather(cityName) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    window.weatherData = weatherData;
-    window.pollenData = pollenData;
-    currentPollenData = pollenData;
-    
-    if (window.weatherData) {
-        updateCurrentWeather();
-        updateDailyWeather(0);
-        updateHourlyWeather(0);
-        getCurrentCityName(currentLat, currentLon);
+    // Initialize global variables
+    if (typeof weatherData !== 'undefined') {
+        window.weatherData = weatherData;
+    }
+    if (typeof pollenData !== 'undefined') {
+        window.pollenData = pollenData;
+        currentPollenData = pollenData;
     }
     
-    createDayBar();
-    createPollenDayBar();
-    if (window.pollenData) {
-        updateHourlyPollen(0);
+    // Initialize weather components
+    if (window.weatherData && window.weatherData.current) {
+        try {
+            updateCurrentWeather();
+            updateDailyWeather(0);
+            updateHourlyWeather(0);
+            createDayBar();
+            
+            if (typeof currentLat !== 'undefined' && typeof currentLon !== 'undefined') {
+                getCurrentCityName(currentLat, currentLon);
+            }
+        } catch (error) {
+            console.error('Error initializing weather:', error);
+        }
+    } else {
+        console.log('No weather data available');
+    }
+    
+    // Initialize pollen components
+    if (window.pollenData && window.pollenData.hourly) {
+        try {
+            createPollenDayBar();
+            updateHourlyPollen(0);
+        } catch (error) {
+            console.error('Error initializing pollen:', error);
+        }
+    } else {
+        console.log('No pollen data available');
     }
     
     document.getElementById('searchCity').addEventListener('click', function() {
@@ -516,19 +557,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    const today = new Date();
-    const todayString = today.toISOString().split('T')[0];
-    const maxDate = new Date(today);
-    maxDate.setDate(today.getDate() + 4);
+    const todayDate = new Date();
+    const todayString = todayDate.toISOString().split('T')[0];
+    const maxDate = new Date(todayDate);
+    maxDate.setDate(todayDate.getDate() + 4);
     const maxDateString = maxDate.toISOString().split('T')[0];
-    const minDate = new Date(today);
-    minDate.setMonth(today.getMonth() - 3);
+    const minDate = new Date(todayDate);
+    minDate.setMonth(todayDate.getMonth() - 3);
     const minDateString = minDate.toISOString().split('T')[0];
     
-    const pollenDateSelect = document.getElementById('pollenDateSelect');
-    pollenDateSelect.value = todayString;
-    pollenDateSelect.min = minDateString;
-    pollenDateSelect.max = maxDateString;
+    const pollenDateSelector = document.getElementById('pollenDateSelect');
+    pollenDateSelector.value = todayString;
+    pollenDateSelector.min = minDateString;
+    pollenDateSelector.max = maxDateString;
     
     pollenDateSelect.addEventListener('change', function() {
         const selectedDate = this.value;
@@ -601,19 +642,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('sentimentResult').innerHTML = '<div class="sentiment-neutral">Error analyzing sentiment</div>';
         });
     });
-    const today = new Date().toISOString().split('T')[0];
-    const pollenDateSelect = document.getElementById('pollenDateSelect');
-    
-    if (pollenDateSelect) {
-        pollenDateSelect.value = today;
-        
-        pollenDateSelect.addEventListener('change', function() {
-            const selectedDate = this.value;
-            if (selectedDate) {
-                fetchPollenForDate(selectedDate, 0);
-            }
-        });
-    }
+
     
     // Update allergies when checkboxes change (only if user is authenticated)
     if (window.userAuthenticated) {
