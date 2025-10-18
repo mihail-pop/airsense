@@ -411,18 +411,5 @@ def history_view(request):
     if not request.user.is_authenticated:
         return redirect('/login/')
     
-    from django.utils import timezone
-    import pytz
-    
     interactions = UserInteraction.objects.filter(user=request.user).order_by('-timestamp')
-    
-    # Convert timestamps to user's timezone
-    try:
-        user_tz = pytz.timezone(request.user.timezone)
-        for interaction in interactions:
-            interaction.local_timestamp = interaction.timestamp.astimezone(user_tz)
-    except:
-        for interaction in interactions:
-            interaction.local_timestamp = interaction.timestamp
-    
     return render(request, 'history.html', {'interactions': interactions})
