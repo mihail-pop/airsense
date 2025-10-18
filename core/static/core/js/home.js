@@ -94,7 +94,10 @@ function createDayBar() {
         const dayName = i === 0 ? 'Today' : dayNames[date.getDay()];
         
         const dayItem = document.createElement('div');
-        dayItem.className = 'day-item' + (i === 0 ? ' active' : '');
+        dayItem.className = 'day-item';
+        if (i === 0) {
+            dayItem.classList.add('active');
+        }
         dayItem.textContent = dayName;
         dayItem.dataset.dayIndex = i;
         
@@ -120,29 +123,33 @@ function updateHourlyPollen(dayIndex, data = currentPollenData) {
     
     const startHour = dayIndex * 24;
     const endHour = startHour + 24;
+    const currentHour = new Date().getHours();
+    
+    // Check if we're viewing today's data
+    const isToday = document.querySelector('#pollenDayBar .day-item.active')?.dataset.dayOffset === '0';
     
     for (let i = startHour; i < endHour && i < data.hourly.time.length; i++) {
         const time = new Date(data.hourly.time[i]);
         const hour = time.getHours();
         
-        const hourItem = document.createElement('div');
-        hourItem.className = 'pollen-hour-item';
-        hourItem.innerHTML = `
-            <div class="pollen-hour-time">${hour}:00</div>
-            <div class="pollen-levels-small">
-                <div>A: ${data.hourly.alder_pollen[i] || 0}</div>
-                <div>B: ${data.hourly.birch_pollen[i] || 0}</div>
-                <div>G: ${data.hourly.grass_pollen[i] || 0}</div>
-                <div>M: ${data.hourly.mugwort_pollen[i] || 0}</div>
-                <div>O: ${data.hourly.olive_pollen[i] || 0}</div>
-                <div>R: ${data.hourly.ragweed_pollen[i] || 0}</div>
-            </div>
+        const row = document.createElement('tr');
+        if (isToday && hour === currentHour) {
+            row.className = 'current-hour';
+        }
+        row.innerHTML = `
+            <td>${hour}:00</td>
+            <td>${data.hourly.alder_pollen[i] || 0}</td>
+            <td>${data.hourly.birch_pollen[i] || 0}</td>
+            <td>${data.hourly.grass_pollen[i] || 0}</td>
+            <td>${data.hourly.mugwort_pollen[i] || 0}</td>
+            <td>${data.hourly.olive_pollen[i] || 0}</td>
+            <td>${data.hourly.ragweed_pollen[i] || 0}</td>
         `;
-        container.appendChild(hourItem);
+        container.appendChild(row);
     }
 }
 
-function fetchPollenForDate(date) {
+function fetchPollenForDate(date, dayIndex = 0) {
     const url = `/api/pollen/?date=${date}`;
     
     fetch(url)
@@ -150,62 +157,48 @@ function fetchPollenForDate(date) {
         .then(data => {
             if (!data.error) {
                 currentPollenData = data;
-                updateHourlyPollen(0);
-                document.getElementById('pollenDaySelect').value = '0';
+                updateHourlyPollen(dayIndex);
             }
         })
         .catch(error => console.error('Error fetching pollen data:', error));
 }
 
-function updateDateFromDaySelector(dayIndex) {
+function createPollenDayBar() {
+    const pollenDayBar = document.getElementById('pollenDayBar');
     const today = new Date();
-    const targetDate = new Date(today);
-    targetDate.setDate(today.getDate() + dayIndex);
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const POLLEN_DAY_RANGE_START = -4;
+    const POLLEN_DAY_RANGE_END = 4;
     
-    const dateString = targetDate.toISOString().split('T')[0];
-    document.getElementById('pollenDateSelect').value = dateString;
-    
-    if (dayIndex === 0) {
-        currentPollenData = pollenData;
-        updateHourlyPollen(0);
-    } else {
-        fetchPollenForDate(dateString);
-    }
-}
-
-function searchCityWeather(cityName) {
-    fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityName)}&count=1&language=en&format=json`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.results && data.results.length > 0) {
-                const city = data.results[0];
-                const lat = city.latitude;
-                const lon = city.longitude;
-                
-                document.getElementById('selectedCity').textContent = `${city.name}, ${city.country}`;
-                document.getElementById('currentCityName').textContent = `${city.name}, ${city.country}`;
-                
-                const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code&hourly=temperature_2m,relative_humidity_2m,weather_code&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto&forecast_days=7`;
-                
-                return fetch(weatherUrl);
-            } else {
-                throw new Error('City not found');
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('hourly-container').innerHTML = '';
-            document.getElementById('dayBar').innerHTML = '';
+    for (let i = POLLEN_DAY_RANGE_START; i <= POLLEN_DAY_RANGE_END; i++) {
+        const date = new Date(today);
+        date.setDate(today.getDate() + i);
+        const dayName = i === 0 ? 'Today' : dayNames[date.getDay()];
+        
+        const dayItem = document.createElement('div');
+        dayItem.className = 'day-item' + (i === 0 ? ' active' : '');
+        dayItem.textContent = dayName;
+        dayItem.dataset.dayOffset = i;
+        
+        dayItem.addEventListener('click', function() {
+            document.querySelectorAll('#pollenDayBar .day-item').forEach(item => item.classList.remove('active'));
+            this.classList.add('active');
+            const dayOffset = parseInt(this.dataset.dayOffset);
             
-            window.weatherData = data;
-            updateCurrentWeather();
-            updateDailyWeather(0);
-            updateHourlyWeather(0);
-            createDayBar();
-        })
-        .catch(error => {
-            alert('City not found or error fetching weather data');
+            const targetDate = new Date(today);
+            targetDate.setDate(today.getDate() + dayOffset);
+            const dateString = targetDate.toISOString().split('T')[0];
+            
+            if (dayOffset === 0) {
+                currentPollenData = pollenData;
+                updateHourlyPollen(0);
+            } else {
+                fetchPollenForDate(dateString, 0);
+            }
         });
+        
+        pollenDayBar.appendChild(dayItem);
+    }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -216,6 +209,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     createDayBar();
+    createPollenDayBar();
     if (pollenData) {
         updateHourlyPollen(0);
     }
@@ -236,22 +230,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    document.getElementById('daySelect').addEventListener('change', function() {
-        const dayIndex = parseInt(this.value);
-        updateDailyWeather(dayIndex);
-        updateHourlyWeather(dayIndex);
-    });
-    
-    document.getElementById('pollenDaySelect').addEventListener('change', function() {
-        const dayIndex = parseInt(this.value);
-        updateDateFromDaySelector(dayIndex);
-    });
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('pollenDateSelect').value = today;
     
     document.getElementById('pollenDateSelect').addEventListener('change', function() {
         const selectedDate = this.value;
         if (selectedDate) {
-            fetchPollenForDate(selectedDate);
-            document.getElementById('pollenDaySelect').value = '0';
+            fetchPollenForDate(selectedDate, 0);
         }
     });
     
