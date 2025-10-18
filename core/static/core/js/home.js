@@ -112,6 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="${sentimentClass}">
                         Sentiment: ${data.sentiment} (${Math.round(data.confidence * 100)}% confidence)
                         <br>Selected allergies: ${data.selected_pollens.join(', ') || 'None'}
+                        <br><br><strong>Recommendation:</strong><br>${data.recommendation}
                     </div>
                 `;
             } else {
