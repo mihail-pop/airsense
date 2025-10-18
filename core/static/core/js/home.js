@@ -94,7 +94,10 @@ function createDayBar() {
         const dayName = i === 0 ? 'Today' : dayNames[date.getDay()];
         
         const dayItem = document.createElement('div');
-        dayItem.className = 'day-item' + (i === 0 ? ' active' : '');
+        dayItem.className = 'day-item';
+        if (i === 0) {
+            dayItem.classList.add('active');
+        }
         dayItem.textContent = dayName;
         dayItem.dataset.dayIndex = i;
         
@@ -120,12 +123,19 @@ function updateHourlyPollen(dayIndex, data = currentPollenData) {
     
     const startHour = dayIndex * 24;
     const endHour = startHour + 24;
+    const currentHour = new Date().getHours();
+    
+    // Check if we're viewing today's data
+    const isToday = document.querySelector('#pollenDayBar .day-item.active')?.dataset.dayOffset === '0';
     
     for (let i = startHour; i < endHour && i < data.hourly.time.length; i++) {
         const time = new Date(data.hourly.time[i]);
         const hour = time.getHours();
         
         const row = document.createElement('tr');
+        if (isToday && hour === currentHour) {
+            row.className = 'current-hour';
+        }
         row.innerHTML = `
             <td>${hour}:00</td>
             <td>${data.hourly.alder_pollen[i] || 0}</td>
@@ -153,19 +163,41 @@ function fetchPollenForDate(date, dayIndex = 0) {
         .catch(error => console.error('Error fetching pollen data:', error));
 }
 
-function updateDateFromDaySelector(dayIndex) {
+function createPollenDayBar() {
+    const pollenDayBar = document.getElementById('pollenDayBar');
     const today = new Date();
-    const targetDate = new Date(today);
-    targetDate.setDate(today.getDate() + dayIndex);
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const POLLEN_DAY_RANGE_START = -4;
+    const POLLEN_DAY_RANGE_END = 4;
     
-    const dateString = targetDate.toISOString().split('T')[0];
-    document.getElementById('pollenDateSelect').value = dateString;
-    
-    if (dayIndex === 0) {
-        currentPollenData = pollenData;
-        updateHourlyPollen(0);
-    } else {
-        fetchPollenForDate(dateString, 0);
+    for (let i = POLLEN_DAY_RANGE_START; i <= POLLEN_DAY_RANGE_END; i++) {
+        const date = new Date(today);
+        date.setDate(today.getDate() + i);
+        const dayName = i === 0 ? 'Today' : dayNames[date.getDay()];
+        
+        const dayItem = document.createElement('div');
+        dayItem.className = 'day-item' + (i === 0 ? ' active' : '');
+        dayItem.textContent = dayName;
+        dayItem.dataset.dayOffset = i;
+        
+        dayItem.addEventListener('click', function() {
+            document.querySelectorAll('#pollenDayBar .day-item').forEach(item => item.classList.remove('active'));
+            this.classList.add('active');
+            const dayOffset = parseInt(this.dataset.dayOffset);
+            
+            const targetDate = new Date(today);
+            targetDate.setDate(today.getDate() + dayOffset);
+            const dateString = targetDate.toISOString().split('T')[0];
+            
+            if (dayOffset === 0) {
+                currentPollenData = pollenData;
+                updateHourlyPollen(0);
+            } else {
+                fetchPollenForDate(dateString, 0);
+            }
+        });
+        
+        pollenDayBar.appendChild(dayItem);
     }
 }
 
@@ -177,26 +209,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     createDayBar();
+    createPollenDayBar();
     if (pollenData) {
         updateHourlyPollen(0);
     }
     
-    // Initialize date picker with today's date
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('pollenDateSelect').value = today;
-    
-
-    
-    document.getElementById('pollenDaySelect').addEventListener('change', function() {
-        const dayIndex = parseInt(this.value);
-        updateDateFromDaySelector(dayIndex);
-    });
     
     document.getElementById('pollenDateSelect').addEventListener('change', function() {
         const selectedDate = this.value;
         if (selectedDate) {
             fetchPollenForDate(selectedDate, 0);
-            document.getElementById('pollenDaySelect').value = '0';
         }
     });
     
