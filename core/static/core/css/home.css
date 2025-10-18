@@ -30,34 +30,34 @@
     margin: 20px 0;
 }
 
-#pollen-hourly-container {
-    display: flex;
-    overflow-x: auto;
-    gap: 10px;
-    padding: 10px 0;
-}
-
-.pollen-hour-item {
-    min-width: 120px;
-    text-align: center;
-    padding: 10px;
+#pollen-hourly-table {
+    width: 100%;
+    border-collapse: collapse;
     background: white;
     border-radius: 5px;
-    border: 1px solid #ddd;
+    overflow: hidden;
 }
 
-.pollen-hour-time {
+#pollen-hourly-table th {
+    background: #007bff;
+    color: white;
+    padding: 10px;
+    text-align: center;
     font-weight: bold;
-    margin-bottom: 8px;
 }
 
-.pollen-levels-small {
-    font-size: 0.8em;
-    line-height: 1.2;
+#pollen-hourly-table td {
+    padding: 8px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
 }
 
-.pollen-levels-small div {
-    margin: 2px 0;
+#pollen-hourly-table tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+#pollen-hourly-table tr:hover {
+    background: #f0f0f0;
 }
 
 .current-weather {
