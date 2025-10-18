@@ -31,8 +31,26 @@
             </div>
             
             <div class="form-group">
-                <label>Age:</label>
-                <input type="number" name="age" value="{{ user.age|default:'' }}" min="1" max="120">
+                <label>Date of Birth:</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="number" name="birth_day" value="{{ user.date_of_birth.day|default:'' }}" min="1" max="31" placeholder="Day">
+                    <select name="birth_month">
+                        <option value="">---</option>
+                        <option value="1" {% if user.date_of_birth.month == 1 %}selected{% endif %}>January</option>
+                        <option value="2" {% if user.date_of_birth.month == 2 %}selected{% endif %}>February</option>
+                        <option value="3" {% if user.date_of_birth.month == 3 %}selected{% endif %}>March</option>
+                        <option value="4" {% if user.date_of_birth.month == 4 %}selected{% endif %}>April</option>
+                        <option value="5" {% if user.date_of_birth.month == 5 %}selected{% endif %}>May</option>
+                        <option value="6" {% if user.date_of_birth.month == 6 %}selected{% endif %}>June</option>
+                        <option value="7" {% if user.date_of_birth.month == 7 %}selected{% endif %}>July</option>
+                        <option value="8" {% if user.date_of_birth.month == 8 %}selected{% endif %}>August</option>
+                        <option value="9" {% if user.date_of_birth.month == 9 %}selected{% endif %}>September</option>
+                        <option value="10" {% if user.date_of_birth.month == 10 %}selected{% endif %}>October</option>
+                        <option value="11" {% if user.date_of_birth.month == 11 %}selected{% endif %}>November</option>
+                        <option value="12" {% if user.date_of_birth.month == 12 %}selected{% endif %}>December</option>
+                    </select>
+                    <input type="number" name="birth_year" value="{{ user.date_of_birth.year|default:'' }}" min="1900" max="2500" placeholder="Year">
+                </div>
             </div>
             
             <div class="form-group">
@@ -63,6 +81,7 @@
             </div>
             
             <button type="submit" name="action" value="update">Update Profile</button>
+            <button type="submit" name="action" value="delete_data" onclick="return confirm('Are you sure you want to delete all your AI interaction history? This cannot be undone.')" style="background: #ffc107; color: #000;">Delete AI Data</button>
             <button type="submit" name="action" value="delete" onclick="return confirm('Are you sure you want to delete your account? This cannot be undone.')" style="background: #dc3545;">Delete Account</button>
         </form>
     </div>

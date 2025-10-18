@@ -31,8 +31,12 @@
             </div>
             
             <div class="form-group">
-                <label>Age:</label>
-                {{ form.age }}
+                <label>Date of Birth:</label>
+                <div style="display: flex; gap: 10px;">
+                    {{ form.birth_day }}
+                    {{ form.birth_month }}
+                    {{ form.birth_year }}
+                </div>
             </div>
             
             <div class="form-group">

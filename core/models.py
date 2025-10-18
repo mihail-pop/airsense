@@ -5,7 +5,7 @@ import json
 class User(AbstractUser):
     email = models.EmailField(unique=True)
     full_name = models.CharField(max_length=255)
-    age = models.PositiveIntegerField(null=True, blank=True)
+    date_of_birth = models.DateField(null=True, blank=True)
     allergies = models.JSONField(default=list, blank=True)
     gdpr_consent = models.BooleanField(default=False)
     
