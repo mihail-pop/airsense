@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Politica de Confidențialitate AirSense{% endblock %}
+{% block title %}AirSense Privacy Policy{% endblock %}
 
 {% block extra_css %}
     <script src="https://cdn.tailwindcss.com"></script>
@@ -38,7 +38,7 @@
                 padding-left: 50%;
             }
             .policy-table td::before {
-                content: attr(data-label);
+                content: attr(data-label-ro); /* Default to Romanian for attr */
                 position: absolute;
                 left: 0;
                 width: 50%;
@@ -49,6 +49,7 @@
             }
         }
     </style>
+    <!-- Translation System Script is now in a separate translations.js file -->
 {% endblock %}
 
 {% block content %}
@@ -56,156 +57,156 @@
     <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-xl p-6 md:p-10 lg:p-12">
 
         <!-- Header and Introduction -->
-        <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-700 mb-4 border-b-4 border-blue-100 pb-2">
-            Politica de Confidențialitate (GDPR)
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-700 mb-4 border-b-4 border-blue-100 pb-2" data-translate="Privacy Policy (GDPR)">
+            Privacy Policy (GDPR)
         </h1>
         <p class="text-sm font-medium text-gray-500 mb-6">
-            <strong>Data ultimei actualizări: 18 Octombrie 2025</strong>
+            <strong data-translate="Last updated: October 18, 2025">Last updated: October 18, 2025</strong>
         </p>
 
-        <p class="text-gray-700 mb-6 leading-relaxed">
-            Această Politică de Confidențialitate descrie modul în care **AirSense**, cu sediul/datele de contact la **restlessstone18@gmail.com** și pagina de proiect la <a href="https://github.com/mihail-pop/airsense" target="_blank" class="text-blue-500 hover:underline">https://github.com/mihail-pop/airsense</a>, (denumită în continuare "noi" sau "Operatorul"), colectează, utilizează și protejează datele dumneavoastră cu caracter personal, în conformitate cu prevederile Regulamentului (UE) 2016/679 (GDPR).
+        <p class="text-gray-700 mb-6 leading-relaxed" data-translate="This Privacy Policy describes how AirSense...">
+            This Privacy Policy describes how <strong>AirSense</strong>, with headquarters/contact details at <strong>restlessstone18@gmail.com</strong> and project page at <a href="https://github.com/mihail-pop/airsense" target="_blank" class="text-blue-500 hover:underline">https://github.com/mihail-pop/airsense</a>, (hereinafter referred to as "we" or the "Controller"), collects, uses, and protects your personal data, in accordance with the provisions of Regulation (EU) 2016/679 (GDPR).
         </p>
 
-        <p class="text-gray-700 mb-8 font-semibold leading-relaxed p-3 bg-blue-50 rounded-lg border border-blue-200">
-            Confidențialitatea datelor dumneavoastră este de o importanță maximă pentru noi. Prelucrăm datele doar în scopul îmbunătățirii experienței de utilizare a aplicației și pentru a furniza rezultatele solicitate, fără a le folosi în scopuri comerciale sau pentru antrenarea de modele de inteligență artificială.
+        <p class="text-gray-700 mb-8 font-semibold leading-relaxed p-3 bg-blue-50 rounded-lg border border-blue-200" data-translate="The privacy of your data is of utmost importance to us...">
+            The privacy of your data is of utmost importance to us. We process data only for the purpose of improving the user experience of the application and providing the requested results, without using it for commercial purposes or for training artificial intelligence models.
         </p>
 
-        <!-- 1. Ce Date cu Caracter Personal Colectăm -->
-        <h2 class="text-2xl font-bold text-blue-600 mt-8 mb-4">1. Ce Date cu Caracter Personal Colectăm</h2>
-        <p class="text-gray-700 mb-4">
-            Colectăm datele pe care ni le furnizați direct, necesare pentru a crea contul dumneavoastră și pentru a utiliza funcționalitățile aplicației:
+        <!-- 1. What Personal Data We Collect -->
+        <h2 class="text-2xl font-bold text-blue-600 mt-8 mb-4" data-translate="What Personal Data We Collect">1. What Personal Data We Collect</h2>
+        <p class="text-gray-700 mb-4" data-translate="We collect the data you provide directly to us...">
+            We collect the data you provide directly to us, necessary to create your account and use the application's features:
         </p>
 
         <div class="overflow-x-auto rounded-lg shadow-md mb-8">
             <table class="min-w-full bg-white border-collapse policy-table">
                 <thead class="hidden md:table-header-group">
                     <tr class="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
-                        <th class="py-3 px-6">Categorie de Date</th>
-                        <th class="py-3 px-6">Exemple de Date</th>
-                        <th class="py-3 px-6">Scopul Colectării</th>
-                        <th class="py-3 px-6">Temeiul Legal (GDPR)</th>
+                        <th class="py-3 px-6" data-translate="Data Category">Data Category</th>
+                        <th class="py-3 px-6" data-translate="Data Examples">Data Examples</th>
+                        <th class="py-3 px-6" data-translate="Purpose of Collection">Purpose of Collection</th>
+                        <th class="py-3 px-6" data-translate="Legal Basis (GDPR)">Legal Basis (GDPR)</th>
                     </tr>
                 </thead>
                 <tbody class="text-gray-600 text-sm font-light">
                     <!-- Row 1 -->
                     <tr class="hover:bg-gray-50 transition duration-300">
-                        <td data-label="Categorie de Date" class="md:py-3 md:px-6 font-medium">
-                            <span class="md:hidden text-lg font-bold block text-blue-700 mb-1">Date de Identificare și Contact</span>
-                            <span class="hidden md:block">**Date de Identificare și Contact**</span>
+                        <td data-label-ro="Categorie de Date" data-label-en="Data Category" class="md:py-3 md:px-6 font-medium">
+                            <span class="md:hidden text-lg font-bold block text-blue-700 mb-1" data-translate="Identification and Contact Data">Identification and Contact Data</span>
+                            <span class="hidden md:block"><strong data-translate="Identification and Contact Data">Identification and Contact Data</strong></span>
                         </td>
-                        <td data-label="Exemple de Date" class="md:py-3 md:px-6">Nume/Prenume, Adresă de Email (pentru login/cont)</td>
-                        <td data-label="Scopul Colectării" class="md:py-3 md:px-6">Crearea și gestionarea contului de utilizator.</td>
-                        <td data-label="Temeiul Legal (GDPR)" class="md:py-3 md:px-6">Executarea unui contract (Termenii și Condițiile aplicației).</td>
+                        <td data-label-ro="Exemple de Date" data-label-en="Data Examples" class="md:py-3 md:px-6" data-translate="Name/Surname, Email Address (for login/account)">Name/Surname, Email Address (for login/account)</td>
+                        <td data-label-ro="Scopul Colectării" data-label-en="Purpose of Collection" class="md:py-3 md:px-6" data-translate="User account creation and management.">User account creation and management.</td>
+                        <td data-label-ro="Temeiul Legal (GDPR)" data-label-en="Legal Basis (GDPR)" class="md:py-3 md:px-6" data-translate="Performance of a contract (App Terms and Conditions).">Performance of a contract (App Terms and Conditions).</td>
                     </tr>
                     <!-- Row 2 -->
                     <tr class="hover:bg-gray-50 transition duration-300">
-                        <td data-label="Categorie de Date" class="md:py-3 md:px-6 font-medium">
-                            <span class="md:hidden text-lg font-bold block text-blue-700 mb-1">Date Speciale (Sănătate/Interese)</span>
-                            <span class="hidden md:block">**Date Speciale (Sănătate/Interese)**</span>
+                        <td data-label-ro="Categorie de Date" data-label-en="Data Category" class="md:py-3 md:px-6 font-medium">
+                            <span class="md:hidden text-lg font-bold block text-blue-700 mb-1" data-translate="Special Data (Health/Interests)">Special Data (Health/Interests)</span>
+                            <span class="hidden md:block"><strong data-translate="Special Data (Health/Interests)">Special Data (Health/Interests)</strong></span>
                         </td>
-                        <td data-label="Exemple de Date" class="md:py-3 md:px-6">Alergii/Interese în polen (dacă sunt introduse voluntar)</td>
-                        <td data-label="Scopul Colectării" class="md:py-3 md:px-6">Furnizarea rezultatelor personalizate de la sistemul AI.</td>
-                        <td data-label="Temeiul Legal (GDPR)" class="md:py-3 md:px-6">Consimțământul explicit al persoanei vizate (Art. 9(2)(a) GDPR).</td>
+                        <td data-label-ro="Exemple de Date" data-label-en="Data Examples" class="md:py-3 md:px-6" data-translate="Allergies/Pollen Interests (if voluntarily entered)">Allergies/Pollen Interests (if voluntarily entered)</td>
+                        <td data-label-ro="Scopul Colectării" data-label-en="Purpose of Collection" class="md:py-3 md:px-6" data-translate="Providing personalized results from the AI system.">Providing personalized results from the AI system.</td>
+                        <td data-label-ro="Temeiul Legal (GDPR)" data-label-en="Legal Basis (GDPR)" class="md:py-3 md:px-6" data-translate="Explicit consent of the data subject (Art. 9(2)(a) GDPR).">Explicit consent of the data subject (Art. 9(2)(a) GDPR).</td>
                     </tr>
                     <!-- Row 3 -->
                     <tr class="hover:bg-gray-50 transition duration-300">
-                        <td data-label="Categorie de Date" class="md:py-3 md:px-6 font-medium">
-                            <span class="md:hidden text-lg font-bold block text-blue-700 mb-1">Date de Utilizare și Inputuri</span>
-                            <span class="hidden md:block">**Date de Utilizare și Inputuri**</span>
+                        <td data-label-ro="Categorie de Date" data-label-en="Data Category" class="md:py-3 md:px-6 font-medium">
+                            <span class="md:hidden text-lg font-bold block text-blue-700 mb-1" data-translate="Usage Data and Inputs">Usage Data and Inputs</span>
+                            <span class="hidden md:block"><strong data-translate="Usage Data and Inputs">Usage Data and Inputs</strong></span>
                         </td>
-                        <td data-label="Exemple de Date" class="md:py-3 md:px-6">Locație (pentru prognoze), Vârsta (opțional, pentru context), Rezultate/Inputuri anterioare.</td>
-                        <td data-label="Scopul Colectării" class="md:py-3 md:px-6">Optimizarea experienței de utilizare (UX) și furnizarea de rezultate precise (AI-ul care rulează datele).</td>
-                        <td data-label="Temeiul Legal (GDPR)" class="md:py-3 md:px-6">Interesul legitim (îmbunătățirea serviciilor) și/sau executarea unui contract.</td>
+                        <td data-label-ro="Exemple de Date" data-label-en="Data Examples" class="md:py-3 md:px-6" data-translate="Location (for forecasts), Age (optional, for context), Past results/Inputs.">Location (for forecasts), Age (optional, for context), Past results/Inputs.</td>
+                        <td data-label-ro="Scopul Colectării" data-label-en="Purpose of Collection" class="md:py-3 md:px-6" data-translate="Optimizing the user experience (UX)...">Optimizing the user experience (UX) and providing accurate results (AI data processing).</td>
+                        <td data-label-ro="Temeiul Legal (GDPR)" data-label-en="Legal Basis (GDPR)" class="md:py-3 md:px-6" data-translate="Legitimate interest (service improvement) and/or performance of a contract.">Legitimate interest (service improvement) and/or performance of a contract.</td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        <!-- 2. Scopurile Prelucrării Datelor -->
-        <h2 class="text-2xl font-bold text-blue-600 mt-8 mb-4">2. Scopurile Prelucrării Datelor</h2>
-        <p class="text-gray-700 mb-4">
-            Prelucrăm datele dumneavoastră exclusiv în următoarele scopuri:
+        <!-- 2. Purposes of Data Processing -->
+        <h2 class="text-2xl font-bold text-blue-600 mt-8 mb-4" data-translate="Purposes of Data Processing">2. Purposes of Data Processing</h2>
+        <p class="text-gray-700 mb-4" data-translate="We process your data exclusively for the following purposes:">
+            We process your data exclusively for the following purposes:
         </p>
         <ol class="list-decimal list-inside space-y-3 text-gray-700 ml-4">
-            <li>
-                <strong class="text-blue-600">Gestionarea Contului:</strong> Crearea, autentificarea și administrarea contului dumneavoastră de utilizator.
+            <li data-translate="Account Management:">
+                <strong>Account Management:</strong> Creation, authentication, and administration of your user account.
             </li>
-            <li>
-                <strong class="text-blue-600">Funcționalitatea Aplicației și User Experience (UX):</strong> Utilizarea datelor (ex: locație, inputuri) pentru a oferi funcționalitățile de bază ale aplicației și pentru a îmbunătăți modul în care interacționați cu ea.
+            <li data-translate="Application Functionality and User Experience (UX):">
+                <strong>Application Functionality and User Experience (UX):</strong> Using data (e.g., location, inputs) to provide the basic features of the application and to improve how you interact with it.
             </li>
-            <li>
-                <strong class="text-blue-600">Furnizarea Rezultatelor (Sistemul AI):</strong> Inputurile dumneavoastră sunt procesate de un sistem de inteligență artificială pentru a genera rezultatele solicitate. 
-                <span class="font-bold text-red-600">ATENȚIE: Acest sistem AI este configurat să NU stocheze, învețe sau să se antreneze pe baza datelor sau inputurilor utilizatorilor.</span> Datele sunt procesate pe moment pentru a genera răspunsul și nu sunt reținute pentru antrenare viitoare.
+            <li data-translate="Providing Results (AI System):">
+                <strong>Providing Results (AI System):</strong> Your inputs are processed by an artificial intelligence system to generate the requested results. 
+                <span class="font-bold text-red-600">ATTENTION: This AI system is configured NOT to store, learn from, or train on user data or inputs.</span> Data is processed instantly to generate the response and is not retained for future training.
             </li>
-            <li>
-                <strong class="text-blue-600">Suport Tehnic:</strong> Răspunsul la solicitările dumneavoastră de suport și depanarea problemelor tehnice.
+            <li data-translate="Technical Support:">
+                <strong>Technical Support:</strong> Responding to your support requests and troubleshooting technical issues.
             </li>
         </ol>
-        <p class="mt-4 p-3 bg-red-50 text-red-700 font-semibold rounded-lg border border-red-200">
-            <strong>NU</strong> folosim datele dumneavoastră în scopuri comerciale, de marketing direct, de profilare detaliată sau pentru vânzarea lor către terți.
+        <p class="mt-4 p-3 bg-red-50 text-red-700 font-semibold rounded-lg border border-red-200" data-translate="We DO NOT use your data for commercial purposes...">
+            We <strong>DO NOT</strong> use your data for commercial purposes, direct marketing, detailed profiling, or for selling them to third parties.
         </p>
 
-        <!-- 3. Temeiul Legal al Prelucrării -->
-        <h2 class="text-2xl font-bold text-blue-600 mt-8 mb-4">3. Temeiul Legal al Prelucrării</h2>
-        <p class="text-gray-700 mb-4">
-            Prelucrăm datele dumneavoastră pe baza următoarelor temeiuri legale, conform Art. 6 și Art. 9 din GDPR:
+        <!-- 3. Legal Basis for Processing -->
+        <h2 class="text-2xl font-bold text-blue-600 mt-8 mb-4" data-translate="Legal Basis for Processing">3. Legal Basis for Processing</h2>
+        <p class="text-gray-700 mb-4" data-translate="We process your data based on the following legal grounds...">
+            We process your data based on the following legal grounds, according to Art. 6 and Art. 9 of the GDPR:
         </p>
         <ul class="list-disc list-inside space-y-3 text-gray-700 ml-4">
-            <li>
-                <strong class="text-blue-600">Executarea unui Contract:</strong> Prelucrarea este necesară pentru a vă oferi serviciile aplicației, conform Termenilor și Condițiilor acceptate.
+            <li data-translate="Performance of a Contract:">
+                <strong>Performance of a Contract:</strong> Processing is necessary to provide you with the application's services, according to the accepted Terms and Conditions.
             </li>
-            <li>
-                <strong class="text-blue-600">Consimțământul (pentru date speciale):</strong> Prelucrarea datelor referitoare la sănătate (ex: alergii) se face exclusiv pe baza consimțământului dumneavoastră explicit și voluntar. Vă puteți retrage consimțământul oricând, fără a afecta legalitatea prelucrării efectuate înainte de retragere.
+            <li data-translate="Consent (for special data):">
+                <strong>Consent (for special data):</strong> Processing of health-related data (e.g., allergies) is done exclusively based on your explicit and voluntary consent. You can withdraw your consent at any time, without affecting the legality of processing carried out before withdrawal.
             </li>
-            <li>
-                <strong class="text-blue-600">Interesul Legitim:</strong> Prelucrarea datelor de utilizare (anonimizate, unde este posibil) pentru a asigura buna funcționare, securitatea și pentru a îmbunătăți continuu serviciul (UX).
+            <li data-translate="Legitimate Interest:">
+                <strong>Legitimate Interest:</strong> Processing of usage data (anonymized, where possible) to ensure the proper functioning, security, and continuous improvement of the service (UX).
             </li>
         </ul>
 
-        <!-- 4. Stocarea Datelor -->
-        <h2 class="text-2xl font-bold text-blue-600 mt-8 mb-4">4. Stocarea Datelor</h2>
+        <!-- 4. Data Storage -->
+        <h2 class="text-2xl font-bold text-blue-600 mt-8 mb-4" data-translate="Data Storage">4. Data Storage</h2>
         <ul class="list-disc list-inside space-y-3 text-gray-700 ml-4">
-            <li>
-                <strong class="text-blue-600">Durata de Stocare:</strong> Datele cu caracter personal sunt stocate doar pe perioada necesară îndeplinirii scopurilor menționate mai sus sau până la solicitarea dumneavoastră de ștergere (exercitarea dreptului de a fi uitat).
+            <li data-translate="Storage Duration:">
+                <strong>Storage Duration:</strong> Personal data is stored only for the period necessary to fulfill the purposes mentioned above or until your request for deletion (exercise of the right to be forgotten).
             </li>
-            <li>
-                <strong class="text-blue-600">Securitatea Datelor:</strong> Am implementat măsuri de securitate tehnice și organizatorice adecvate pentru a proteja datele dumneavoastră împotriva accesului neautorizat, pierderii sau distrugerii.
+            <li data-translate="Data Security:">
+                <strong>Data Security:</strong> We have implemented appropriate technical and organizational security measures to protect your data against unauthorized access, loss, or destruction.
             </li>
         </ul>
 
-        <!-- 5. Drepturile Persoanei Vizate -->
-        <h2 class="text-2xl font-bold text-blue-600 mt-8 mb-4">5. Drepturile Persoanei Vizate</h2>
-        <p class="text-gray-700 mb-4">
-            În conformitate cu GDPR, beneficiați de următoarele drepturi în legătură cu datele dumneavoastră:
+        <!-- 5. Data Subject Rights -->
+        <h2 class="text-2xl font-bold text-blue-600 mt-8 mb-4" data-translate="Data Subject Rights">5. Data Subject Rights</h2>
+        <p class="text-gray-700 mb-4" data-translate="In accordance with the GDPR, you benefit from the following rights...">
+            In accordance with the GDPR, you benefit from the following rights regarding your data:
         </p>
         <ul class="list-disc list-inside space-y-3 text-gray-700 ml-4">
-            <li><strong>Dreptul de Acces:</strong> Puteți solicita o copie a datelor pe care le deținem despre dumneavoastră.</li>
-            <li><strong>Dreptul la Rectificare:</strong> Puteți solicita corectarea datelor inexacte sau completarea datelor incomplete.</li>
-            <li><strong>Dreptul la Ștergerea Datelor ("Dreptul de a fi uitat"):</strong> Puteți solicita ștergerea datelor dumneavoastră, în anumite condiții.</li>
-            <li><strong>Dreptul la Restricționarea Prelucrării:</strong> Puteți solicita restricționarea prelucrării datelor dumneavoastră, în anumite condiții.</li>
-            <li><strong>Dreptul la Portabilitatea Datelor:</strong> Puteți primi datele într-un format structurat, utilizat în mod curent și care poate fi citit automat, și aveți dreptul de a le transmite altui operator, în anumite condiții.</li>
-            <li><strong>Dreptul la Opoziție:</strong> Vă puteți opune prelucrării datelor dumneavoastră, în anumite condiții.</li>
-            <li><strong>Dreptul de a Retrage Consimțământul:</strong> Acolo unde prelucrarea se bazează pe consimțământ, aveți dreptul de a-l retrage oricând.</li>
+            <li data-translate="Right of Access:"><strong>Right of Access:</strong> You can request a copy of the data we hold about you.</li>
+            <li data-translate="Right to Rectification:"><strong>Right to Rectification:</strong> You can request the correction of inaccurate data or the completion of incomplete data.</li>
+            <li data-translate="Right to Erasure (&quot;Right to be forgotten&quot;):"><strong>Right to Erasure ("Right to be forgotten"):</strong> You can request the deletion of your data, under certain conditions.</li>
+            <li data-translate="Right to Restriction of Processing:"><strong>Right to Restriction of Processing:</strong> You can request the restriction of processing of your data, under certain conditions.</li>
+            <li data-translate="Right to Data Portability:"><strong>Right to Data Portability:</strong> You can receive your data in a structured, commonly used, and machine-readable format, and you have the right to transmit it to another controller, under certain conditions.</li>
+            <li data-translate="Right to Object:"><strong>Right to Object:</strong> You can object to the processing of your data, under certain conditions.</li>
+            <li data-translate="Right to Withdraw Consent:"><strong>Right to Withdraw Consent:</strong> Where processing is based on consent, you have the right to withdraw it at any time.</li>
         </ul>
-        <p class="mt-4 text-gray-700">
-            Pentru exercitarea acestor drepturi, vă rugăm să ne contactați la adresa de email specificată mai jos.
+        <p class="mt-4 text-gray-700" data-translate="To exercise these rights, please contact us...">
+            To exercise these rights, please contact us at the email address specified below.
         </p>
 
-        <!-- 6. Contact și Plângeri -->
-        <h2 class="text-2xl font-bold text-blue-600 mt-8 mb-4">6. Contact și Plângeri</h2>
-        <p class="text-gray-700 mb-4">
-            Dacă aveți întrebări sau nelămuriri cu privire la prelucrarea datelor dumneavoastră, vă rugăm să ne contactați la:
+        <!-- 6. Contact and Complaints -->
+        <h2 class="text-2xl font-bold text-blue-600 mt-8 mb-4" data-translate="Contact and Complaints">6. Contact and Complaints</h2>
+        <p class="text-gray-700 mb-4" data-translate="If you have questions or concerns...">
+            If you have questions or concerns about the processing of your data, please contact us at:
         </p>
         <p class="text-lg font-semibold text-blue-700 mb-6 p-3 bg-blue-100 rounded-lg inline-block">
             Email: restlessstone18@gmail.com
         </p>
 
-        <p class="text-gray-700 mb-4">
-            De asemenea, aveți dreptul de a depune o plângere la autoritatea națională de supraveghere a prelucrării datelor, respectiv:
+        <p class="text-gray-700 mb-4" data-translate="You also have the right to file a complaint...">
+            You also have the right to file a complaint with the national supervisory authority for data processing, namely:
         </p>
         <div class="bg-gray-100 p-4 rounded-lg border border-gray-300">
-            <h3 class="text-xl font-bold text-gray-800 mb-2">Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter Personal (ANSPDCP)</h3>
+            <h3 class="text-xl font-bold text-gray-800 mb-2" data-translate="National Supervisory Authority...">National Supervisory Authority for Personal Data Processing (ANSPDCP)</h3>
             <p class="text-gray-700"><strong>Adresă:</strong> B-dul G-ral. Gheorghe Magheru nr. 28-30, Sector 1, cod poștal 010336, București, România</p>
             <p class="text-gray-700"><strong>Telefon:</strong> +40.318.059.211 / +40.318.059.212</p>
             <p class="text-gray-700"><strong>E-mail:</strong> anspdcp@dataprotection.ro</p>
@@ -214,8 +215,8 @@
 
         <!-- Legal Disclaimer -->
         <div class="mt-8 pt-4 border-t border-gray-300">
-            <p class="text-sm italic text-gray-500">
-                <strong>Notă Legală:</strong> Acest model este un punct de plecare. Conformitatea deplină cu GDPR necesită o analiză detaliată a tuturor fluxurilor de date din aplicația dumneavoastră și poate necesita adaptări suplimentare. <strong>Recomandarea fermă este de a consulta un avocat specializat în GDPR.</strong>
+            <p class="text-sm italic text-gray-500" data-translate="Legal Note:">
+                <strong>Legal Note:</strong> This template is a starting point. Full GDPR compliance requires a detailed analysis of all data flows within your application and may require additional adaptations. <strong>The firm recommendation is to consult a lawyer specializing in GDPR.</strong>
             </p>
         </div>
 

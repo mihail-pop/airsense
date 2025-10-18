@@ -21,7 +21,6 @@
                     <div id="cityDropdown" class="city-dropdown"></div>
                 </div>
                 <button id="searchCity" data-translate="Search">Search</button>
-                <button id="langToggle" class="lang-toggle">RO</button>
                 <span id="selectedCity"></span>
             </div>
             
@@ -167,6 +166,5 @@
         const currentLon = {{ lon }};
         const userAuthenticated = {{ user.is_authenticated|yesno:"true,false" }};
     </script>
-    <script src="/static/core/js/translations.js"></script>
     <script src="/static/core/js/home.js"></script>
 {% endblock %}

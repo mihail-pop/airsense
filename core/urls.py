@@ -8,6 +8,7 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('gdpr/', views.gdpr_view, name='gdpr'),
+    path('gdpr_ro/', views.gdpr_ro_view, name='gdpr_ro'),
     path('api/weather/', views.get_weather_data, name='weather_data'),
     path('api/sentiment/', views.get_rec_data, name='get_rec_data'),
     path('api/pollen-rec/', views.pollen_data_rec, name='pollen_data_rec'),
