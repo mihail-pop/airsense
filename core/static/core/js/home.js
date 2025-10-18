@@ -201,6 +201,17 @@ function createPollenDayBar() {
     }
 }
 
+document.getElementById('daySelect').addEventListener('change', function() {
+        const dayIndex = parseInt(this.value);
+        updateDailyWeather(dayIndex);
+        updateHourlyWeather(dayIndex);
+    });
+    
+    document.getElementById('pollenDaySelect').addEventListener('change', function() {
+        const dayIndex = parseInt(this.value);
+        updateDateFromDaySelector(dayIndex);
+    });
+
 document.addEventListener('DOMContentLoaded', function() {
     if (weatherData) {
         updateCurrentWeather();
