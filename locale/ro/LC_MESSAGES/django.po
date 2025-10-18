@@ -1,0 +1,44 @@
+# Romanian translations for AirSense
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: ro\n"
+
+msgid "Weather & Pollen Tracker"
+msgstr "Monitorizare Vreme & Polen"
+
+msgid "Weather Forecast"
+msgstr "Prognoza Meteo"
+
+msgid "Pollen Forecast"
+msgstr "Prognoza Polen"
+
+msgid "Pollen Allergies"
+msgstr "Alergii la Polen"
+
+msgid "How do you feel today?"
+msgstr "Cum te simti astazi?"
+
+msgid "Enter city name..."
+msgstr "Introdu numele orasului..."
+
+msgid "Search"
+msgstr "Cauta"
+
+msgid "Submit"
+msgstr "Trimite"
+
+msgid "Describe how you feel today..."
+msgstr "Descrie cum te simti astazi..."
+
+msgid "Your History"
+msgstr "Istoricul Tau"
+
+msgid "Feeling:"
+msgstr "Stare:"
+
+msgid "Recommendations:"
+msgstr "Recomandari:"
+
+msgid "No interactions found. Start using the app to see your history here!"
+msgstr "Nu s-au gasit interactiuni. Incepe sa folosesti aplicatia pentru a-ti vedea istoricul aici!"

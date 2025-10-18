@@ -18,13 +18,14 @@ const weatherCodes = {
 };
 
 function getWeatherDescription(code) {
-    return weatherCodes[code] || 'Unknown';
+    const description = weatherCodes[code] || 'Unknown';
+    return window.translateText ? window.translateText(description) : description;
 }
 
 function updateCurrentWeather() {
     if (!window.weatherData.current) return;
     
-    document.getElementById('current-temp').textContent = Math.round(window.weatherData.current.temperature_2m) + '°C';
+    document.getElementById('current-temp').textContent = formatTemperature(window.weatherData.current.temperature_2m);
     document.getElementById('current-condition').textContent = getWeatherDescription(window.weatherData.current.weather_code);
     document.getElementById('current-humidity').textContent = 'Humidity: ' + window.weatherData.current.relative_humidity_2m + '%';
 }
@@ -32,11 +33,11 @@ function updateCurrentWeather() {
 function updateDailyWeather(dayIndex) {
     if (!window.weatherData.daily) return;
     
-    const maxTemp = Math.round(window.weatherData.daily.temperature_2m_max[dayIndex]);
-    const minTemp = Math.round(window.weatherData.daily.temperature_2m_min[dayIndex]);
+    const maxTemp = formatTemperature(window.weatherData.daily.temperature_2m_max[dayIndex]);
+    const minTemp = formatTemperature(window.weatherData.daily.temperature_2m_min[dayIndex]);
     const condition = getWeatherDescription(window.weatherData.daily.weather_code[dayIndex]);
     
-    document.getElementById('daily-temp').textContent = `Max: ${maxTemp}°C | Min: ${minTemp}°C`;
+    document.getElementById('daily-temp').textContent = `Max: ${maxTemp} | Min: ${minTemp}`;
     document.getElementById('daily-condition').textContent = condition;
 }
 
@@ -53,7 +54,7 @@ function updateHourlyWeather(dayIndex) {
     for (let i = startHour; i < endHour && i < window.weatherData.hourly.time.length; i++) {
         const time = new Date(window.weatherData.hourly.time[i]);
         const hour = time.getHours();
-        const temp = Math.round(window.weatherData.hourly.temperature_2m[i]);
+        const temp = formatTemperature(window.weatherData.hourly.temperature_2m[i]);
         const humidity = Math.round(window.weatherData.hourly.relative_humidity_2m[i]);
         const windSpeed = Math.round(window.weatherData.hourly.wind_speed_10m[i] || 0);
         const condition = getWeatherDescription(window.weatherData.hourly.weather_code[i]);
@@ -64,7 +65,7 @@ function updateHourlyWeather(dayIndex) {
         }
         row.innerHTML = `
             <td>${hour}:00</td>
-            <td>${temp}°C</td>
+            <td>${temp}</td>
             <td>${humidity}%</td>
             <td>${windSpeed} km/h</td>
             <td>${condition}</td>
@@ -89,14 +90,15 @@ function updateWeatherChart(dayIndex) {
     for (let i = startHour; i < endHour && i < window.weatherData.hourly.time.length; i++) {
         const time = new Date(window.weatherData.hourly.time[i]);
         labels.push(time.getHours() + ':00');
-        temperatures.push(Math.round(window.weatherData.hourly.temperature_2m[i]));
+        const tempValue = isFahrenheit ? celsiusToFahrenheit(window.weatherData.hourly.temperature_2m[i]) : Math.round(window.weatherData.hourly.temperature_2m[i]);
+        temperatures.push(tempValue);
         humidity.push(Math.round(window.weatherData.hourly.relative_humidity_2m[i]));
         windSpeed.push(Math.round(window.weatherData.hourly.wind_speed_10m[i] || 0));
     }
     
     if (document.getElementById('temperature-chart').checked) {
         datasets.push({
-            label: 'Temperature (°C)',
+            label: `Temperature (°${isFahrenheit ? 'F' : 'C'})`,
             data: temperatures,
             borderColor: '#007bff',
             backgroundColor: 'rgba(0, 123, 255, 0.1)',
@@ -178,7 +180,7 @@ function createDayBar() {
         if (i === 0) {
             dayItem.classList.add('active');
         }
-        dayItem.textContent = dayName;
+        dayItem.textContent = window.translateText ? window.translateText(dayName) : dayName;
         dayItem.dataset.dayIndex = i;
         
         dayItem.addEventListener('click', function() {
@@ -196,6 +198,18 @@ function createDayBar() {
 let currentPollenData;
 let weatherChart = null;
 let pollenChart = null;
+let isFahrenheit = false;
+
+function celsiusToFahrenheit(celsius) {
+    return Math.round((celsius * 9/5) + 32);
+}
+
+function formatTemperature(celsius) {
+    if (isFahrenheit) {
+        return celsiusToFahrenheit(celsius) + '°F';
+    }
+    return Math.round(celsius) + '°C';
+}
 //Optiune get Pollen Level pentru alt tip
 function getPollenLevel(value, type) {
     const val = value || 0;
@@ -648,6 +662,21 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('sentimentResult').innerHTML = '<div class="sentiment-neutral">Error analyzing sentiment</div>';
         });
     });
+
+    
+    // Temperature toggle functionality
+    document.getElementById('tempToggle').addEventListener('click', function() {
+        isFahrenheit = !isFahrenheit;
+        this.textContent = isFahrenheit ? '°C' : '°F';
+        
+        // Update all temperature displays
+        updateCurrentWeather();
+        const activeDay = document.querySelector('.day-item.active');
+        const dayIndex = activeDay ? parseInt(activeDay.dataset.dayIndex) : 0;
+        updateDailyWeather(dayIndex);
+        updateHourlyWeather(dayIndex);
+    });
+    
 
     
     // Prevent unchecking the last pollen option and update allergies

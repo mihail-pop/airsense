@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}AirSense - Weather & Pollen Tracker{% endblock %}
+{% block title %}AirSense - {% trans 'Weather & Pollen Tracker' %}{% endblock %}
 
 {% block extra_css %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -9,23 +10,25 @@
 {% block content %}
     <div class="container">
         <h1>AirSense</h1>
-        <p>Weather & Pollen Tracker</p>
+        <p data-translate="Weather & Pollen Tracker">Weather & Pollen Tracker</p>
         
         <div class="weather-section">
-            <h2>Weather Forecast</h2>
+            <h2 data-translate="Weather Forecast">Weather Forecast</h2>
             
             <div class="city-search">
                 <div class="city-input-container">
-                    <input type="text" id="cityInput" placeholder="Enter city name...">
+                    <input type="text" id="cityInput" placeholder="Enter city name..." data-translate="Enter city name...">
                     <div id="cityDropdown" class="city-dropdown"></div>
                 </div>
-                <button id="searchCity">Search</button>
+                <button id="searchCity" data-translate="Search">Search</button>
+                <button id="langToggle" class="lang-toggle">RO</button>
                 <span id="selectedCity"></span>
             </div>
             
             <div id="currentCityName"></div>
             
             <div class="current-weather">
+                <button id="tempToggle" class="temp-toggle">°F</button>
                 <div id="current-temp">--°C</div>
                 <div id="current-condition">Loading...</div>
                 <div id="current-humidity">Humidity: --%</div>
@@ -41,15 +44,15 @@
             </div>
             
             <div class="hourly-weather">
-                <h3>Hourly Forecast</h3>
+                <h3 data-translate="Hourly Forecast">Hourly Forecast</h3>
                 <table id="hourly-table">
                     <thead>
                         <tr>
-                            <th>Hour</th>
-                            <th>Temperature</th>
-                            <th>Humidity</th>
-                            <th>Wind Speed</th>
-                            <th>Condition</th>
+                            <th data-translate="Hour">Hour</th>
+                            <th data-translate="Temperature">Temperature</th>
+                            <th data-translate="Humidity">Humidity</th>
+                            <th data-translate="Wind Speed">Wind Speed</th>
+                            <th data-translate="Condition">Condition</th>
                         </tr>
                     </thead>
                     <tbody id="hourly-container"></tbody>
@@ -66,7 +69,7 @@
         </div>
         
         <div class="pollen-forecast-section">
-            <h2>Pollen Forecast</h2>
+            <h2 data-translate="Pollen Forecast">Pollen Forecast</h2>
             
             <div class="pollen-controls">
                 <input type="date" id="pollenDateSelect">
@@ -74,17 +77,17 @@
             </div>
             
             <div class="hourly-pollen">
-                <h3>Hourly Pollen Forecast</h3>
+                <h3 data-translate="Hourly Pollen Forecast">Hourly Pollen Forecast</h3>
                 <table id="pollen-hourly-table">
                     <thead>
                         <tr>
-                            <th>Hour</th>
-                            <th>Alder</th>
-                            <th>Birch</th>
-                            <th>Grass</th>
-                            <th>Mugwort</th>
-                            <th>Olive</th>
-                            <th>Ragweed</th>
+                            <th data-translate="Hour">Hour</th>
+                            <th data-translate="Alder">Alder</th>
+                            <th data-translate="Birch">Birch</th>
+                            <th data-translate="Grass">Grass</th>
+                            <th data-translate="Mugwort">Mugwort</th>
+                            <th data-translate="Olive">Olive</th>
+                            <th data-translate="Ragweed">Ragweed</th>
                         </tr>
                     </thead>
                     <tbody id="pollen-hourly-container"></tbody>
@@ -104,25 +107,25 @@
         </div>
         
         <div class="pollen-section">
-            <h2>Pollen Allergies</h2>
+            <h2 data-translate="Pollen Allergies">Pollen Allergies</h2>
             <form id="pollenForm">
                 <div class="pollen-checkboxes">
-                    <label><input type="checkbox" name="pollens" value="alder" {% if 'alder' in user_allergies %}checked{% endif %}> Alder Pollen</label>
-                    <label><input type="checkbox" name="pollens" value="birch" {% if 'birch' in user_allergies %}checked{% endif %}> Birch Pollen</label>
-                    <label><input type="checkbox" name="pollens" value="grass" {% if 'grass' in user_allergies %}checked{% endif %}> Grass Pollen</label>
-                    <label><input type="checkbox" name="pollens" value="mugwort" {% if 'mugwort' in user_allergies %}checked{% endif %}> Mugwort Pollen</label>
-                    <label><input type="checkbox" name="pollens" value="olive" {% if 'olive' in user_allergies %}checked{% endif %}> Olive Pollen</label>
-                    <label><input type="checkbox" name="pollens" value="ragweed" {% if 'ragweed' in user_allergies or not user.is_authenticated %}checked{% endif %}> Ragweed Pollen</label>
+                    <label><input type="checkbox" name="pollens" value="alder" {% if 'alder' in user_allergies %}checked{% endif %}> <span data-translate="Alder Pollen">Alder Pollen</span></label>
+                    <label><input type="checkbox" name="pollens" value="birch" {% if 'birch' in user_allergies %}checked{% endif %}> <span data-translate="Birch Pollen">Birch Pollen</span></label>
+                    <label><input type="checkbox" name="pollens" value="grass" {% if 'grass' in user_allergies %}checked{% endif %}> <span data-translate="Grass Pollen">Grass Pollen</span></label>
+                    <label><input type="checkbox" name="pollens" value="mugwort" {% if 'mugwort' in user_allergies %}checked{% endif %}> <span data-translate="Mugwort Pollen">Mugwort Pollen</span></label>
+                    <label><input type="checkbox" name="pollens" value="olive" {% if 'olive' in user_allergies %}checked{% endif %}> <span data-translate="Olive Pollen">Olive Pollen</span></label>
+                    <label><input type="checkbox" name="pollens" value="ragweed" {% if 'ragweed' in user_allergies or not user.is_authenticated %}checked{% endif %}> <span data-translate="Ragweed Pollen">Ragweed Pollen</span></label>
                 </div>
             </form>
         </div>
         
         <div class="feeling-section">
-            <h2>How do you feel today?</h2>
+            <h2 data-translate="How do you feel today?">How do you feel today?</h2>
             <form id="feelingForm">
                 {% csrf_token %}
-                <textarea id="feelingText" placeholder="Describe how you feel today..."></textarea>
-                <button type="submit">Analyze</button>
+                <textarea id="feelingText" placeholder="Describe how you feel today..." data-translate="Describe how you feel today..."></textarea>
+                <button type="submit" data-translate="Submit">Submit</button>
             </form>
             <div id="sentimentResult"></div>
         </div>
@@ -137,5 +140,6 @@
         const currentLon = {{ lon }};
         const userAuthenticated = {{ user.is_authenticated|yesno:"true,false" }};
     </script>
+    <script src="/static/core/js/translations.js"></script>
     <script src="/static/core/js/home.js"></script>
 {% endblock %}
