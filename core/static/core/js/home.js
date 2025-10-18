@@ -306,57 +306,85 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     const today = new Date().toISOString().split('T')[0];
-    document.getElementById('pollenDateSelect').value = today;
+    const pollenDateSelect = document.getElementById('pollenDateSelect');
     
-    document.getElementById('pollenDateSelect').addEventListener('change', function() {
-        const selectedDate = this.value;
-        if (selectedDate) {
-            fetchPollenForDate(selectedDate, 0);
-        }
-    });
-    
-    document.getElementById('feelingForm').addEventListener('submit', function(e) {
-        e.preventDefault();
+    if (pollenDateSelect) {
+        pollenDateSelect.value = today;
         
-        const feelingText = document.getElementById('feelingText').value;
-        const selectedPollens = Array.from(document.querySelectorAll('input[name="pollens"]:checked')).map(cb => cb.value);
-        
-        if (!feelingText.trim()) {
-            alert('Please describe how you feel today.');
-            return;
-        }
-        
-        const formData = new FormData();
-        formData.append('feeling', feelingText);
-        selectedPollens.forEach(pollen => formData.append('pollens', pollen));
-        
-        fetch('/api/sentiment/', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || ''
+        pollenDateSelect.addEventListener('change', function() {
+            const selectedDate = this.value;
+            if (selectedDate) {
+                fetchPollenForDate(selectedDate, 0);
             }
-        })
-        .then(response => response.json())
-        .then(data => {
-            const resultDiv = document.getElementById('sentimentResult');
-            if (data.sentiment) {
-                const sentimentClass = data.sentiment.toLowerCase() === 'positive' ? 'sentiment-positive' : 
-                                     data.sentiment.toLowerCase() === 'negative' ? 'sentiment-negative' : 'sentiment-neutral';
-                
-                resultDiv.innerHTML = `
-                    <div class="${sentimentClass}">
-                        Sentiment: ${data.sentiment} (${Math.round(data.confidence * 100)}% confidence)
-                        <br>Selected allergies: ${data.selected_pollens.join(', ') || 'None'}
-                        <br><br><strong>Recommendation:</strong><br>${data.recommendation}
-                    </div>
-                `;
-            } else {
-                resultDiv.innerHTML = '<div class="sentiment-neutral">Error analyzing sentiment</div>';
-            }
-        })
-        .catch(error => {
-            document.getElementById('sentimentResult').innerHTML = '<div class="sentiment-neutral">Error analyzing sentiment</div>';
         });
-    });
+    }
+    
+    // Update allergies when checkboxes change (only if user is authenticated)
+    if (window.userAuthenticated) {
+        document.querySelectorAll('input[name="pollens"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const allergies = Array.from(document.querySelectorAll('input[name="pollens"]:checked')).map(cb => cb.value);
+                
+                const formData = new FormData();
+                allergies.forEach(allergy => formData.append('allergies', allergy));
+                
+                fetch('/api/allergies/', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || ''
+                    }
+                })
+                .catch(error => console.error('Error updating allergies:', error));
+            });
+        });
+    }
+    
+    const feelingForm = document.getElementById('feelingForm');
+    if (feelingForm) {
+        feelingForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const feelingText = document.getElementById('feelingText').value;
+            const selectedPollens = Array.from(document.querySelectorAll('input[name="pollens"]:checked')).map(cb => cb.value);
+            
+            if (!feelingText.trim()) {
+                alert('Please describe how you feel today.');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('feeling', feelingText);
+            selectedPollens.forEach(pollen => formData.append('pollens', pollen));
+            
+            fetch('/api/sentiment/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || ''
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('sentimentResult');
+                if (data.sentiment) {
+                    const sentimentClass = data.sentiment.toLowerCase() === 'positive' ? 'sentiment-positive' : 
+                                         data.sentiment.toLowerCase() === 'negative' ? 'sentiment-negative' : 'sentiment-neutral';
+                    
+                    resultDiv.innerHTML = `
+                        <div class="${sentimentClass}">
+                            Sentiment: ${data.sentiment} (${Math.round(data.confidence * 100)}% confidence)
+                            <br>Selected allergies: ${data.selected_pollens.join(', ') || 'None'}
+                            <br><br><strong>Recommendation:</strong><br>${data.recommendation}
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = '<div class="sentiment-neutral">Error analyzing sentiment</div>';
+                }
+            })
+            .catch(error => {
+                document.getElementById('sentimentResult').innerHTML = '<div class="sentiment-neutral">Error analyzing sentiment</div>';
+            });
+        });
+    }
 });
