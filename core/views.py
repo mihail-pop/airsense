@@ -73,10 +73,10 @@ def get_pollen_data(request):
     except:
         return JsonResponse({'error': 'Failed to fetch pollen data'})
 
-def get_weather_data(request):
-    lat = request.GET.get('lat')
-    lon = request.GET.get('lon')
-    date = request.GET.get('date')
+def get_weather_data(lat=None, lon=None, request=None):
+    if request:
+        lat = request.GET.get('lat')
+        lon = request.GET.get('lon')
     
     if not lat or not lon:
         if request:
