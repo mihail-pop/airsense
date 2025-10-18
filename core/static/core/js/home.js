@@ -115,6 +115,26 @@ function createDayBar() {
 
 let currentPollenData = pollenData;
 
+function getPollenLevel(value, type) {
+    const val = value || 0;
+    if (type === 'grass') {
+        if (val >= 200) return 'pollen-very-high';
+        if (val >= 20) return 'pollen-high';
+        if (val >= 5) return 'pollen-medium';
+        return 'pollen-low';
+    } else if (type === 'weed') {
+        if (val >= 500) return 'pollen-very-high';
+        if (val >= 50) return 'pollen-high';
+        if (val >= 10) return 'pollen-medium';
+        return 'pollen-low';
+    } else { // tree
+        if (val >= 1500) return 'pollen-very-high';
+        if (val >= 90) return 'pollen-high';
+        if (val >= 15) return 'pollen-medium';
+        return 'pollen-low';
+    }
+}
+
 function updateHourlyPollen(dayIndex, data = currentPollenData) {
     if (!data.hourly) return;
     
@@ -132,18 +152,25 @@ function updateHourlyPollen(dayIndex, data = currentPollenData) {
         const time = new Date(data.hourly.time[i]);
         const hour = time.getHours();
         
+        const alder = data.hourly.alder_pollen[i] || 0;
+        const birch = data.hourly.birch_pollen[i] || 0;
+        const grass = data.hourly.grass_pollen[i] || 0;
+        const mugwort = data.hourly.mugwort_pollen[i] || 0;
+        const olive = data.hourly.olive_pollen[i] || 0;
+        const ragweed = data.hourly.ragweed_pollen[i] || 0;
+        
         const row = document.createElement('tr');
         if (isToday && hour === currentHour) {
             row.className = 'current-hour';
         }
         row.innerHTML = `
             <td>${hour}:00</td>
-            <td>${data.hourly.alder_pollen[i] || 0}</td>
-            <td>${data.hourly.birch_pollen[i] || 0}</td>
-            <td>${data.hourly.grass_pollen[i] || 0}</td>
-            <td>${data.hourly.mugwort_pollen[i] || 0}</td>
-            <td>${data.hourly.olive_pollen[i] || 0}</td>
-            <td>${data.hourly.ragweed_pollen[i] || 0}</td>
+            <td class="${getPollenLevel(alder, 'tree')}">${alder}</td>
+            <td class="${getPollenLevel(birch, 'tree')}">${birch}</td>
+            <td class="${getPollenLevel(grass, 'grass')}">${grass}</td>
+            <td class="${getPollenLevel(mugwort, 'weed')}">${mugwort}</td>
+            <td class="${getPollenLevel(olive, 'tree')}">${olive}</td>
+            <td class="${getPollenLevel(ragweed, 'weed')}">${ragweed}</td>
         `;
         container.appendChild(row);
     }

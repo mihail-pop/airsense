@@ -69,9 +69,28 @@
 }
 
 #pollen-hourly-table tr.current-hour {
-    background: #007bff;
+    border: 2px solid #007bff;
+}
+
+#pollen-hourly-table tr.current-hour td:first-child {
+    background: #007bff !important;
     color: white;
-    font-weight: bold;
+}
+
+.pollen-low {
+    background: #d4f6d4 !important;
+}
+
+.pollen-medium {
+    background: #fff3cd !important;
+}
+
+.pollen-high {
+    background: #ffd4a3 !important;
+}
+
+.pollen-very-high {
+    background: #f8d7da !important;
 }
 
 .current-weather {
