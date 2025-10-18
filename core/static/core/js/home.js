@@ -185,11 +185,7 @@ document.addEventListener('DOMContentLoaded', function() {
         updateHourlyPollen(0);
     }
     
-    document.getElementById('daySelect').addEventListener('change', function() {
-        const dayIndex = parseInt(this.value);
-        updateDailyWeather(dayIndex);
-        updateHourlyWeather(dayIndex);
-    });
+
     
     document.getElementById('pollenDaySelect').addEventListener('change', function() {
         const dayIndex = parseInt(this.value);
