@@ -640,6 +640,12 @@ h2 {
     border-radius: 5px;
 }
 
+.sentiment-info {
+    background: #e8f5e8;
+    padding: 10px;
+    border-radius: 5px;
+}
+
 .weather-info, .pollen-info, .allergies {
     background: #fff3e0;
     padding: 10px;

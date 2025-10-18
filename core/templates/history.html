@@ -24,7 +24,14 @@
                             <div class="user-feeling">
                                 <strong data-translate="Feeling:">Feeling:</strong> {{ interaction.user_input|truncatechars:60 }}
                             </div>
-                            
+
+                            {% if interaction.sentiment_label %}
+                                <div class="sentiment-info">
+                                    <strong>Sentiment:</strong>
+                                    <span>{{ interaction.sentiment_label }} ({% widthratio interaction.sentiment_confidence 1 100 %}% confidence)</span>
+                                </div>
+                            {% endif %}
+
                             {% if interaction.selected_allergies %}
                                 <div class="allergies-tags">
                                     {% for allergy in interaction.selected_allergies %}
@@ -37,12 +44,12 @@
                                 <strong data-translate="Recommendations:">Recommendations:</strong>
                                 <div class="rec-text">{{ interaction.ai_output|linebreaksbr }}</div>
                             </div>
-                            
-                            <div class="conditions">
-                                {% if interaction.weather_data %}
-                                    <span class="weather-badge">{{ interaction.weather_data.temperature_2m }}°C, {{ interaction.weather_data.relative_humidity_2m }}% humidity</span>
-                                {% endif %}
-                            </div>
+                        </div>
+                        
+                        <div class="conditions">
+                            {% if interaction.weather_data %}
+                                <span class="weather-badge">{{ interaction.weather_data.temperature_2m }}°C, {{ interaction.weather_data.relative_humidity_2m }}% humidity</span>
+                            {% endif %}
                         </div>
                     </div>
                 {% endfor %}
