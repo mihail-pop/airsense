@@ -110,6 +110,69 @@ function createDayBar() {
     }
 }
 
+let currentPollenData = pollenData;
+
+function updateHourlyPollen(dayIndex, data = currentPollenData) {
+    if (!data.hourly) return;
+    
+    const container = document.getElementById('pollen-hourly-container');
+    container.innerHTML = '';
+    
+    const startHour = dayIndex * 24;
+    const endHour = startHour + 24;
+    
+    for (let i = startHour; i < endHour && i < data.hourly.time.length; i++) {
+        const time = new Date(data.hourly.time[i]);
+        const hour = time.getHours();
+        
+        const hourItem = document.createElement('div');
+        hourItem.className = 'pollen-hour-item';
+        hourItem.innerHTML = `
+            <div class="pollen-hour-time">${hour}:00</div>
+            <div class="pollen-levels-small">
+                <div>A: ${data.hourly.alder_pollen[i] || 0}</div>
+                <div>B: ${data.hourly.birch_pollen[i] || 0}</div>
+                <div>G: ${data.hourly.grass_pollen[i] || 0}</div>
+                <div>M: ${data.hourly.mugwort_pollen[i] || 0}</div>
+                <div>O: ${data.hourly.olive_pollen[i] || 0}</div>
+                <div>R: ${data.hourly.ragweed_pollen[i] || 0}</div>
+            </div>
+        `;
+        container.appendChild(hourItem);
+    }
+}
+
+function fetchPollenForDate(date) {
+    const url = `/api/pollen/?date=${date}`;
+    
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (!data.error) {
+                currentPollenData = data;
+                updateHourlyPollen(0);
+                document.getElementById('pollenDaySelect').value = '0';
+            }
+        })
+        .catch(error => console.error('Error fetching pollen data:', error));
+}
+
+function updateDateFromDaySelector(dayIndex) {
+    const today = new Date();
+    const targetDate = new Date(today);
+    targetDate.setDate(today.getDate() + dayIndex);
+    
+    const dateString = targetDate.toISOString().split('T')[0];
+    document.getElementById('pollenDateSelect').value = dateString;
+    
+    if (dayIndex === 0) {
+        currentPollenData = pollenData;
+        updateHourlyPollen(0);
+    } else {
+        fetchPollenForDate(dateString);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     if (weatherData) {
         updateCurrentWeather();
@@ -118,6 +181,28 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     createDayBar();
+    if (pollenData) {
+        updateHourlyPollen(0);
+    }
+    
+    document.getElementById('daySelect').addEventListener('change', function() {
+        const dayIndex = parseInt(this.value);
+        updateDailyWeather(dayIndex);
+        updateHourlyWeather(dayIndex);
+    });
+    
+    document.getElementById('pollenDaySelect').addEventListener('change', function() {
+        const dayIndex = parseInt(this.value);
+        updateDateFromDaySelector(dayIndex);
+    });
+    
+    document.getElementById('pollenDateSelect').addEventListener('change', function() {
+        const selectedDate = this.value;
+        if (selectedDate) {
+            fetchPollenForDate(selectedDate);
+            document.getElementById('pollenDaySelect').value = '0';
+        }
+    });
     
     document.getElementById('feelingForm').addEventListener('submit', function(e) {
         e.preventDefault();
@@ -152,6 +237,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="${sentimentClass}">
                         Sentiment: ${data.sentiment} (${Math.round(data.confidence * 100)}% confidence)
                         <br>Selected allergies: ${data.selected_pollens.join(', ') || 'None'}
+                        <br><br><strong>Recommendation:</strong><br>${data.recommendation}
                     </div>
                 `;
             } else {
