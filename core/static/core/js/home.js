@@ -125,24 +125,21 @@ function updateHourlyPollen(dayIndex, data = currentPollenData) {
         const time = new Date(data.hourly.time[i]);
         const hour = time.getHours();
         
-        const hourItem = document.createElement('div');
-        hourItem.className = 'pollen-hour-item';
-        hourItem.innerHTML = `
-            <div class="pollen-hour-time">${hour}:00</div>
-            <div class="pollen-levels-small">
-                <div>A: ${data.hourly.alder_pollen[i] || 0}</div>
-                <div>B: ${data.hourly.birch_pollen[i] || 0}</div>
-                <div>G: ${data.hourly.grass_pollen[i] || 0}</div>
-                <div>M: ${data.hourly.mugwort_pollen[i] || 0}</div>
-                <div>O: ${data.hourly.olive_pollen[i] || 0}</div>
-                <div>R: ${data.hourly.ragweed_pollen[i] || 0}</div>
-            </div>
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${hour}:00</td>
+            <td>${data.hourly.alder_pollen[i] || 0}</td>
+            <td>${data.hourly.birch_pollen[i] || 0}</td>
+            <td>${data.hourly.grass_pollen[i] || 0}</td>
+            <td>${data.hourly.mugwort_pollen[i] || 0}</td>
+            <td>${data.hourly.olive_pollen[i] || 0}</td>
+            <td>${data.hourly.ragweed_pollen[i] || 0}</td>
         `;
-        container.appendChild(hourItem);
+        container.appendChild(row);
     }
 }
 
-function fetchPollenForDate(date) {
+function fetchPollenForDate(date, dayIndex = 0) {
     const url = `/api/pollen/?date=${date}`;
     
     fetch(url)
@@ -150,8 +147,7 @@ function fetchPollenForDate(date) {
         .then(data => {
             if (!data.error) {
                 currentPollenData = data;
-                updateHourlyPollen(0);
-                document.getElementById('pollenDaySelect').value = '0';
+                updateHourlyPollen(dayIndex);
             }
         })
         .catch(error => console.error('Error fetching pollen data:', error));
@@ -169,7 +165,7 @@ function updateDateFromDaySelector(dayIndex) {
         currentPollenData = pollenData;
         updateHourlyPollen(0);
     } else {
-        fetchPollenForDate(dateString);
+        fetchPollenForDate(dateString, 0);
     }
 }
 
@@ -185,6 +181,10 @@ document.addEventListener('DOMContentLoaded', function() {
         updateHourlyPollen(0);
     }
     
+    // Initialize date picker with today's date
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('pollenDateSelect').value = today;
+    
 
     
     document.getElementById('pollenDaySelect').addEventListener('change', function() {
@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('pollenDateSelect').addEventListener('change', function() {
         const selectedDate = this.value;
         if (selectedDate) {
-            fetchPollenForDate(selectedDate);
+            fetchPollenForDate(selectedDate, 0);
             document.getElementById('pollenDaySelect').value = '0';
         }
     });
