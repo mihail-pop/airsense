@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}AirSense{% endblock %}</title>
+    <link rel="stylesheet" href="/static/core/css/home.css">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-left">
+            <a href="/" class="home-link">AirSense</a>
+        </div>
+        <div class="header-right">
+            {% if user.is_authenticated %}
+                <a href="/history/">History</a>
+                <a href="/profile/">{{ user.full_name }}</a>
+                <a href="/logout/">Logout</a>
+            {% else %}
+                <a href="/register/">Register</a>
+                <a href="/login/">Login</a>
+            {% endif %}
+        </div>
+    </header>
+    
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Register - AirSense</title>
-    <link rel="stylesheet" href="/static/core/css/home.css">
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}Register - AirSense{% endblock %}
+
+{% block content %}
     <div class="container">
         <h1>Register for AirSense</h1>
         
@@ -33,8 +31,12 @@
             </div>
             
             <div class="form-group">
-                <label>Age:</label>
-                {{ form.age }}
+                <label>Date of Birth:</label>
+                <div style="display: flex; gap: 10px;">
+                    {{ form.birth_day }}
+                    {{ form.birth_month }}
+                    {{ form.birth_year }}
+                </div>
             </div>
             
             <div class="form-group">
@@ -63,5 +65,4 @@
             <a href="/login/">Already have an account? Login</a>
         </form>
     </div>
-</body>
-</html>
+{% endblock %}

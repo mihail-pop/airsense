@@ -1,22 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>AirSense - Weather & Pollen Tracker</title>
-    <link rel="stylesheet" href="/static/core/css/home.css">
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}AirSense - Weather & Pollen Tracker{% endblock %}
+
+{% block content %}
     <div class="container">
-        <div class="nav-links">
-            {% if user.is_authenticated %}
-                <span class="user-status">✓ Logged in as {{ user.full_name }}</span>
-                <a href="/profile/">Profile</a>
-                <a href="/logout/">Logout</a>
-            {% else %}
-                <span class="user-status">Not logged in</span>
-                <a href="/login/">Login</a>
-                <a href="/register/">Register</a>
-            {% endif %}
-        </div>
         <h1>AirSense</h1>
         <p>Weather & Pollen Tracker</p>
         
@@ -106,7 +93,9 @@
             <div id="sentimentResult"></div>
         </div>
     </div>
-    
+{% endblock %}
+
+{% block extra_js %}
     <script>
         const weatherData = {{ weather_data|safe }};
         const pollenData = {{ pollen_data|safe }};
@@ -162,5 +151,4 @@
         }
     </script>
     <script src="/static/core/js/home.js"></script>
-</body>
-</html>
+{% endblock %}

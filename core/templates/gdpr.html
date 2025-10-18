@@ -1,19 +1,15 @@
-<!DOCTYPE html>
-<html lang="ro">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Politica de Confidențialitate AirSense</title>
-    <!-- Load Tailwind CSS -->
+{% extends 'base.html' %}
+
+{% block title %}Politica de Confidențialitate AirSense{% endblock %}
+
+{% block extra_css %}
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom font import and fallback settings */
         body {
             font-family: 'Inter', sans-serif;
-            color: #1f2937; /* Dark gray text */
-            background-color: #f9fafb; /* Light background */
+            color: #1f2937;
+            background-color: #f9fafb;
         }
-        /* Style for the table within the policy */
         .policy-table th, .policy-table td {
             padding: 12px;
             text-align: left;
@@ -23,10 +19,9 @@
             background-color: #f3f4f6;
             font-weight: 600;
         }
-        /* Mobile adjustment for table */
         @media (max-width: 768px) {
             .policy-table thead {
-                display: none; /* Hide table headers on mobile */
+                display: none;
             }
             .policy-table, .policy-table tbody, .policy-table tr, .policy-table td {
                 display: block;
@@ -43,7 +38,6 @@
                 padding-left: 50%;
             }
             .policy-table td::before {
-                /* Create pseudo-elements for headings */
                 content: attr(data-label);
                 position: absolute;
                 left: 0;
@@ -55,8 +49,10 @@
             }
         }
     </style>
-</head>
-<body class="p-4 sm:p-8">
+{% endblock %}
+
+{% block content %}
+<div class="p-4 sm:p-8">
     <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-xl p-6 md:p-10 lg:p-12">
 
         <!-- Header and Introduction -->
@@ -210,9 +206,9 @@
         </p>
         <div class="bg-gray-100 p-4 rounded-lg border border-gray-300">
             <h3 class="text-xl font-bold text-gray-800 mb-2">Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter Personal (ANSPDCP)</h3>
-            <p class="text-gray-700">**Adresă:** B-dul G-ral. Gheorghe Magheru nr. 28-30, Sector 1, cod poștal 010336, București, România</p>
-            <p class="text-gray-700">**Telefon:** +40.318.059.211 / +40.318.059.212</p>
-            <p class="text-gray-700">**E-mail:** anspdcp@dataprotection.ro</p>
+            <p class="text-gray-700"><strong>Adresă:</strong> B-dul G-ral. Gheorghe Magheru nr. 28-30, Sector 1, cod poștal 010336, București, România</p>
+            <p class="text-gray-700"><strong>Telefon:</strong> +40.318.059.211 / +40.318.059.212</p>
+            <p class="text-gray-700"><strong>E-mail:</strong> anspdcp@dataprotection.ro</p>
             <p class="text-gray-700"><strong>Web:</strong> <a href="http://www.dataprotection.ro" target="_blank" class="text-blue-500 hover:underline">www.dataprotection.ro</a></p>
         </div>
 
@@ -224,5 +220,5 @@
         </div>
 
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

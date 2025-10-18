@@ -318,12 +318,28 @@ def profile_view(request):
             messages.success(request, 'Account deleted successfully')
             return redirect('/register/')
         
+        elif action == 'delete_data':
+            UserInteraction.objects.filter(user=request.user).delete()
+            messages.success(request, 'AI interaction history deleted successfully')
+            return render(request, 'profile.html')
+        
         elif action == 'update':
             # Update user fields
             request.user.username = request.POST.get('username')
             request.user.email = request.POST.get('email')
             request.user.full_name = request.POST.get('full_name')
-            request.user.age = request.POST.get('age') or None
+            # Handle date of birth
+            day = request.POST.get('birth_day')
+            month = request.POST.get('birth_month')
+            year = request.POST.get('birth_year')
+            if day and month and year:
+                from datetime import date
+                try:
+                    request.user.date_of_birth = date(int(year), int(month), int(day))
+                except ValueError:
+                    request.user.date_of_birth = None
+            else:
+                request.user.date_of_birth = None
             request.user.allergies = request.POST.getlist('allergies')
             
             # Update password if provided
@@ -352,3 +368,10 @@ def update_allergies(request):
         request.user.save()
         return JsonResponse({'success': True})
     return JsonResponse({'error': 'Invalid request'})
+
+def history_view(request):
+    if not request.user.is_authenticated:
+        return redirect('/login/')
+    
+    interactions = UserInteraction.objects.filter(user=request.user).order_by('-timestamp')
+    return render(request, 'history.html', {'interactions': interactions})

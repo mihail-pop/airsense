@@ -5,7 +5,14 @@ from .models import User
 class RegisterForm(UserCreationForm):
     email = forms.EmailField(required=True)
     full_name = forms.CharField(max_length=255, required=True)
-    age = forms.IntegerField(required=False, min_value=1, max_value=120)
+    birth_day = forms.IntegerField(required=False, min_value=1, max_value=31)
+    birth_month = forms.ChoiceField(required=False, choices=[
+        ('', '---'),
+        (1, 'January'), (2, 'February'), (3, 'March'), (4, 'April'),
+        (5, 'May'), (6, 'June'), (7, 'July'), (8, 'August'),
+        (9, 'September'), (10, 'October'), (11, 'November'), (12, 'December')
+    ])
+    birth_year = forms.IntegerField(required=False, min_value=1900, max_value=2500)
     allergies = forms.MultipleChoiceField(
         choices=[
             ('alder', 'Alder Pollen'),
@@ -22,13 +29,24 @@ class RegisterForm(UserCreationForm):
     
     class Meta:
         model = User
-        fields = ('username', 'email', 'full_name', 'age', 'allergies', 'password1', 'password2', 'gdpr_consent')
+        fields = ('username', 'email', 'full_name', 'birth_day', 'birth_month', 'birth_year', 'allergies', 'password1', 'password2', 'gdpr_consent')
     
     def save(self, commit=True):
         user = super().save(commit=False)
         user.email = self.cleaned_data['email']
         user.full_name = self.cleaned_data['full_name']
-        user.age = self.cleaned_data['age']
+        # Combine date fields
+        day = self.cleaned_data.get('birth_day')
+        month = self.cleaned_data.get('birth_month')
+        year = self.cleaned_data.get('birth_year')
+        if day and month and year:
+            from datetime import date
+            try:
+                user.date_of_birth = date(int(year), int(month), int(day))
+            except ValueError:
+                user.date_of_birth = None
+        else:
+            user.date_of_birth = None
         user.allergies = self.cleaned_data['allergies']
         user.gdpr_consent = self.cleaned_data['gdpr_consent']
         if commit:
