@@ -627,11 +627,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 const sentimentClass = data.sentiment.toLowerCase() === 'positive' ? 'sentiment-positive' : 
                                      data.sentiment.toLowerCase() === 'negative' ? 'sentiment-negative' : 'sentiment-neutral';
                 
+                let recommendationsHtml = '';
+                if (data.recommendations && data.recommendations.length > 0) {
+                    recommendationsHtml = data.recommendations.map(rec => `<p>${rec}</p>`).join('');
+                } else {
+                    recommendationsHtml = '<p>No recommendations available</p>';
+                }
+                
                 resultDiv.innerHTML = `
-                    <div class="${sentimentClass}">
+                    <div>
                         Sentiment: ${data.sentiment} (${Math.round(data.confidence * 100)}% confidence)
-                        <br>Selected allergies: ${data.selected_pollens.join(', ') || 'None'}
-                        <br><br><strong>Recommendation:</strong><br>${data.recommendation}
+                        <br><br><strong>Recommendations:</strong><br>${recommendationsHtml}
                     </div>
                 `;
             } else {
@@ -644,11 +650,20 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     
-    // Update allergies when checkboxes change (only if user is authenticated)
-    if (window.userAuthenticated) {
-        document.querySelectorAll('input[name="pollens"]').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                const allergies = Array.from(document.querySelectorAll('input[name="pollens"]:checked')).map(cb => cb.value);
+    // Prevent unchecking the last pollen option and update allergies
+    document.querySelectorAll('input[name="pollens"]').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const checkedBoxes = document.querySelectorAll('input[name="pollens"]:checked');
+            
+            // If trying to uncheck and it's the last one, prevent it
+            if (!this.checked && checkedBoxes.length === 0) {
+                this.checked = true;
+                return;
+            }
+            
+            // Update allergies if user is authenticated
+            if (window.userAuthenticated) {
+                const allergies = Array.from(checkedBoxes).map(cb => cb.value);
                 
                 const formData = new FormData();
                 allergies.forEach(allergy => formData.append('allergies', allergy));
@@ -661,55 +676,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 })
                 .catch(error => console.error('Error updating allergies:', error));
-            });
-        });
-    }
-    
-    const feelingForm = document.getElementById('feelingForm');
-    if (feelingForm) {
-        feelingForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const feelingText = document.getElementById('feelingText').value;
-            const selectedPollens = Array.from(document.querySelectorAll('input[name="pollens"]:checked')).map(cb => cb.value);
-            
-            if (!feelingText.trim()) {
-                alert('Please describe how you feel today.');
-                return;
             }
-            
-            const formData = new FormData();
-            formData.append('feeling', feelingText);
-            selectedPollens.forEach(pollen => formData.append('pollens', pollen));
-            
-            fetch('/api/sentiment/', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || ''
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                const resultDiv = document.getElementById('sentimentResult');
-                if (data.sentiment) {
-                    const sentimentClass = data.sentiment.toLowerCase() === 'positive' ? 'sentiment-positive' : 
-                                         data.sentiment.toLowerCase() === 'negative' ? 'sentiment-negative' : 'sentiment-neutral';
-                    
-                    resultDiv.innerHTML = `
-                        <div class="${sentimentClass}">
-                            Sentiment: ${data.sentiment} (${Math.round(data.confidence * 100)}% confidence)
-                            <br>Selected allergies: ${data.selected_pollens.join(', ') || 'None'}
-                            <br><br><strong>Recommendation:</strong><br>${data.recommendation}
-                        </div>
-                    `;
-                } else {
-                    resultDiv.innerHTML = '<div class="sentiment-neutral">Error analyzing sentiment</div>';
-                }
-            })
-            .catch(error => {
-                document.getElementById('sentimentResult').innerHTML = '<div class="sentiment-neutral">Error analyzing sentiment</div>';
-            });
         });
-    }
+    });
+    
+
 });

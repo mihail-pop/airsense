@@ -40,6 +40,8 @@ class Command(BaseCommand):
                     
             except Exception as e:
                 self.stdout.write(f"Error sending notification to {user.email}: {e}")
+        
+        self.stdout.write(f"Processed {users.count()} users with notification preferences")
 
     def get_pollen_forecast(self, lat, lon):
         url = f'https://air-quality-api.open-meteo.com/v1/air-quality?latitude={lat}&longitude={lon}&hourly=alder_pollen,birch_pollen,grass_pollen,mugwort_pollen,olive_pollen,ragweed_pollen&forecast_hours=6'
@@ -49,9 +51,32 @@ class Command(BaseCommand):
         except:
             return {}
 
+    def get_pollen_level_text(self, value, pollen_type):
+        """Convert pollen value to text level matching home page"""
+        val = value or 0
+        if val == 0:
+            return 'Clean'
+        
+        # Determine pollen category
+        if pollen_type == 'grass':
+            if val >= 200: return 'Very High'
+            if val >= 20: return 'High'
+            if val >= 5: return 'Medium'
+            return 'Low'
+        elif pollen_type in ['mugwort', 'ragweed']:
+            if val >= 500: return 'Very High'
+            if val >= 50: return 'High'
+            if val >= 10: return 'Medium'
+            return 'Low'
+        else:  # tree pollens (alder, birch, olive)
+            if val >= 1500: return 'Very High'
+            if val >= 90: return 'High'
+            if val >= 15: return 'Medium'
+            return 'Low'
+
     def analyze_pollen_data(self, pollen_data, user_allergies):
         if not pollen_data.get('hourly'):
-            return {'max_levels': {}, 'user_alerts': []}
+            return {'max_levels': {}, 'user_alerts': [], 'highest_level': 'Clean'}
         
         hourly = pollen_data['hourly']
         pollen_types = ['alder_pollen', 'birch_pollen', 'grass_pollen', 'mugwort_pollen', 'olive_pollen', 'ragweed_pollen']
@@ -63,15 +88,29 @@ class Command(BaseCommand):
         
         # Check user allergies
         user_alerts = []
+        highest_level = 'Clean'
         for allergy in user_allergies:
             pollen_key = f"{allergy}_pollen"
-            if pollen_key in max_levels and max_levels[pollen_key] > 10:
-                user_alerts.append({
-                    'type': allergy.title(),
-                    'level': max_levels[pollen_key]
-                })
+            if pollen_key in max_levels:
+                level_text = self.get_pollen_level_text(max_levels[pollen_key], allergy)
+                # Alert for any level above Clean
+                if level_text != 'Clean':
+                    user_alerts.append({
+                        'type': allergy.title(),
+                        'level': max_levels[pollen_key],
+                        'level_text': level_text
+                    })
+                    # Track highest level
+                    if level_text == 'Very High':
+                        highest_level = 'Very High'
+                    elif level_text == 'High' and highest_level not in ['Very High']:
+                        highest_level = 'High'
+                    elif level_text == 'Medium' and highest_level not in ['Very High', 'High']:
+                        highest_level = 'Medium'
+                    elif level_text == 'Low' and highest_level == 'Clean':
+                        highest_level = 'Low'
         
-        return {'max_levels': max_levels, 'user_alerts': user_alerts}
+        return {'max_levels': max_levels, 'user_alerts': user_alerts, 'highest_level': highest_level}
 
     def create_notification_message(self, analysis, user_name):
         message = f"Hello {user_name}!\n\nPollen Forecast for the next 6 hours:\n\n"
@@ -81,17 +120,29 @@ class Command(BaseCommand):
             message += "Highest pollen levels:\n"
             for pollen_type, level in analysis['max_levels'].items():
                 clean_name = pollen_type.replace('_pollen', '').title()
-                message += f"• {clean_name}: {level}\n"
+                pollen_name = pollen_type.replace('_pollen', '')
+                level_text = self.get_pollen_level_text(level, pollen_name)
+                message += f"• {clean_name}: {level_text} ({level} grains/m³)\n"
         
-        # Add user-specific alerts
+        # Add user-specific alerts with custom message based on highest level
         if analysis['user_alerts']:
             message += f"\n⚠️ ALLERGY ALERTS for your selected allergies:\n"
             for alert in analysis['user_alerts']:
-                message += f"• {alert['type']}: {alert['level']} (HIGH)\n"
+                message += f"• {alert['type']}: {alert['level_text']} ({alert['level']} grains/m³)\n"
+            
+            # Custom message based on highest level
+            highest = analysis['highest_level']
+            if highest == 'Very High':
+                message += "\n🔴 VERY HIGH LEVELS: Stay indoors, keep windows closed, consider medication."
+            elif highest == 'High':
+                message += "\n🟠 HIGH LEVELS: Limit outdoor activities, take precautions if going out."
+            elif highest == 'Medium':
+                message += "\n🟡 MEDIUM LEVELS: Be cautious outdoors, monitor symptoms."
+            elif highest == 'Low':
+                message += "\n🟢 LOW LEVELS: Generally safe, but sensitive individuals should be aware."
         else:
-            message += "\n✅ No high levels detected for your allergies.\n"
+            message += "\n✅ Clean air - no pollen detected for your allergies."
         
-        message += "\nStay safe and take necessary precautions!"
         return message
 
     def send_email_notification(self, email, message):
