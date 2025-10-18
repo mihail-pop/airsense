@@ -145,49 +145,82 @@ def pollen_data_rec(lat=None, lon=None, request=None):
             return JsonResponse({'error': 'Failed to fetch pollen data'})
         return None
 
-def make_recommendation(weather_code, pollen_levels, sentiment, selected_pollens):
+def make_recommendation(weather_data, pollen_levels, sentiment, selected_pollens):
     # Weather conditions
     rainy_codes = [51, 53, 55, 61, 63, 65]
     sunny_codes = [0, 1]
     windy_codes = [2, 3]
     
-    is_rainy = weather_code in rainy_codes
-    is_sunny = weather_code in sunny_codes
-    is_windy = weather_code in windy_codes
+    # Check weather for the rest of the day (next 12 hours)
+    will_rain = False
+    is_sunny = False
+    is_windy = False
     
-    # Calculate average pollen level for selected allergies
+    if weather_data and 'hourly' in weather_data:
+        # Check next 12 hours for weather patterns
+        for i in range(min(12, len(weather_data['hourly']['weather_code']))):
+            code = weather_data['hourly']['weather_code'][i]
+            if code in rainy_codes:
+                will_rain = True
+            if code in sunny_codes:
+                is_sunny = True
+            if code in windy_codes:
+                is_windy = True
+    
+    # Calculate average pollen level for selected allergies for the day
     total_pollen = 0
     pollen_count = 0
+    
     for pollen in selected_pollens:
         pollen_key = f"{pollen}_pollen"
         if pollen_key in pollen_levels and pollen_levels[pollen_key]:
-            total_pollen += pollen_levels[pollen_key][0] or 0
-            pollen_count += 1
+            # Calculate average for the day (all 24 hours)
+            daily_values = [val for val in pollen_levels[pollen_key] if val is not None]
+            if daily_values:
+                avg_for_pollen = sum(daily_values) / len(daily_values)
+                total_pollen += avg_for_pollen
+                pollen_count += 1
     
     avg_pollen = total_pollen / pollen_count if pollen_count > 0 else 0
     
     # Pollen level categories
-    pollen_low = avg_pollen < 10
-    pollen_medium = 10 <= avg_pollen < 50
-    pollen_high = avg_pollen >= 50
+    pollen_low = avg_pollen < 21
+    pollen_medium = 21 <= avg_pollen < 51
+    pollen_high = avg_pollen >= 51
+    
+    # Debug print
+    print(f"DEBUG: sentiment={sentiment}, avg_pollen={avg_pollen}")
+    print(f"DEBUG: will_rain={will_rain}, is_sunny={is_sunny}, is_windy={is_windy}")
+    print(f"DEBUG: pollen_low={pollen_low}, pollen_medium={pollen_medium}, pollen_high={pollen_high}")
     
     # Generate recommendations
-    if sentiment == 'POSITIVE' and is_rainy and pollen_low:
-        return "You're feeling great and conditions are perfect! Rain keeps pollen low. Keep windows open and enjoy the fresh air."
-    elif sentiment == 'POSITIVE' and is_sunny and pollen_low:
-        return "Great day ahead! Low pollen levels and sunny weather. Perfect for outdoor activities without allergy concerns."
-    elif sentiment == 'NEGATIVE' and pollen_high:
-        return "You're not feeling well and pollen levels are high. Stay indoors, keep windows closed, and consider taking allergy medication."
-    elif sentiment == 'NEGATIVE' and is_rainy:
-        return "You're feeling unwell but rain should help reduce pollen. Rest indoors and let the weather work in your favor."
-    elif pollen_high and is_sunny:
-        return "High pollen levels with sunny weather. Limit outdoor exposure, wear sunglasses, and take preventive allergy medication."
-    elif pollen_medium and is_windy:
-        return "Moderate pollen with windy conditions may spread allergens. Consider staying indoors or wearing a mask if going out."
-    elif pollen_low:
-        return "Low pollen levels today! Good conditions for outdoor activities. Keep monitoring your symptoms."
-    else:
-        return "Mixed conditions today. Monitor your symptoms and adjust activities accordingly. Stay prepared with allergy medication."
+    if sentiment == 'POSITIVE':
+        if pollen_high:
+            tip = "You are feeling well today, but there are high level of pollen today in the air, take precautions."
+        elif pollen_medium:
+            tip = "You are feeling well today, but there are moderate levels of pollen today in the air, take precautions."
+        else:  # low
+            tip = "Low levels of pollen today and you are feeling well, there should be no issues today!"
+
+    elif sentiment == 'NEGATIVE':
+        if pollen_high:
+            tip = "Feeling unwell and high pollen today. Avoid going outside and take medication if needed."
+        elif pollen_medium:
+            tip = "Feeling unwell and moderate pollen today. Avoid going outside and take care."
+        else:  # low
+            tip = "Feeling unwell but pollen is low. Should be safe outside and symptoms should get better."
+
+    # Optional: fine-tune based on weather
+    if is_windy and pollen_medium or pollen_high:
+        tip += " Windy conditions may spread pollen, keep your windows closed."
+
+    if will_rain and pollen_high or pollen_medium:
+        tip += " Rain will help reduce pollen exposure."
+
+    if is_sunny and pollen_high or pollen_medium:
+        tip += " It will be sunny today, keep your windows closed."
+
+    return tip
 
 def analyze_sentiment(feeling_text):
     sentiment = pipeline("sentiment-analysis", model="distilbert/distilbert-base-uncased-finetuned-sst-2-english")
@@ -210,14 +243,13 @@ def get_rec_data(request):
                 
                 # Get weather data
                 weather_data = get_weather_data(lat, lon)
-                weather_code = weather_data.get('current', {}).get('weather_code', 0) if weather_data else 0
                 
                 # Get pollen data
                 pollen_data = pollen_data_rec(lat, lon)
                 pollen_levels = pollen_data.get('hourly', {}) if pollen_data else {}
                 
                 # Generate recommendation
-                recommendation = make_recommendation(weather_code, pollen_levels, sentiment_label, selected_pollens)
+                recommendation = make_recommendation(weather_data, pollen_levels, sentiment_label, selected_pollens)
                 
                 return JsonResponse({
                     'sentiment': sentiment_label,
