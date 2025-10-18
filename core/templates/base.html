@@ -12,6 +12,7 @@
             <a href="/" class="home-link">AirSense</a>
         </div>
         <div class="header-right">
+            <button id="langToggle" class="lang-toggle">RO</button>
             {% if user.is_authenticated %}
                 <a href="/history/">History</a>
                 <a href="/profile/">{{ user.full_name }}</a>
@@ -33,6 +34,7 @@
         </div>
     </footer>
     
+    <script src="/static/core/js/translations.js"></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>
