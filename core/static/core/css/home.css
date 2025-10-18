@@ -770,6 +770,16 @@ main {
     line-height: 1.4;
 }
 
+.sentiment-info {
+    margin-bottom: 15px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.9em;
+    background: #e8f5e8;
+    color: #2e7d32;
+    border-left: 3px solid #4caf50;
+}
+
 .allergies-tags {
     margin-bottom: 15px;
     display: flex;
@@ -786,6 +796,20 @@ main {
     font-weight: 500;
 }
 
+.tips-section {
+    margin-bottom: 15px;
+    background: #e8f4fd;
+    border-left: 4px solid #007bff;
+    border-radius: 5px;
+    padding: 15px;
+}
+
+.tips-text {
+    font-size: 0.9em;
+    line-height: 1.4;
+    color: #333;
+}
+
 .recommendations {
     margin-bottom: 15px;
 }
@@ -798,6 +822,22 @@ main {
     font-size: 0.9em;
     line-height: 1.4;
     color: #555;
+}
+
+.expand-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background 0.3s;
+}
+
+.expand-btn:hover {
+    background: #0056b3;
 }
 
 .conditions {

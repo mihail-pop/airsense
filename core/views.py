@@ -296,6 +296,38 @@ def get_alert_level(sentiment, risk_analysis):
             ]
         }
 
+def create_short_analysis(risk_analysis):
+    """Create shortened analysis showing just avg and peak times with values"""
+    if not risk_analysis:
+        return ""
+    
+    short_lines = []
+    for pollen, data in risk_analysis.items():
+        today = data['today']
+        short_lines.append(f"{pollen.capitalize()}: avg ({today['avg']}), peak ({today['peak_value']}) {today['peak_time']}")
+    
+    return "\n".join(short_lines)
+
+def create_short_recommendations(recommendations):
+    """Create ultra-short version of recommendations"""
+    if not recommendations:
+        return ""
+    
+    short_recs = []
+    for rec in recommendations:
+        if ":" in rec:
+            pollen = rec.split(":")[0]
+            text = rec.split(":")[1].lower()
+            
+            # Extract key info
+            level = "High" if "high" in text else "Medium" if "moderate" in text else "Low"
+            feeling = "Feeling well" if "feeling well" in text else "Feeling unwell"
+            outcome = "No issues" if "no issues" in text else "Take precautions" if "precautions" in text else "Avoid outside"
+            
+            short_recs.append(f"{pollen}: {level} levels + {feeling} => {outcome}")
+    
+    return "\n".join(short_recs)
+
 def calculate_risk_analysis(pollen_data, selected_pollens):
     if not pollen_data or 'hourly' not in pollen_data:
         return {}
@@ -453,11 +485,43 @@ def get_rec_data(request):
                                 'ragweed_pollen': hourly.get('ragweed_pollen', [None])[current_hour]
                             }
                     
+                    # Format tips from alert_level
+                    tips_text = ''
+                    if alert_level and alert_level.get('tips'):
+                        tips_text = f"{alert_level['icon']} {alert_level['title']}\n\nTips:\n" + '\n'.join([f"• {tip}" for tip in alert_level['tips']])
+                    
+                    # Format analysis and recommendations together (full version)
+                    combined_output = []
+                    
+                    # Add risk analysis if available
+                    if risk_analysis and len(risk_analysis) > 0:
+                        combined_output.append("Analysis & Recommendations:")
+                        for pollen in risk_analysis:
+                            analysis = risk_analysis[pollen]
+                            pollen_name = pollen.capitalize()
+                            analysis_text = f"{pollen_name} Pollen Analysis:\n"
+                            analysis_text += f"Today: {analysis['today']['risk']} risk (avg: {analysis['today']['avg']}), Peak at {analysis['today']['peak_time']} ({analysis['today']['peak_value']})\n"
+                            analysis_text += f"Tomorrow: {analysis['tomorrow']['risk']} risk (avg: {analysis['tomorrow']['avg']}), Peak at {analysis['tomorrow']['peak_time']} ({analysis['tomorrow']['peak_value']})"
+                            combined_output.append(analysis_text)
+                    
+                    # Add recommendations
+                    if recommendations:
+                        if not risk_analysis:
+                            combined_output.append("Recommendations:")
+                        combined_output.extend(recommendations)
+                    
+                    # Create shortened versions for compact display
+                    short_analysis = create_short_analysis(risk_analysis)
+                    short_recs = create_short_recommendations(recommendations)
+                    short_combined = f"Analysis:\n{short_analysis}\n\nRecommendations:\n{short_recs}" if short_analysis and short_recs else (short_analysis or short_recs)
+                    
                     UserInteraction.objects.create(
                         user=request.user,
                         user_input=feeling_text,
                         selected_allergies=selected_pollens,
-                        ai_output='\n\n'.join(recommendations),
+                        ai_output='\n\n'.join(combined_output),
+                        short_summary=short_combined,
+                        tips=tips_text,
                         sentiment_label=sentiment_label,
                         sentiment_confidence=sentiment_score,
                         weather_data=current_weather,

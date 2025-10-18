@@ -23,6 +23,8 @@ class UserInteraction(models.Model):
     user_input = models.TextField()
     selected_allergies = models.JSONField(default=list)
     ai_output = models.TextField()
+    short_summary = models.TextField(blank=True, null=True)
+    tips = models.TextField(blank=True, null=True)
     sentiment_label = models.CharField(max_length=20, null=True, blank=True)
     sentiment_confidence = models.FloatField(null=True, blank=True)
     weather_data = models.JSONField()

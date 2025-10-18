@@ -5,6 +5,23 @@
 
 {% block extra_js %}
     <script src="/static/core/js/translations.js"></script>
+    <script>
+        function toggleSummary(btn) {
+            const card = btn.closest('.history-card');
+            const shortSummary = card.querySelector('.short-summary');
+            const fullSummary = card.querySelector('.full-summary');
+            
+            if (shortSummary.style.display === 'none') {
+                shortSummary.style.display = 'block';
+                fullSummary.style.display = 'none';
+                btn.textContent = 'Show Details';
+            } else {
+                shortSummary.style.display = 'none';
+                fullSummary.style.display = 'block';
+                btn.textContent = 'Show Less';
+            }
+        }
+    </script>
 {% endblock %}
 
 {% block content %}
@@ -40,9 +57,21 @@
                                 </div>
                             {% endif %}
                             
+                            {% if interaction.tips %}
+                                <div class="tips-section">
+                                    <div class="tips-text">{{ interaction.tips|linebreaksbr }}</div>
+                                </div>
+                            {% endif %}
+                            
                             <div class="recommendations">
-                                <strong data-translate="Recommendations:">Recommendations:</strong>
-                                <div class="rec-text">{{ interaction.ai_output|linebreaksbr }}</div>
+                                <strong data-translate="Analysis & Recommendations:">Analysis & Recommendations:</strong>
+                                {% if interaction.short_summary %}
+                                    <div class="rec-text short-summary">{{ interaction.short_summary|linebreaksbr }}</div>
+                                    <div class="rec-text full-summary" style="display: none;">{{ interaction.ai_output|linebreaksbr }}</div>
+                                    <button class="expand-btn" onclick="toggleSummary(this)">Show Details</button>
+                                {% else %}
+                                    <div class="rec-text">{{ interaction.ai_output|linebreaksbr }}</div>
+                                {% endif %}
                             </div>
                         </div>
                         
