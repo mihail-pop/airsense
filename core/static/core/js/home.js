@@ -1,32 +1,44 @@
 const weatherCodes = {
-    0: 'Clear sky',
-    1: 'Mainly clear',
-    2: 'Partly cloudy',
-    3: 'Overcast',
-    45: 'Fog',
-    48: 'Depositing rime fog',
-    51: 'Light drizzle',
-    53: 'Moderate drizzle',
-    55: 'Dense drizzle',
-    61: 'Slight rain',
-    63: 'Moderate rain',
-    65: 'Heavy rain',
-    71: 'Slight snow',
-    73: 'Moderate snow',
-    75: 'Heavy snow',
-    95: 'Thunderstorm'
+    0: '<img src="/static/core/icons/clear_sky.png" class="weather-icon"> Clear sky',
+    1: '<img src="/static/core/icons/mainly_clear.png" class="weather-icon"> Mainly clear',
+    2: '<img src="/static/core/icons/partly_cloudy.png" class="weather-icon"> Partly cloudy',
+    3: '<img src="/static/core/icons/overcast.png" class="weather-icon"> Overcast',
+    45: '<img src="/static/core/icons/fog.png" class="weather-icon"> Fog',
+    48: '<img src="/static/core/icons/fog.png" class="weather-icon"> Depositing rime fog',
+    51: '<img src="/static/core/icons/drizzle.png" class="weather-icon"> Light drizzle',
+    53: '<img src="/static/core/icons/drizzle.png" class="weather-icon"> Moderate drizzle',
+    55: '<img src="/static/core/icons/drizzle.png" class="weather-icon"> Dense drizzle',
+    61: '<img src="/static/core/icons/rain.png" class="weather-icon"> Slight rain',
+    63: '<img src="/static/core/icons/rain.png" class="weather-icon"> Moderate rain',
+    65: '<img src="/static/core/icons/rain.png" class="weather-icon"> Heavy rain',
+    71: '<img src="/static/core/icons/snow.png" class="weather-icon"> Slight snow',
+    73: '<img src="/static/core/icons/snow.png" class="weather-icon"> Moderate snow',
+    75: '<img src="/static/core/icons/heavy_snow.png" class="weather-icon"> Heavy snow',
+    95: '<img src="/static/core/icons/thunderstorm.png" class="weather-icon"> Thunderstorm'
 };
 
 function getWeatherDescription(code) {
-    const description = weatherCodes[code] || 'Unknown';
-    return window.translateText ? window.translateText(description) : description;
+    const baseDescription = weatherCodes[code] || '<img src="/static/core/icons/overcast.png" class="weather-icon"> Unknown';
+    
+    if (!window.translateText) return baseDescription;
+    
+    // Extract icon and text parts
+    const iconMatch = baseDescription.match(/(<img[^>]*>)\s*(.+)/);
+    if (iconMatch) {
+        const icon = iconMatch[1];
+        const text = iconMatch[2];
+        const translatedText = window.translateText(text);
+        return `${icon} ${translatedText}`;
+    }
+    
+    return window.translateText(baseDescription);
 }
 
 function updateCurrentWeather() {
     if (!window.weatherData.current) return;
     
     document.getElementById('current-temp').textContent = formatTemperature(window.weatherData.current.temperature_2m);
-    document.getElementById('current-condition').textContent = getWeatherDescription(window.weatherData.current.weather_code);
+    document.getElementById('current-condition').innerHTML = getWeatherDescription(window.weatherData.current.weather_code);
     document.getElementById('current-humidity').textContent = 'Humidity: ' + window.weatherData.current.relative_humidity_2m + '%';
 }
 
@@ -38,7 +50,7 @@ function updateDailyWeather(dayIndex) {
     const condition = getWeatherDescription(window.weatherData.daily.weather_code[dayIndex]);
     
     document.getElementById('daily-temp').textContent = `Max: ${maxTemp} | Min: ${minTemp}`;
-    document.getElementById('daily-condition').textContent = condition;
+    document.getElementById('daily-condition').innerHTML = condition;
 }
 
 function updateHourlyWeather(dayIndex) {
@@ -66,7 +78,7 @@ function updateHourlyWeather(dayIndex) {
         row.innerHTML = `
             <td>${hour}:00</td>
             <td>${temp}</td>
-            <td>${humidity}%</td>
+            <td>💧 ${humidity}%</td>
             <td>${windSpeed} km/h</td>
             <td>${condition}</td>
         `;
@@ -364,10 +376,23 @@ function fetchPollenForDate(date, dayIndex = 0) {
 
 function getPollenLevel(value) {
     const val = value || 0;
-    if (val == 0) return 'Clean';
-    if (val <= 10 && val >=0) return 'Low';
-    if (val < 50) return 'Medium';
-    return 'High';
+    let text, bgColor, textColor;
+    
+    if (val == 0) {
+        text = window.translateText ? window.translateText('Zero') : 'Zero';
+        bgColor = '#4caf50'; textColor = 'white';
+    } else if (val <= 10) {
+        text = window.translateText ? window.translateText('Low') : 'Low';
+        bgColor = '#8bc34a'; textColor = 'white';
+    } else if (val < 50) {
+        text = window.translateText ? window.translateText('Medium') : 'Medium';
+        bgColor = '#ffeb3b'; textColor = 'black';
+    } else {
+        text = window.translateText ? window.translateText('High') : 'High';
+        bgColor = '#f44336'; textColor = 'white';
+    }
+    
+    return `<span style="background: ${bgColor}; color: ${textColor}; padding: 2px 6px; border-radius: 3px;">${text}</span>`;
 }
 
 function createPollenDayBar() {

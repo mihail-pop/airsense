@@ -176,11 +176,27 @@ h2 {
     flex-wrap: wrap;
 }
 
-.pollen-type-selector label {
+.pollen-type-selector .checkbox-item {
     display: flex;
     align-items: center;
     gap: 5px;
     cursor: pointer;
+    padding: 3px 6px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.pollen-type-selector .checkbox-item:hover {
+    background: #e3f2fd;
+    border-color: #2196f3;
+}
+
+.pollen-type-selector input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #2196f3;
 }
 
 .weather-chart-controls {
@@ -188,13 +204,30 @@ h2 {
     justify-content: center;
     gap: 15px;
     margin: 15px 0;
+    flex-wrap: wrap;
 }
 
-.weather-chart-controls label {
+.weather-chart-controls .checkbox-item {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 10px;
     cursor: pointer;
+    padding: 10px 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.weather-chart-controls .checkbox-item:hover {
+    background: #e3f2fd;
+    border-color: #2196f3;
+}
+
+.weather-chart-controls input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #2196f3;
 }
 
 .pollen-controls {
@@ -220,7 +253,7 @@ h2 {
 }
 
 .pollen-day-bar .day-item {
-    padding: 8px 12px;
+    padding: 5px 7px;
     font-size: 0.9em;
     min-width: 50px;
     text-align: center;
@@ -261,29 +294,16 @@ h2 {
 }
 
 #pollen-hourly-table tr.current-hour {
-    border: 2px solid #007bff;
-}
-
-#pollen-hourly-table tr.current-hour td:first-child {
     background: #007bff !important;
     color: white;
 }
 
-.pollen-low {
-    background: #d4f6d4 !important;
+#pollen-hourly-table tr.current-hour td {
+    background: #007bff !important;
+    color: white;
 }
 
-.pollen-medium {
-    background: #fff3cd !important;
-}
 
-.pollen-high {
-    background: #ffd4a3 !important;
-}
-
-.pollen-very-high {
-    background: #f8d7da !important;
-}
 
 .current-weather {
     text-align: center;
@@ -338,10 +358,10 @@ h2 {
 }
 
 #current-condition {
-    font-size: 1.3em;
+    font-size: 1.5em;
     margin: 10px 0;
     color: rgba(255, 255, 255, 0.9);
-    font-weight: 300;
+    font-weight: bold;
 }
 
 #current-humidity {
@@ -860,6 +880,19 @@ main {
     padding: 60px 20px;
     color: #666;
     font-size: 1.1em;
+}
+
+.weather-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.current-weather .weather-icon {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 1rem;
 }
 
 @media (max-width: 768px) {

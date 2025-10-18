@@ -58,9 +58,18 @@
                     <tbody id="hourly-container"></tbody>
                 </table>
                 <div class="weather-chart-controls">
-                    <label><input type="checkbox" id="temperature-chart" checked> Temperature</label>
-                    <label><input type="checkbox" id="humidity-chart"> Humidity</label>
-                    <label><input type="checkbox" id="windspeed-chart"> Wind Speed</label>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="temperature-chart" checked>
+                        <span>🌡️ <span data-translate="Temperature">Temperature</span></span>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="humidity-chart">
+                        <span>💧 <span data-translate="Humidity">Humidity</span></span>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="windspeed-chart">
+                        <span>💨 <span data-translate="Wind Speed">Wind Speed</span></span>
+                    </div>
                 </div>
                 <div class="weather-chart">
                     <canvas id="weatherChart"></canvas>
@@ -93,12 +102,30 @@
                     <tbody id="pollen-hourly-container"></tbody>
                 </table>
                 <div class="pollen-type-selector">
-                    <label><input type="checkbox" id="alder-chart" checked> Alder</label>
-                    <label><input type="checkbox" id="birch-chart" checked> Birch</label>
-                    <label><input type="checkbox" id="grass-chart" checked> Grass</label>
-                    <label><input type="checkbox" id="mugwort-chart" checked> Mugwort</label>
-                    <label><input type="checkbox" id="olive-chart" checked> Olive</label>
-                    <label><input type="checkbox" id="ragweed-chart" checked> Ragweed</label>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="alder-chart" checked>
+                        <span>🌳 <span data-translate="Alder">Alder</span></span>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="birch-chart" checked>
+                        <span>🌳 <span data-translate="Birch">Birch</span></span>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="grass-chart" checked>
+                        <span>🌿 <span data-translate="Grass">Grass</span></span>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="mugwort-chart" checked>
+                        <span>🌿 <span data-translate="Mugwort">Mugwort</span></span>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="olive-chart" checked>
+                        <span>🌳 <span data-translate="Olive">Olive</span></span>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="ragweed-chart" checked>
+                        <span>🌿 <span data-translate="Ragweed">Ragweed</span></span>
+                    </div>
                 </div>
                 <div class="pollen-chart">
                     <canvas id="pollenChart"></canvas>
@@ -110,12 +137,12 @@
             <h2 data-translate="Pollen Allergies">Pollen Allergies</h2>
             <form id="pollenForm">
                 <div class="pollen-checkboxes">
-                    <label><input type="checkbox" name="pollens" value="alder" {% if 'alder' in user_allergies %}checked{% endif %}> <span data-translate="Alder Pollen">Alder Pollen</span></label>
-                    <label><input type="checkbox" name="pollens" value="birch" {% if 'birch' in user_allergies %}checked{% endif %}> <span data-translate="Birch Pollen">Birch Pollen</span></label>
-                    <label><input type="checkbox" name="pollens" value="grass" {% if 'grass' in user_allergies %}checked{% endif %}> <span data-translate="Grass Pollen">Grass Pollen</span></label>
-                    <label><input type="checkbox" name="pollens" value="mugwort" {% if 'mugwort' in user_allergies %}checked{% endif %}> <span data-translate="Mugwort Pollen">Mugwort Pollen</span></label>
-                    <label><input type="checkbox" name="pollens" value="olive" {% if 'olive' in user_allergies %}checked{% endif %}> <span data-translate="Olive Pollen">Olive Pollen</span></label>
-                    <label><input type="checkbox" name="pollens" value="ragweed" {% if 'ragweed' in user_allergies or not user.is_authenticated %}checked{% endif %}> <span data-translate="Ragweed Pollen">Ragweed Pollen</span></label>
+                    <label><input type="checkbox" name="pollens" value="alder" {% if 'alder' in user_allergies %}checked{% endif %}> 🌳 <span data-translate="Alder Pollen">Alder Pollen</span></label>
+                    <label><input type="checkbox" name="pollens" value="birch" {% if 'birch' in user_allergies %}checked{% endif %}> 🌳 <span data-translate="Birch Pollen">Birch Pollen</span></label>
+                    <label><input type="checkbox" name="pollens" value="grass" {% if 'grass' in user_allergies %}checked{% endif %}> 🌿 <span data-translate="Grass Pollen">Grass Pollen</span></label>
+                    <label><input type="checkbox" name="pollens" value="mugwort" {% if 'mugwort' in user_allergies %}checked{% endif %}> 🌿 <span data-translate="Mugwort Pollen">Mugwort Pollen</span></label>
+                    <label><input type="checkbox" name="pollens" value="olive" {% if 'olive' in user_allergies %}checked{% endif %}> 🌳 <span data-translate="Olive Pollen">Olive Pollen</span></label>
+                    <label><input type="checkbox" name="pollens" value="ragweed" {% if 'ragweed' in user_allergies or not user.is_authenticated %}checked{% endif %}> 🌿 <span data-translate="Ragweed Pollen">Ragweed Pollen</span></label>
                 </div>
             </form>
         </div>
