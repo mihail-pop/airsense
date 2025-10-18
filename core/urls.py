@@ -13,4 +13,5 @@ urlpatterns = [
     path('api/pollen-rec/', views.pollen_data_rec, name='pollen_data_rec'),
     path('api/pollen/', views.get_pollen_data, name='pollen_data'),
     path('api/allergies/', views.update_allergies, name='update_allergies'),
+    path('profile/', views.profile_view, name='profile'),
 ]

@@ -262,13 +262,31 @@ def get_rec_data(request):
                 
                 # Save interaction if user is logged in
                 if request.user.is_authenticated:
+                    # Extract current hour data
+                    current_weather = weather_data.get('current', {}) if weather_data else {}
+                    current_pollen = {}
+                    if pollen_data and 'hourly' in pollen_data:
+                        from datetime import datetime
+                        current_hour = datetime.now().hour
+                        hourly = pollen_data['hourly']
+                        if hourly.get('time') and len(hourly['time']) > current_hour:
+                            current_pollen = {
+                                'time': hourly['time'][current_hour],
+                                'alder_pollen': hourly.get('alder_pollen', [None])[current_hour],
+                                'birch_pollen': hourly.get('birch_pollen', [None])[current_hour],
+                                'grass_pollen': hourly.get('grass_pollen', [None])[current_hour],
+                                'mugwort_pollen': hourly.get('mugwort_pollen', [None])[current_hour],
+                                'olive_pollen': hourly.get('olive_pollen', [None])[current_hour],
+                                'ragweed_pollen': hourly.get('ragweed_pollen', [None])[current_hour]
+                            }
+                    
                     UserInteraction.objects.create(
                         user=request.user,
                         user_input=feeling_text,
                         selected_allergies=selected_pollens,
                         ai_output=recommendation,
-                        weather_data=weather_data or {},
-                        pollen_data=pollen_data or {}
+                        weather_data=current_weather,
+                        pollen_data=current_pollen
                     )
                 
                 return JsonResponse({
@@ -281,6 +299,51 @@ def get_rec_data(request):
                 return JsonResponse({'error': f'Failed to analyze: {str(e)}'})
     
     return JsonResponse({'error': 'Invalid request'})
+
+def profile_view(request):
+    if not request.user.is_authenticated:
+        return redirect('/login/')
+    
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        current_password = request.POST.get('current_password')
+        
+        # Verify current password
+        if not request.user.check_password(current_password):
+            messages.error(request, 'Current password is incorrect')
+            return render(request, 'profile.html')
+        
+        if action == 'delete':
+            request.user.delete()
+            messages.success(request, 'Account deleted successfully')
+            return redirect('/register/')
+        
+        elif action == 'update':
+            # Update user fields
+            request.user.username = request.POST.get('username')
+            request.user.email = request.POST.get('email')
+            request.user.full_name = request.POST.get('full_name')
+            request.user.age = request.POST.get('age') or None
+            request.user.allergies = request.POST.getlist('allergies')
+            
+            # Update password if provided
+            new_password = request.POST.get('new_password')
+            confirm_password = request.POST.get('confirm_password')
+            if new_password:
+                if new_password == confirm_password:
+                    request.user.set_password(new_password)
+                else:
+                    messages.error(request, 'New passwords do not match')
+                    return render(request, 'profile.html')
+            
+            request.user.save()
+            messages.success(request, 'Profile updated successfully')
+            
+            # Re-login if password was changed
+            if new_password:
+                login(request, request.user)
+    
+    return render(request, 'profile.html')
 
 def update_allergies(request):
     if request.method == 'POST' and request.user.is_authenticated:

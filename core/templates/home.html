@@ -9,6 +9,7 @@
         <div class="nav-links">
             {% if user.is_authenticated %}
                 <span class="user-status">✓ Logged in as {{ user.full_name }}</span>
+                <a href="/profile/">Profile</a>
                 <a href="/logout/">Logout</a>
             {% else %}
                 <span class="user-status">Not logged in</span>
@@ -97,7 +98,7 @@
         
         <div class="feeling-section">
             <h2>How do you feel today?</h2>
-            <form id="feelingForm">
+            <form id="feelingForm" onsubmit="return handleFormSubmit(event)">
                 {% csrf_token %}
                 <textarea id="feelingText" placeholder="Describe how you feel today..."></textarea>
                 <button type="submit">Analyze</button>
@@ -110,6 +111,55 @@
         const weatherData = {{ weather_data|safe }};
         const pollenData = {{ pollen_data|safe }};
         const userAuthenticated = {{ user.is_authenticated|yesno:"true,false" }};
+        
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            console.log('Form submitted via inline handler');
+            
+            const feelingText = document.getElementById('feelingText').value;
+            const selectedPollens = Array.from(document.querySelectorAll('input[name="pollens"]:checked')).map(cb => cb.value);
+            
+            if (!feelingText.trim()) {
+                alert('Please describe how you feel today.');
+                return false;
+            }
+            
+            const formData = new FormData();
+            formData.append('feeling', feelingText);
+            selectedPollens.forEach(pollen => formData.append('pollens', pollen));
+            
+            fetch('/api/sentiment/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || ''
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('sentimentResult');
+                if (data.sentiment) {
+                    const sentimentClass = data.sentiment.toLowerCase() === 'positive' ? 'sentiment-positive' : 
+                                         data.sentiment.toLowerCase() === 'negative' ? 'sentiment-negative' : 'sentiment-neutral';
+                    
+                    resultDiv.innerHTML = `
+                        <div class="${sentimentClass}">
+                            Sentiment: ${data.sentiment} (${Math.round(data.confidence * 100)}% confidence)
+                            <br>Selected allergies: ${data.selected_pollens.join(', ') || 'None'}
+                            <br><br><strong>Recommendation:</strong><br>${data.recommendation}
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = '<div class="sentiment-neutral">Error analyzing sentiment</div>';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('sentimentResult').innerHTML = '<div class="sentiment-neutral">Error analyzing sentiment</div>';
+            });
+            
+            return false;
+        }
     </script>
     <script src="/static/core/js/home.js"></script>
 </body>
