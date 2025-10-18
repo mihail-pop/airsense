@@ -27,6 +27,13 @@
                             </div>
                         {% endif %}
                         
+                        {% if interaction.sentiment_label %}
+                            <div class="sentiment-info">
+                                <h3>Sentiment Analysis:</h3>
+                                <p>{{ interaction.sentiment_label }} ({% widthratio interaction.sentiment_confidence 1 100 %}% confidence)</p>
+                            </div>
+                        {% endif %}
+                        
                         <div class="ai-output">
                             <h3>AI Recommendation:</h3>
                             <p>{{ interaction.ai_output }}</p>

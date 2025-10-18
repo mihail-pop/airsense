@@ -316,6 +316,8 @@ def get_rec_data(request):
                         user_input=feeling_text,
                         selected_allergies=selected_pollens,
                         ai_output='\n\n'.join(recommendations),
+                        sentiment_label=sentiment_label,
+                        sentiment_confidence=sentiment_score,
                         weather_data=current_weather,
                         pollen_data=current_pollen
                     )
