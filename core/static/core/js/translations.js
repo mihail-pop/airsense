@@ -55,7 +55,25 @@ const translations = {
         'Clean': 'Clean',
         'Low': 'Low',
         'Medium': 'Medium',
-        'High': 'High'
+        'High': 'High',
+        'Zero': 'Zero',
+        'Sentiment': 'Sentiment',
+        'confidence': 'confidence',
+        'Tips': 'Tips',
+        'Analysis & Recommendations': 'Analysis & Recommendations',
+        'Today': 'Today',
+        'Tomorrow': 'Tomorrow',
+        'risk': 'risk',
+        'avg': 'avg',
+        'Peak at': 'Peak at',
+        'All Clear': 'All Clear',
+        'Enjoy Outdoors': 'Enjoy Outdoors',
+        'Home Prep': 'Home Prep',
+        'Consistency': 'Consistency',
+        'Pollen Recommendations': 'Pollen Recommendations',
+        'Low levels of': 'Low levels of',
+        'pollen today and you are feeling well': 'pollen today and you are feeling well',
+        'there should be no issues': 'there should be no issues'
     },
     ro: {
         'Weather & Pollen Tracker': 'Monitorizare Vreme & Polen',
@@ -112,7 +130,25 @@ const translations = {
         'Clean': 'Curat',
         'Low': 'Scazut',
         'Medium': 'Mediu',
-        'High': 'Ridicat'
+        'High': 'Ridicat',
+        'Zero': 'Zero',
+        'Sentiment': 'Sentiment',
+        'confidence': 'incredere',
+        'Tips': 'Sfaturi',
+        'Analysis & Recommendations': 'Analiza si Recomandari',
+        'Today': 'Astazi',
+        'Tomorrow': 'Maine',
+        'risk': 'risc',
+        'avg': 'medie',
+        'Peak at': 'Varf la',
+        'All Clear': 'Totul Curat',
+        'Enjoy Outdoors': 'Bucura-te de Exterior',
+        'Home Prep': 'Pregatire Acasa',
+        'Consistency': 'Consistenta',
+        'Pollen Recommendations': 'Recomandari Polen',
+        'Low levels of': 'Nivele scazute de',
+        'pollen today and you are feeling well': 'polen astazi si te simti bine',
+        'there should be no issues': 'nu ar trebui sa fie probleme'
     }
 };
 
@@ -212,7 +248,8 @@ function switchLanguage() {
         return;
     }
     
-    translatePage();
+    // Refresh the page to ensure all elements are properly translated
+    window.location.reload();
 }
 
 // Make translateText globally available

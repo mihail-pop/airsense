@@ -38,6 +38,10 @@
                         </div>
                         
                         <div class="card-body">
+                            <div class="interaction-date">
+                                {{ interaction.local_timestamp|date:"l, F j, Y" }}
+                            </div>
+                            
                             <div class="user-feeling">
                                 <strong data-translate="Feeling:">Feeling:</strong> {{ interaction.user_input|truncatechars:60 }}
                             </div>
@@ -73,11 +77,11 @@
                                     <div class="rec-text">{{ interaction.ai_output|linebreaksbr }}</div>
                                 {% endif %}
                             </div>
-                        </div>
-                        
-                        <div class="conditions">
+                            
                             {% if interaction.weather_data %}
-                                <span class="weather-badge">{{ interaction.weather_data.temperature_2m }}°C, {{ interaction.weather_data.relative_humidity_2m }}% humidity</span>
+                                <div class="conditions">
+                                    <span class="weather-badge">{{ interaction.weather_data.temperature_2m }}°C, {{ interaction.weather_data.relative_humidity_2m }}% humidity</span>
+                                </div>
                             {% endif %}
                         </div>
                     </div>

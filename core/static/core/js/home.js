@@ -50,7 +50,6 @@ function updateDailyWeather(dayIndex) {
     const condition = getWeatherDescription(window.weatherData.daily.weather_code[dayIndex]);
     
     document.getElementById('daily-temp').textContent = `Max: ${maxTemp} | Min: ${minTemp}`;
-    document.getElementById('daily-condition').innerHTML = condition;
 }
 
 function updateHourlyWeather(dayIndex) {
@@ -680,12 +679,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 let alertHtml = '';
                 if (data.alert_level) {
+                    const tipsText = window.translateText ? window.translateText('Tips') : 'Tips';
+                    const translatedTips = data.alert_level.tips.map(tip => {
+                        let translatedTip = tip;
+                        if (window.translateText) {
+                            // Try to translate common phrases in tips
+                            Object.keys(window.translateText.translations ? window.translateText.translations[window.translateText.currentLang] || {} : {}).forEach(key => {
+                                if (translatedTip.includes(key)) {
+                                    translatedTip = translatedTip.replace(key, window.translateText(key));
+                                }
+                            });
+                        }
+                        return translatedTip;
+                    });
+                    
                     alertHtml = `
                         <br><div style="margin: 15px 0; padding: 15px; background: #e8f4fd; border-left: 4px solid #007bff; border-radius: 5px;">
-                            <strong>${data.alert_level.icon} ${data.alert_level.title}</strong><br>
-                            <strong>Tips:</strong>
+                            <strong>${data.alert_level.icon} ${window.translateText ? window.translateText(data.alert_level.title) : data.alert_level.title}</strong><br>
+                            <strong>${tipsText}:</strong>
                             <ol style="margin: 10px 0; padding-left: 20px;">
-                                ${data.alert_level.tips.map(tip => `<li>${tip}</li>`).join('')}
+                                ${translatedTips.map(tip => `<li>${tip}</li>`).join('')}
                             </ol>
                         </div>
                     `;
@@ -693,33 +706,68 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 let combinedHtml = '';
                 if (data.risk_analysis && Object.keys(data.risk_analysis).length > 0) {
-                    combinedHtml = '<br><strong>Analysis & Recommendations:</strong><br>';
+                    const analysisText = window.translateText ? window.translateText('Analysis & Recommendations') : 'Analysis & Recommendations';
+                    combinedHtml = `<br><strong>${analysisText}:</strong><br>`;
                     Object.keys(data.risk_analysis).forEach(pollen => {
                         const analysis = data.risk_analysis[pollen];
                         const recommendation = data.recommendations ? data.recommendations.find(rec => rec.toLowerCase().includes(pollen.toLowerCase())) : null;
                         
+                        const pollenName = window.translateText ? window.translateText(pollen.charAt(0).toUpperCase() + pollen.slice(1)) : pollen.charAt(0).toUpperCase() + pollen.slice(1);
+                        const recommendationsText = window.translateText ? window.translateText('Pollen Recommendations') : 'Pollen Recommendations';
+                        const todayText = window.translateText ? window.translateText('Today') : 'Today';
+                        const tomorrowText = window.translateText ? window.translateText('Tomorrow') : 'Tomorrow';
+                        const riskText = window.translateText ? window.translateText('risk') : 'risk';
+                        const avgText = window.translateText ? window.translateText('avg') : 'avg';
+                        const peakText = window.translateText ? window.translateText('Peak at') : 'Peak at';
+                        
+                        let translatedRecommendation = recommendation;
+                        if (recommendation && window.translateText) {
+                            // Try to translate the recommendation text
+                            translatedRecommendation = recommendation;
+                            Object.keys(window.translateText.translations ? window.translateText.translations[window.translateText.currentLang] || {} : {}).forEach(key => {
+                                if (translatedRecommendation.includes(key)) {
+                                    translatedRecommendation = translatedRecommendation.replace(key, window.translateText(key));
+                                }
+                            });
+                        }
+                        
                         combinedHtml += `
                             <div style="margin: 10px 0; padding: 10px; background: #f9f9f9; border-radius: 5px;">
-                                <strong>${pollen.charAt(0).toUpperCase() + pollen.slice(1)} Pollen Recommendations:</strong><br>
-                                ${recommendation ? `<p style="margin: 5px 0; font-style: italic;">${recommendation}</p>` : ''}
-                                <strong>Today:</strong> ${analysis.today.risk} risk (avg: ${analysis.today.avg}), Peak at ${analysis.today.peak_time} (${analysis.today.peak_value})<br>
-                                <strong>Tomorrow:</strong> ${analysis.tomorrow.risk} risk (avg: ${analysis.tomorrow.avg}), Peak at ${analysis.tomorrow.peak_time} (${analysis.tomorrow.peak_value})
+                                <strong>${pollenName} ${recommendationsText}:</strong><br>
+                                ${translatedRecommendation ? `<p style="margin: 5px 0; font-style: italic;">${translatedRecommendation}</p>` : ''}
+                                <strong>${todayText}:</strong> ${analysis.today.risk} ${riskText} (${avgText}: ${analysis.today.avg}), ${peakText} ${analysis.today.peak_time} (${analysis.today.peak_value})<br>
+                                <strong>${tomorrowText}:</strong> ${analysis.tomorrow.risk} ${riskText} (${avgText}: ${analysis.tomorrow.avg}), ${peakText} ${analysis.tomorrow.peak_time} (${analysis.tomorrow.peak_value})
                             </div>
                         `;
                     });
                 } else {
                     let recommendationsHtml = '';
                     if (data.recommendations && data.recommendations.length > 0) {
-                        recommendationsHtml = data.recommendations.map(rec => `<p>${rec}</p>`).join('');
+                        recommendationsHtml = data.recommendations.map(rec => {
+                            let translatedRec = rec;
+                            if (window.translateText) {
+                                Object.keys(window.translateText.translations ? window.translateText.translations[window.translateText.currentLang] || {} : {}).forEach(key => {
+                                    if (translatedRec.includes(key)) {
+                                        translatedRec = translatedRec.replace(key, window.translateText(key));
+                                    }
+                                });
+                            }
+                            return `<p>${translatedRec}</p>`;
+                        }).join('');
                     } else {
-                        recommendationsHtml = '<p>No recommendations available</p>';
+                        const noRecsText = window.translateText ? window.translateText('No recommendations available') : 'No recommendations available';
+                        recommendationsHtml = `<p>${noRecsText}</p>`;
                     }
-                    combinedHtml = '<br><strong>Recommendations:</strong><br>' + recommendationsHtml;
+                    const recommendationsText = window.translateText ? window.translateText('Recommendations') : 'Recommendations';
+                    combinedHtml = `<br><strong>${recommendationsText}:</strong><br>` + recommendationsHtml;
                 }
+                
+                const sentimentText = window.translateText ? window.translateText('Sentiment') : 'Sentiment';
+                const confidenceText = window.translateText ? window.translateText('confidence') : 'confidence';
                 
                 resultDiv.innerHTML = `
                     <div>
-                        Sentiment: ${data.sentiment} (${Math.round(data.confidence * 100)}% confidence)
+                        ${sentimentText}: ${data.sentiment} (${Math.round(data.confidence * 100)}% ${confidenceText})
                         ${alertHtml}
                         ${combinedHtml}
                     </div>

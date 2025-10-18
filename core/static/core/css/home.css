@@ -84,6 +84,7 @@ body {
     cursor: pointer;
     font-weight: 500;
     transition: all 0.3s ease;
+    font-size:1.1em;
 }
 
 #searchCity:hover {
@@ -539,7 +540,7 @@ h2 {
     margin-top: 15px;
     padding: 10px;
     border-radius: 5px;
-    font-weight: bold;
+    font-weight: normal;
 }
 
 .sentiment-positive {
@@ -680,6 +681,8 @@ h2 {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    height: 40px;
+    position: relative;
 }
 
 .home-link {
@@ -687,11 +690,27 @@ h2 {
     text-decoration: none;
     font-size: 1.5em;
     font-weight: bold;
+    margin-left: 20rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+}
+
+.site-icon {
+    width: 76px;
+    height: 76px;
+    position: absolute;
+    top: 50%;
+    left: -84px;
+    transform: translateY(-50%);
+    z-index: 10;
 }
 
 .header-right {
     display: flex;
     gap: 15px;
+    margin-right: 10rem;
 }
 
 .header-right a {
@@ -799,6 +818,13 @@ main {
 
 .card-body {
     padding: 20px;
+}
+
+.interaction-date {
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 15px;
+    font-weight: 500;
 }
 
 .user-feeling {
