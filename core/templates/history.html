@@ -1,17 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>History - AirSense</title>
-    <link rel="stylesheet" href="/static/core/css/home.css">
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}History - AirSense{% endblock %}
+
+{% block content %}
     <div class="container">
-        <div class="nav-links">
-            <a href="/">Home</a>
-            <a href="/profile/">Profile</a>
-            <a href="/logout/">Logout</a>
-        </div>
-        
         <h1>Your History</h1>
         
         {% if interactions %}
@@ -65,5 +57,4 @@
             <p>No interactions found. Start using the app to see your history here!</p>
         {% endif %}
     </div>
-</body>
-</html>
+{% endblock %}
