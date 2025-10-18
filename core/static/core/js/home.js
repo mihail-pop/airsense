@@ -173,6 +173,41 @@ function updateDateFromDaySelector(dayIndex) {
     }
 }
 
+function searchCityWeather(cityName) {
+    fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityName)}&count=1&language=en&format=json`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.results && data.results.length > 0) {
+                const city = data.results[0];
+                const lat = city.latitude;
+                const lon = city.longitude;
+                
+                document.getElementById('selectedCity').textContent = `${city.name}, ${city.country}`;
+                document.getElementById('currentCityName').textContent = `${city.name}, ${city.country}`;
+                
+                const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code&hourly=temperature_2m,relative_humidity_2m,weather_code&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto&forecast_days=7`;
+                
+                return fetch(weatherUrl);
+            } else {
+                throw new Error('City not found');
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('hourly-container').innerHTML = '';
+            document.getElementById('dayBar').innerHTML = '';
+            
+            window.weatherData = data;
+            updateCurrentWeather();
+            updateDailyWeather(0);
+            updateHourlyWeather(0);
+            createDayBar();
+        })
+        .catch(error => {
+            alert('City not found or error fetching weather data');
+        });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     if (weatherData) {
         updateCurrentWeather();
@@ -184,6 +219,22 @@ document.addEventListener('DOMContentLoaded', function() {
     if (pollenData) {
         updateHourlyPollen(0);
     }
+    
+    document.getElementById('searchCity').addEventListener('click', function() {
+        const cityName = document.getElementById('cityInput').value.trim();
+        if (cityName) {
+            searchCityWeather(cityName);
+        }
+    });
+    
+    document.getElementById('cityInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            const cityName = this.value.trim();
+            if (cityName) {
+                searchCityWeather(cityName);
+            }
+        }
+    });
     
     document.getElementById('daySelect').addEventListener('change', function() {
         const dayIndex = parseInt(this.value);
