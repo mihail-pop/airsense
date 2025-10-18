@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}History - AirSense{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>Your History</h1>
+        
+        {% if interactions %}
+            {% for interaction in interactions %}
+                <div class="interaction-card">
+                    <div class="interaction-header">
+                        <strong>{{ interaction.timestamp|date:"M d, Y H:i" }}</strong>
+                    </div>
+                    
+                    <div class="interaction-content">
+                        <div class="user-input">
+                            <h3>Your Input:</h3>
+                            <p>{{ interaction.user_input }}</p>
+                        </div>
+                        
+                        {% if interaction.selected_allergies %}
+                            <div class="allergies">
+                                <h3>Selected Allergies:</h3>
+                                <p>{{ interaction.selected_allergies|join:", " }}</p>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="ai-output">
+                            <h3>AI Recommendation:</h3>
+                            <p>{{ interaction.ai_output }}</p>
+                        </div>
+                        
+                        {% if interaction.weather_data %}
+                            <div class="weather-info">
+                                <h3>Weather Conditions:</h3>
+                                <p>Temperature: {{ interaction.weather_data.temperature_2m }}°C</p>
+                                <p>Humidity: {{ interaction.weather_data.relative_humidity_2m }}%</p>
+                            </div>
+                        {% endif %}
+                        
+                        {% if interaction.pollen_data %}
+                            <div class="pollen-info">
+                                <h3>Pollen Levels:</h3>
+                                {% if interaction.pollen_data.alder_pollen %}<p>Alder: {{ interaction.pollen_data.alder_pollen }}</p>{% endif %}
+                                {% if interaction.pollen_data.birch_pollen %}<p>Birch: {{ interaction.pollen_data.birch_pollen }}</p>{% endif %}
+                                {% if interaction.pollen_data.grass_pollen %}<p>Grass: {{ interaction.pollen_data.grass_pollen }}</p>{% endif %}
+                                {% if interaction.pollen_data.mugwort_pollen %}<p>Mugwort: {{ interaction.pollen_data.mugwort_pollen }}</p>{% endif %}
+                                {% if interaction.pollen_data.olive_pollen %}<p>Olive: {{ interaction.pollen_data.olive_pollen }}</p>{% endif %}
+                                {% if interaction.pollen_data.ragweed_pollen %}<p>Ragweed: {{ interaction.pollen_data.ragweed_pollen }}</p>{% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No interactions found. Start using the app to see your history here!</p>
+        {% endif %}
+    </div>
+{% endblock %}

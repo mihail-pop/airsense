@@ -1,3 +1,8 @@
+{% extends 'base.html' %}
+
+{% block title %}AirSense - Weather & Pollen Tracker{% endblock %}
+
+{% block content %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -106,19 +111,19 @@
             <h2>Pollen Allergies</h2>
             <form id="pollenForm">
                 <div class="pollen-checkboxes">
-                    <label><input type="checkbox" name="pollens" value="alder"> Alder Pollen</label>
-                    <label><input type="checkbox" name="pollens" value="birch"> Birch Pollen</label>
-                    <label><input type="checkbox" name="pollens" value="grass"> Grass Pollen</label>
-                    <label><input type="checkbox" name="pollens" value="mugwort"> Mugwort Pollen</label>
-                    <label><input type="checkbox" name="pollens" value="olive"> Olive Pollen</label>
-                    <label><input type="checkbox" name="pollens" value="ragweed"> Ragweed Pollen</label>
+                    <label><input type="checkbox" name="pollens" value="alder" {% if 'alder' in user_allergies %}checked{% endif %}> Alder Pollen</label>
+                    <label><input type="checkbox" name="pollens" value="birch" {% if 'birch' in user_allergies %}checked{% endif %}> Birch Pollen</label>
+                    <label><input type="checkbox" name="pollens" value="grass" {% if 'grass' in user_allergies %}checked{% endif %}> Grass Pollen</label>
+                    <label><input type="checkbox" name="pollens" value="mugwort" {% if 'mugwort' in user_allergies %}checked{% endif %}> Mugwort Pollen</label>
+                    <label><input type="checkbox" name="pollens" value="olive" {% if 'olive' in user_allergies %}checked{% endif %}> Olive Pollen</label>
+                    <label><input type="checkbox" name="pollens" value="ragweed" {% if 'ragweed' in user_allergies %}checked{% endif %}> Ragweed Pollen</label>
                 </div>
             </form>
         </div>
         
         <div class="feeling-section">
             <h2>How do you feel today?</h2>
-            <form id="feelingForm">
+            <form id="feelingForm" onsubmit="return handleFormSubmit(event)">
                 {% csrf_token %}
                 <textarea id="feelingText" placeholder="Describe how you feel today..."></textarea>
                 <button type="submit">Analyze</button>
@@ -126,13 +131,64 @@
             <div id="sentimentResult"></div>
         </div>
     </div>
-    
+{% endblock %}
+
+{% block extra_js %}
     <script>
         const weatherData = {{ weather_data|safe }};
         const pollenData = {{ pollen_data|safe }};
         const currentLat = {{ lat }};
         const currentLon = {{ lon }};
+        const userAuthenticated = {{ user.is_authenticated|yesno:"true,false" }};
+        
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            console.log('Form submitted via inline handler');
+            
+            const feelingText = document.getElementById('feelingText').value;
+            const selectedPollens = Array.from(document.querySelectorAll('input[name="pollens"]:checked')).map(cb => cb.value);
+            
+            if (!feelingText.trim()) {
+                alert('Please describe how you feel today.');
+                return false;
+            }
+            
+            const formData = new FormData();
+            formData.append('feeling', feelingText);
+            selectedPollens.forEach(pollen => formData.append('pollens', pollen));
+            
+            fetch('/api/sentiment/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || ''
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('sentimentResult');
+                if (data.sentiment) {
+                    const sentimentClass = data.sentiment.toLowerCase() === 'positive' ? 'sentiment-positive' : 
+                                         data.sentiment.toLowerCase() === 'negative' ? 'sentiment-negative' : 'sentiment-neutral';
+                    
+                    resultDiv.innerHTML = `
+                        <div class="${sentimentClass}">
+                            Sentiment: ${data.sentiment} (${Math.round(data.confidence * 100)}% confidence)
+                            <br>Selected allergies: ${data.selected_pollens.join(', ') || 'None'}
+                            <br><br><strong>Recommendation:</strong><br>${data.recommendation}
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = '<div class="sentiment-neutral">Error analyzing sentiment</div>';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('sentimentResult').innerHTML = '<div class="sentiment-neutral">Error analyzing sentiment</div>';
+            });
+            
+            return false;
+        }
     </script>
     <script src="/static/core/js/home.js"></script>
-</body>
-</html>
+{% endblock %}
