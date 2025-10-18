@@ -35,17 +35,48 @@ def home(request):
     except:
         weather_data = {}
     
+    # Get pollen data
+    pollen_url = f'https://air-quality-api.open-meteo.com/v1/air-quality?latitude={lat}&longitude={lon}&hourly=alder_pollen,birch_pollen,grass_pollen,mugwort_pollen,olive_pollen,ragweed_pollen&forecast_days=7'
+    
+    try:
+        pollen_response = requests.get(pollen_url)
+        pollen_data = pollen_response.json()
+    except:
+        pollen_data = {}
+    
     context = {
         'weather_data': json.dumps(weather_data),
+        'pollen_data': json.dumps(pollen_data),
         'lat': lat,
         'lon': lon
     }
     return render(request, 'home.html', context)
 
-def get_weather_data(lat=None, lon=None, request=None):
-    if request:
-        lat = request.GET.get('lat')
-        lon = request.GET.get('lon')
+def get_pollen_data(request):
+    lat = request.GET.get('lat')
+    lon = request.GET.get('lon')
+    date = request.GET.get('date')
+    
+    if not lat or not lon:
+        ip = get_client_ip(request)
+        lat, lon = get_location_from_ip(ip)
+    
+    if date:
+        pollen_url = f'https://air-quality-api.open-meteo.com/v1/air-quality?latitude={lat}&longitude={lon}&hourly=alder_pollen,birch_pollen,grass_pollen,mugwort_pollen,olive_pollen,ragweed_pollen&start_date={date}&end_date={date}'
+    else:
+        pollen_url = f'https://air-quality-api.open-meteo.com/v1/air-quality?latitude={lat}&longitude={lon}&hourly=alder_pollen,birch_pollen,grass_pollen,mugwort_pollen,olive_pollen,ragweed_pollen&forecast_days=7'
+    
+    try:
+        response = requests.get(pollen_url)
+        data = response.json()
+        return JsonResponse(data)
+    except:
+        return JsonResponse({'error': 'Failed to fetch pollen data'})
+
+def get_weather_data(request):
+    lat = request.GET.get('lat')
+    lon = request.GET.get('lon')
+    date = request.GET.get('date')
     
     if not lat or not lon:
         if request:

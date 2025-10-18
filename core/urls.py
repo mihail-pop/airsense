@@ -6,4 +6,5 @@ urlpatterns = [
     path('api/weather/', views.get_weather_data, name='weather_data'),
     path('api/sentiment/', views.get_rec_data, name='get_rec_data'),
     path('api/pollen-rec/', views.pollen_data_rec, name='pollen_data_rec'),
+    path('api/pollen/', views.get_pollen_data, name='pollen_data'),
 ]
