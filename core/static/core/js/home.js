@@ -46,23 +46,67 @@ function updateHourlyWeather(dayIndex) {
     const container = document.getElementById('hourly-container');
     container.innerHTML = '';
     
-    const startHour = dayIndex * 24;
-    const endHour = startHour + 24;
+    if (dayIndex === 0) {
+        fetch('/api/weather/')
+            .then(response => response.json())
+            .then(data => {
+                const currentTime = data.current ? data.current.time : new Date().toISOString();
+                const currentHour = new Date(currentTime).getHours();
+                displayHours(0, 24, currentHour);
+            })
+            .catch(() => {
+                const currentHour = new Date().getHours();
+                displayHours(0, 24, currentHour);
+            });
+    } else {
+        displayHours(dayIndex * 24, dayIndex * 24 + 24);
+    }
     
-    for (let i = startHour; i < endHour && i < weatherData.hourly.time.length; i++) {
-        const time = new Date(weatherData.hourly.time[i]);
-        const hour = time.getHours();
-        const temp = Math.round(weatherData.hourly.temperature_2m[i]);
-        const condition = getWeatherDescription(weatherData.hourly.weather_code[i]);
+    function displayHours(start, end, highlightHour = -1) {
+        for (let i = start; i < end && i < weatherData.hourly.time.length; i++) {
+            const time = new Date(weatherData.hourly.time[i]);
+            const hour = time.getHours();
+            const temp = Math.round(weatherData.hourly.temperature_2m[i]);
+            const condition = getWeatherDescription(weatherData.hourly.weather_code[i]);
+            
+            const row = document.createElement('tr');
+            if (hour === highlightHour) {
+                row.className = 'current-hour';
+            }
+            row.innerHTML = `
+                <td>${hour}:00</td>
+                <td>${temp}°C</td>
+                <td>${condition}</td>
+            `;
+            container.appendChild(row);
+        }
+    }
+}
+
+function createDayBar() {
+    const dayBar = document.getElementById('dayBar');
+    const today = new Date();
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    
+    for (let i = 0; i < 7; i++) {
+        const date = new Date(today);
+        date.setDate(today.getDate() + i);
+        const dayName = i === 0 ? 'Today' : dayNames[date.getDay()];
         
-        const hourItem = document.createElement('div');
-        hourItem.className = 'hour-item';
-        hourItem.innerHTML = `
-            <div class="hour-time">${hour}:00</div>
-            <div class="hour-temp">${temp}°C</div>
-            <div class="hour-condition">${condition}</div>
-        `;
-        container.appendChild(hourItem);
+        const dayItem = document.createElement('div');
+        dayItem.className = 'day-item' + (i === 0 ? ' active' : '');
+        dayItem.textContent = dayName;
+        dayItem.dataset.dayIndex = i;
+        
+        dayItem.addEventListener('click', function() {
+            document.querySelectorAll('.day-item').forEach(item => item.classList.remove('active'));
+            this.classList.add('active');
+            const dayIndex = parseInt(this.dataset.dayIndex);
+            updateDailyWeather(dayIndex);
+            updateHourlyWeather(dayIndex);
+        });
+        
+        dayBar.appendChild(dayItem);
     }
 }
 
@@ -73,11 +117,7 @@ document.addEventListener('DOMContentLoaded', function() {
         updateHourlyWeather(0);
     }
     
-    document.getElementById('daySelect').addEventListener('change', function() {
-        const dayIndex = parseInt(this.value);
-        updateDailyWeather(dayIndex);
-        updateHourlyWeather(dayIndex);
-    });
+    createDayBar();
     
     document.getElementById('feelingForm').addEventListener('submit', function(e) {
         e.preventDefault();
