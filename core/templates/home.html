@@ -10,6 +10,7 @@
             {% if user.is_authenticated %}
                 <span class="user-status">✓ Logged in as {{ user.full_name }}</span>
                 <a href="/profile/">Profile</a>
+                <a href="/history/">History</a>
                 <a href="/logout/">Logout</a>
             {% else %}
                 <span class="user-status">Not logged in</span>

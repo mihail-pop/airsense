@@ -319,3 +319,45 @@
     cursor: pointer;
     margin-top: 10px;
 }
+
+.interaction-card {
+    background: #f5f5f5;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+    border-left: 4px solid #007bff;
+}
+
+.interaction-header {
+    color: #007bff;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+}
+
+.interaction-content > div {
+    margin: 15px 0;
+}
+
+.interaction-content h3 {
+    color: #333;
+    margin-bottom: 5px;
+    font-size: 1em;
+}
+
+.user-input {
+    background: #e3f2fd;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.ai-output {
+    background: #f3e5f5;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.weather-info, .pollen-info, .allergies {
+    background: #fff3e0;
+    padding: 10px;
+    border-radius: 5px;
+}

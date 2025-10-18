@@ -352,3 +352,10 @@ def update_allergies(request):
         request.user.save()
         return JsonResponse({'success': True})
     return JsonResponse({'error': 'Invalid request'})
+
+def history_view(request):
+    if not request.user.is_authenticated:
+        return redirect('/login/')
+    
+    interactions = UserInteraction.objects.filter(user=request.user).order_by('-timestamp')
+    return render(request, 'history.html', {'interactions': interactions})
