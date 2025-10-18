@@ -143,10 +143,27 @@ function translatePage() {
     // Translate dynamic content
     translateDynamicContent();
     
+    // Update GDPR links
+    updateGdprLinks();
+    
     // Update language toggle button
     const langToggle = document.getElementById('langToggle');
     if (langToggle) {
         langToggle.textContent = currentLang === 'en' ? 'RO' : 'EN';
+    }
+}
+
+function updateGdprLinks() {
+    const gdprUrl = currentLang === 'ro' ? '/gdpr_ro/' : '/gdpr/';
+    
+    const footerGdprLink = document.getElementById('gdpr-link');
+    if (footerGdprLink) {
+        footerGdprLink.href = gdprUrl;
+    }
+    
+    const termsGdprLink = document.getElementById('gdpr-terms-link');
+    if (termsGdprLink) {
+        termsGdprLink.href = gdprUrl;
     }
 }
 
@@ -184,6 +201,17 @@ function translateDynamicContent() {
 function switchLanguage() {
     currentLang = currentLang === 'en' ? 'ro' : 'en';
     localStorage.setItem('language', currentLang);
+    
+    // Handle GDPR page redirects
+    const currentPath = window.location.pathname;
+    if (currentPath === '/gdpr/' && currentLang === 'ro') {
+        window.location.href = '/gdpr_ro/';
+        return;
+    } else if (currentPath === '/gdpr_ro/' && currentLang === 'en') {
+        window.location.href = '/gdpr/';
+        return;
+    }
+    
     translatePage();
 }
 

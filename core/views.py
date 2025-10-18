@@ -429,6 +429,9 @@ def logout_view(request):
 def gdpr_view(request):
     return render(request, 'gdpr.html')
 
+def gdpr_ro_view(request):
+    return render(request, 'gdpr_ro.html')
+
 def get_rec_data(request):
     if request.method == 'POST':
         feeling_text = request.POST.get('feeling')
