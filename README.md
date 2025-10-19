@@ -61,6 +61,41 @@ Follow these instructions to get a local copy of AirSense up and running for dev
     ```
     The application will be available at `http://127.0.0.1:8000/`.
 
+## 🤖 Setting Up Automated Notifications
+
+To enable proactive alerts, you need to schedule a command to run periodically. This is done using **Cron** on Linux/macOS or **Task Scheduler** on Windows.
+
+The command you need to schedule is:
+```
+python manage.py send_notifications
+```
+
+### **On Linux / macOS (using Cron)**
+
+1.  Open your terminal and edit the crontab file by running:
+    ```
+    crontab -e
+    ```
+2.  Add a new line to the file to schedule the task. For example, to run the command every day at 7:00 AM, add the following line. **Remember to replace the placeholder paths** with the absolute paths to your project's `python` executable and `manage.py` file.
+
+    ```
+    # Example: Run daily at 7:00 AM
+    0 7 * * * /path/to/your/project/airsense/venv/bin/python /path/to/your/project/airsense/manage.py send_notifications
+    ```
+3.  Save the file and exit the editor. Cron will now automatically run the command at the scheduled time.
+
+### **On Windows (using Task Scheduler)**
+
+1.  Open the **Task Scheduler** from the Start Menu.
+2.  In the right-hand "Actions" pane, click **Create Basic Task...**.
+3.  **Name and Description:** Give the task a name like "AirSense Daily Notifications" and click Next.
+4.  **Trigger:** Choose how often you want the notifications to be sent (e.g., **Daily**) and click Next. Specify a start time, like **7:00:00 AM**.
+5.  **Action:** Select **Start a program** and click Next.
+6.  **Configure Program/Script:**
+    * In the "Program/script" field, browse to and select the `python.exe` interpreter inside your project's virtual environment. For example: `C:\Users\YourUser\projects\airsense\venv\Scripts\python.exe`
+    * In the "Add arguments (optional)" field, enter the full path to your `manage.py` file followed by the command name. For example: `C:\Users\YourUser\projects\airsense\manage.py send_notifications`
+7.  Click **Next**, review the summary, and click **Finish**. The task is now scheduled.
+
 ## 🔧 How It Works
 
 The application follows a simple yet powerful workflow to deliver its recommendations:
