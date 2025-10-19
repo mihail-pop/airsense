@@ -7,19 +7,19 @@
 
 AirSense is an intelligent web application designed to help you proactively manage your allergies. By combining real-time weather forecasts, local pollen data, and AI-powered analysis of your symptoms, AirSense provides personalized recommendations and smart alerts to help you navigate your day with confidence.
 
-## ✨ Core Features
+## Core Features
 
-* **📍 Local Forecasts:** Automatically get weather and pollen data for your current location, or search for any city worldwide.
-* **🤖 AI-Powered Insights:** Describe how you're feeling in your own words. Our sentiment analysis model understands your input to tailor its advice.
-* **📊 Dynamic Risk Analysis:** Select your specific allergens and instantly see a calculated risk level (Low, Medium, High) for today and tomorrow.
-* **🌿 Personalized Recommendations:** Receive actionable advice based on the unique combination of your symptoms, local pollen counts, and weather conditions.
-* **🔔 Smart Alert System:** Get categorized alerts (e.g., Critical, High Risk, Proactive) with clear, immediate tips to help you take action.
-* **📈 Interactive Data Visualization:** View beautiful charts of weather and pollen forecasts, powered by Chart.js.
-* **🗓️ Interaction History:** Keep track of your symptoms and our recommendations over time in a clear, card-based history log.
-* **✉️ Automated Notifications:** Opt-in to receive proactive pollen alerts via Email, Webhook, or Telegram before your day even starts.
-* **🔒 Secure & Private:** Full user authentication, profile management, and GDPR compliance to ensure your data is safe and you are in control.
+* **Local Forecasts:** Automatically get weather and pollen data for your current location, or search for any city worldwide.
+* **AI-Powered Insights:** Describe how you're feeling in your own words. Our sentiment analysis model understands your input to tailor its advice.
+* **Dynamic Risk Analysis:** Select your specific allergens and instantly see a calculated risk level (Low, Medium, High) for today and tomorrow.
+* **Personalized Recommendations:** Receive actionable advice based on the unique combination of your symptoms, local pollen counts, and weather conditions.
+* **Smart Alert System:** Get categorized alerts (e.g., Critical, High Risk, Proactive) with clear, immediate tips to help you take action.
+* **Interactive Data Visualization:** View beautiful charts of weather and pollen forecasts, powered by Chart.js.
+* **Interaction History:** Keep track of your symptoms and our recommendations over time in a clear, card-based history log.
+* **Automated Notifications:** Opt-in to receive proactive pollen alerts via Email, Webhook, or Telegram before your day even starts.
+* **Secure & Private:** Full user authentication, profile management, and GDPR compliance to ensure your data is safe and you are in control.
 
-## 🚀 Getting Started
+##  Getting Started
 
 Follow these instructions to get a local copy of AirSense up and running for development and testing purposes.
 
@@ -61,7 +61,7 @@ Follow these instructions to get a local copy of AirSense up and running for dev
     ```
     The application will be available at `http://127.0.0.1:8000/`.
 
-## 🤖 Setting Up Automated Notifications
+##  Setting Up Automated Notifications
 
 To enable proactive alerts, you need to schedule a command to run periodically. This is done using **Cron** on Linux/macOS or **Task Scheduler** on Windows.
 
@@ -96,7 +96,7 @@ python manage.py send_notifications
     * In the "Add arguments (optional)" field, enter the full path to your `manage.py` file followed by the command name. For example: `C:\Users\YourUser\projects\airsense\manage.py send_notifications`
 7.  Click **Next**, review the summary, and click **Finish**. The task is now scheduled.
 
-## 🔧 How It Works
+##  How It Works
 
 The application follows a simple yet powerful workflow to deliver its recommendations:
 
@@ -107,7 +107,7 @@ The application follows a simple yet powerful workflow to deliver its recommenda
     * Our custom logic combines this sentiment with pollen and weather data to calculate risk, generate recommendations, and assign an alert level.
 4.  **Response & Storage:** The analysis is sent to the user's browser. If logged in, the entire interaction is saved to their private history for future reference.
 
-## 🛠️ Technologies Used
+##  Technologies Used
 
 | Category   | Technology / Service                                                                                      |
 | ---------- | --------------------------------------------------------------------------------------------------------- |
@@ -117,7 +117,7 @@ The application follows a simple yet powerful workflow to deliver its recommenda
 | **APIs** | Open-Meteo (Weather & Air-Quality), ip-api.com (Geolocation)                                              |
 | **Database** | SQLite (default), PostgreSQL (production-ready)                                                           |
 
-## 🤝 Contributing
+##  Contributing
 
 Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
@@ -131,6 +131,6 @@ If you have a suggestion that would make this better, please fork the repo and c
 
 Don't forget to give the project a star! Thanks again!
 
-## 📜 License
+## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
