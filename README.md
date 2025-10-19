@@ -1,5 +1,7 @@
 # AirSense: AI-Powered Allergy Forecast & Recommendation App
 
+[![Django CI](https://github.com/mihail-pop/airsense/actions/workflows/django.yml/badge.svg)](https://github.com/mihail-pop/airsense/actions/workflows/django.yml)
+
 **Developed for Hackathon Craiova 2025 by Team Cloud**
 *(Alin Radu Andrei Moisă, Andrei Șugubete, Mihail Popescu)*
 
