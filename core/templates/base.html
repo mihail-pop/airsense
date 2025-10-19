@@ -2,7 +2,18 @@
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}AirSense{% endblock %}</title>
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="/static/core/manifest.json">
+    <meta name="theme-color" content="#4a90e2">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="AirSense">
+    <link rel="apple-touch-icon" href="/static/core/icons/pwa-192.png">
+    
     <link rel="icon" type="image/x-icon" href="/static/core/icons/favicon_airsense.ico">
     <link rel="stylesheet" href="/static/core/css/home.css">
     {% block extra_css %}{% endblock %}
@@ -39,6 +50,11 @@
     </footer>
     
     <script src="/static/core/js/translations.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js');
+        }
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

@@ -133,6 +133,58 @@ h2 {
     .container {
         padding: 15px;
     }
+    
+    .city-search {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    #cityInput {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .site-header {
+        flex-direction: column;
+        height: auto;
+        padding: 10px;
+        gap: 10px;
+    }
+    
+    .home-link {
+        margin-left: 0;
+        font-size: 1.3em;
+    }
+    
+    .site-icon {
+        position: static;
+        transform: none;
+        width: 40px;
+        height: 40px;
+    }
+    
+    .header-right {
+        margin-right: 0;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    main {
+        padding: 0 10px;
+    }
+    
+    .pollen-checkboxes {
+        grid-template-columns: 1fr;
+    }
+    
+    .day-bar {
+        gap: 5px;
+    }
+    
+    .day-item {
+        padding: 8px 12px;
+        font-size: 0.9em;
+    }
 }
 
 .city-dropdown {
