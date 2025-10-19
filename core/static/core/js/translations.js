@@ -1,7 +1,10 @@
 // Simple translation system
-const translations = {
-    en: {
-        'Weather & Pollen Tracker': 'Weather & Pollen Tracker',
+(function() {
+    'use strict';
+    
+    const translations = {
+        en: {
+            'Weather & Pollen Tracker': 'Weather & Pollen Tracker',
         'Weather Forecast': 'Weather Forecast',
         'Pollen Forecast': 'Pollen Forecast',
         'Pollen Allergies': 'Pollen Allergies',
@@ -150,9 +153,9 @@ const translations = {
         'pollen today and you are feeling well': 'polen astazi si te simti bine',
         'there should be no issues': 'nu ar trebui sa fie probleme'
     }
-};
+    };
 
-let currentLang = localStorage.getItem('language') || 'en';
+    var currentLang = localStorage.getItem('language') || 'en';
 
 function translateText(text) {
     if (translations[currentLang] && translations[currentLang][text]) {
@@ -252,15 +255,16 @@ function switchLanguage() {
     window.location.reload();
 }
 
-// Make translateText globally available
-window.translateText = translateText;
+    // Make translateText globally available
+    window.translateText = translateText;
 
-// Initialize translations when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    translatePage();
-    
-    const langToggle = document.getElementById('langToggle');
-    if (langToggle) {
-        langToggle.addEventListener('click', switchLanguage);
-    }
-});
+    // Initialize translations when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        translatePage();
+        
+        const langToggle = document.getElementById('langToggle');
+        if (langToggle) {
+            langToggle.addEventListener('click', switchLanguage);
+        }
+    });
+})();

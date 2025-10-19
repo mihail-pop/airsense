@@ -550,25 +550,27 @@ def profile_view(request):
     
     if request.method == 'POST':
         action = request.POST.get('action')
-        current_password = request.POST.get('current_password')
-        
-        # Verify current password
-        if not request.user.check_password(current_password):
-            messages.error(request, 'Current password is incorrect')
-            return render(request, 'profile.html')
         
         if action == 'delete':
+            current_password = request.POST.get('current_password')
+            if not request.user.check_password(current_password):
+                messages.error(request, 'Current password is incorrect')
+                return render(request, 'profile.html')
             request.user.delete()
             messages.success(request, 'Account deleted successfully')
             return redirect('/register/')
         
         elif action == 'delete_data':
+            current_password = request.POST.get('current_password')
+            if not request.user.check_password(current_password):
+                messages.error(request, 'Current password is incorrect')
+                return render(request, 'profile.html')
             UserInteraction.objects.filter(user=request.user).delete()
             messages.success(request, 'AI interaction history deleted successfully')
             return render(request, 'profile.html')
         
         elif action == 'update':
-            # Update user fields
+            # Update user fields (no password verification needed)
             request.user.username = request.POST.get('username')
             request.user.email = request.POST.get('email')
             request.user.full_name = request.POST.get('full_name')
@@ -591,22 +593,34 @@ def profile_view(request):
             request.user.telegram_reminders = 'telegram_reminders' in request.POST
             request.user.allergies = request.POST.getlist('allergies')
             
-            # Update password if provided
-            new_password = request.POST.get('new_password')
-            confirm_password = request.POST.get('confirm_password')
-            if new_password:
-                if new_password == confirm_password:
-                    request.user.set_password(new_password)
-                else:
-                    messages.error(request, 'New passwords do not match')
-                    return render(request, 'profile.html')
-            
             request.user.save()
             messages.success(request, 'Profile updated successfully')
+            return render(request, 'profile.html')
+        
+        elif action == 'change_password':
+            current_password = request.POST.get('current_password')
+            new_password = request.POST.get('new_password')
+            confirm_password = request.POST.get('confirm_password')
             
-            # Re-login if password was changed
-            if new_password:
-                login(request, request.user)
+            # Verify current password for password changes
+            if not request.user.check_password(current_password):
+                messages.error(request, 'Current password is incorrect')
+                return render(request, 'profile.html')
+            
+            if not new_password:
+                messages.error(request, 'New password is required')
+                return render(request, 'profile.html')
+            
+            if new_password != confirm_password:
+                messages.error(request, 'New passwords do not match')
+                return render(request, 'profile.html')
+            
+            request.user.set_password(new_password)
+            request.user.save()
+            messages.success(request, 'Password changed successfully')
+            
+            # Re-login after password change
+            login(request, request.user)
     
     return render(request, 'profile.html')
 

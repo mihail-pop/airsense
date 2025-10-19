@@ -41,7 +41,10 @@
 
             
             <div class="hourly-weather">
-                <h3 data-translate="Hourly Forecast">Hourly Forecast</h3>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <h3 data-translate="Hourly Forecast">Hourly Forecast</h3>
+                    <input type="date" id="weatherDateSelect">
+                </div>
                 <table id="hourly-table">
                     <thead>
                         <tr>
@@ -78,12 +81,14 @@
             <h2 data-translate="Pollen Forecast">Pollen Forecast</h2>
             
             <div class="pollen-controls">
-                <input type="date" id="pollenDateSelect">
                 <div class="pollen-day-bar" id="pollenDayBar"></div>
             </div>
             
             <div class="hourly-pollen">
-                <h3 data-translate="Hourly Pollen Forecast">Hourly Pollen Forecast</h3>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <h3 data-translate="Hourly Pollen Forecast">Hourly Pollen Forecast</h3>
+                    <input type="date" id="pollenDateSelect">
+                </div>
                 <table id="pollen-hourly-table">
                     <thead>
                         <tr>

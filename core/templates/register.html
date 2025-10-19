@@ -84,28 +84,60 @@
     gap: 10px;
 }
 
-.checkbox-group {
+.gdpr-checkbox {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
     margin-bottom: 20px;
 }
 
-.checkbox-group input[type="checkbox"] {
-    width: auto;
+.gdpr-checkbox:hover {
+    background: #e3f2fd;
+    border-color: #2196f3;
+}
+
+.gdpr-checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #2196f3;
     margin: 0;
 }
 
-.form-group select[multiple] {
+.allergies-checkboxes {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 10px;
-    height: auto;
+    margin-top: 10px;
 }
 
-.form-group select[multiple] option {
-    padding: 8px;
-    margin: 2px 0;
+.allergy-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.allergy-checkbox:hover {
+    background: #e3f2fd;
+    border-color: #2196f3;
+}
+
+.allergy-checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #2196f3;
 }
 
 .register-btn {
@@ -189,8 +221,37 @@
     .register-card {
         padding: 30px 20px;
     }
+    
+    .allergies-checkboxes {
+        grid-template-columns: 1fr;
+    }
 }
 </style>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Make allergy checkbox divs clickable
+    document.querySelectorAll('.allergy-checkbox').forEach(item => {
+        item.addEventListener('click', function(e) {
+            if (e.target.type !== 'checkbox') {
+                const checkbox = this.querySelector('input[type="checkbox"]');
+                if (checkbox) {
+                    checkbox.checked = !checkbox.checked;
+                }
+            }
+        });
+    });
+    
+    // Make GDPR checkbox div clickable
+    document.querySelector('.gdpr-checkbox')?.addEventListener('click', function(e) {
+        if (e.target.type !== 'checkbox' && e.target.tagName !== 'A') {
+            const checkbox = this.querySelector('input[type="checkbox"]');
+            if (checkbox) {
+                checkbox.checked = !checkbox.checked;
+            }
+        }
+    });
+});
+</script>
 {% endblock %}
 
 {% block content %}
@@ -255,25 +316,35 @@
                 
                 <div class="form-group">
                     <label>Allergies</label>
-                    {{ form.allergies }}
+                    <div class="allergies-checkboxes">
+                        {% for choice in form.allergies %}
+                            <div class="allergy-checkbox">
+                                {{ choice.tag }}
+                                <span>{{ choice.choice_label }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
                 
-                <div class="checkbox-group">
+                <div class="gdpr-checkbox">
                     {{ form.gdpr_consent }}
-                    <label for="{{ form.gdpr_consent.id_for_label }}">
+                    <span>
                         I agree to the <a href="/gdpr/" target="_blank" id="gdpr-terms-link">GDPR terms</a>
-                    </label>
+                    </span>
                 </div>
                 
                 <button type="submit" class="register-btn">Create Account</button>
-                
-                <div class="divider">
-                    <span>Already have an account?</span>
-                </div>
-                
-                <div class="login-link">
-                    <a href="/login/">Sign in here</a>
-                </div>
+            </form>
+            
+            <div class="divider">
+                <span></span>
+            </div>
+            
+            <p style="text-align: center; margin: 10px 0; color: #6c757d;">Already have an account?</p>
+            
+            <div class="login-link">
+                <a href="/login/">Sign in here</a>
+            </div>
             </form>
         </div>
     </div>

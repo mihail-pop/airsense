@@ -68,12 +68,13 @@
 }
 
 .form-group input, .form-group select {
-    width: 85%;
+    width: 100%;
     padding: 12px 15px;
     border: 2px solid #e3f2fd;
     border-radius: 8px;
     font-size: 1em;
     transition: border-color 0.3s;
+    box-sizing: border-box;
 }
 
 .form-group input:focus, .form-group select:focus {
@@ -84,7 +85,7 @@
 
 .date-inputs {
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 10px;
 }
 
@@ -198,6 +199,21 @@
     }
 }
 </style>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Make checkbox-item divs clickable
+    document.querySelectorAll('.checkbox-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+            if (e.target.type !== 'checkbox') {
+                const checkbox = this.querySelector('input[type="checkbox"]');
+                if (checkbox) {
+                    checkbox.checked = !checkbox.checked;
+                }
+            }
+        });
+    });
+});
+</script>
 {% endblock %}
 
 {% block content %}
@@ -212,8 +228,8 @@
             {% endfor %}
         {% endif %}
         
+        <!-- Profile Information Form -->
         <div class="profile-card">
-        
             <form method="post">
                 {% csrf_token %}
                 
@@ -305,49 +321,28 @@
                         <div class="checkbox-group">
                             <div class="checkbox-item">
                                 <input type="checkbox" name="allergies" value="alder" {% if 'alder' in user.allergies %}checked{% endif %}>
-                                <span>Alder Pollen</span>
+                                <span>🌳 Alder Pollen</span>
                             </div>
                             <div class="checkbox-item">
                                 <input type="checkbox" name="allergies" value="birch" {% if 'birch' in user.allergies %}checked{% endif %}>
-                                <span>Birch Pollen</span>
+                                <span>🌳 Birch Pollen</span>
                             </div>
                             <div class="checkbox-item">
                                 <input type="checkbox" name="allergies" value="grass" {% if 'grass' in user.allergies %}checked{% endif %}>
-                                <span>Grass Pollen</span>
+                                <span>🌿 Grass Pollen</span>
                             </div>
                             <div class="checkbox-item">
                                 <input type="checkbox" name="allergies" value="mugwort" {% if 'mugwort' in user.allergies %}checked{% endif %}>
-                                <span>Mugwort Pollen</span>
+                                <span>🌿 Mugwort Pollen</span>
                             </div>
                             <div class="checkbox-item">
                                 <input type="checkbox" name="allergies" value="olive" {% if 'olive' in user.allergies %}checked{% endif %}>
-                                <span>Olive Pollen</span>
+                                <span>🌳 Olive Pollen</span>
                             </div>
                             <div class="checkbox-item">
                                 <input type="checkbox" name="allergies" value="ragweed" {% if 'ragweed' in user.allergies %}checked{% endif %}>
-                                <span>Ragweed Pollen</span>
+                                <span>🌿 Ragweed Pollen</span>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            
-                <div class="form-section">
-                    <h3 class="section-title">🔒 Security</h3>
-                    
-                    <div class="form-group">
-                        <label>Current Password (required to save changes):</label>
-                        <input type="password" name="current_password" required>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>New Password (leave blank to keep current):</label>
-                            <input type="password" name="new_password">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Confirm New Password:</label>
-                            <input type="password" name="confirm_password">
                         </div>
                     </div>
                 </div>
@@ -356,6 +351,60 @@
                     <button type="submit" name="action" value="update" class="btn btn-primary">
                         ✨ Update Profile
                     </button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Password Change Form -->
+        <div class="profile-card">
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="form-section">
+                    <h3 class="section-title">🔒 Change Password</h3>
+                    
+                    <div class="form-group">
+                        <label>Current Password:</label>
+                        <input type="password" name="current_password" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>New Password:</label>
+                            <input type="password" name="new_password" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Confirm New Password:</label>
+                            <input type="password" name="confirm_password" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button type="submit" name="action" value="change_password" class="btn btn-primary">
+                        🔒 Change Password
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Sensitive Actions Form -->
+        <div class="profile-card">
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="form-section">
+                    <h3 class="section-title">⚠️ Sensitive Actions</h3>
+                    <p style="color: #6c757d; margin-bottom: 20px;">These actions require your current password for security.</p>
+                    
+                    <div class="form-group">
+                        <label>Current Password:</label>
+                        <input type="password" name="current_password" required>
+                    </div>
+                </div>
+                
+                <div class="button-group">
                     <button type="submit" name="action" value="delete_data" class="btn btn-warning" 
                             onclick="return confirm('Are you sure you want to delete all your AI interaction history? This cannot be undone.')">
                         🗑️ Delete AI Data

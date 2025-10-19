@@ -44,12 +44,12 @@ class RegisterForm(UserCreationForm):
     ])
     allergies = forms.MultipleChoiceField(
         choices=[
-            ('alder', 'Alder Pollen'),
-            ('birch', 'Birch Pollen'),
-            ('grass', 'Grass Pollen'),
-            ('mugwort', 'Mugwort Pollen'),
-            ('olive', 'Olive Pollen'),
-            ('ragweed', 'Ragweed Pollen'),
+            ('alder', '🌳 Alder Pollen'),
+            ('birch', '🌳 Birch Pollen'),
+            ('grass', '🌿 Grass Pollen'),
+            ('mugwort', '🌿 Mugwort Pollen'),
+            ('olive', '🌳 Olive Pollen'),
+            ('ragweed', '🌿 Ragweed Pollen'),
         ],
         widget=forms.CheckboxSelectMultiple,
         required=False

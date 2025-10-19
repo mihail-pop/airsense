@@ -34,12 +34,38 @@ function getWeatherDescription(code) {
     return window.translateText(baseDescription);
 }
 
-function updateCurrentWeather() {
+function updateCurrentWeather(dayIndex = 0) {
     if (!window.weatherData.current) return;
     
-    document.getElementById('current-temp').textContent = formatTemperature(window.weatherData.current.temperature_2m);
-    document.getElementById('current-condition').innerHTML = getWeatherDescription(window.weatherData.current.weather_code);
-    document.getElementById('current-humidity').textContent = 'Humidity: ' + window.weatherData.current.relative_humidity_2m + '%';
+    if (dayIndex === 0) {
+        // Show current weather for today - use hourly data for consistency
+        const currentTemp = window.weatherData.hourly && window.weatherData.hourly.temperature_2m[0] 
+            ? window.weatherData.hourly.temperature_2m[0] 
+            : window.weatherData.current.temperature_2m;
+        document.getElementById('current-temp').textContent = formatTemperature(currentTemp);
+        document.getElementById('current-condition').innerHTML = getWeatherDescription(window.weatherData.current.weather_code);
+        document.getElementById('current-humidity').textContent = 'Humidity: ' + window.weatherData.current.relative_humidity_2m + '%';
+    } else {
+        // Show average temperature for other days
+        const maxTemp = window.weatherData.daily.temperature_2m_max[dayIndex];
+        const minTemp = window.weatherData.daily.temperature_2m_min[dayIndex];
+        const avgTemp = (maxTemp + minTemp) / 2;
+        
+        document.getElementById('current-temp').textContent = formatTemperature(avgTemp);
+        document.getElementById('current-condition').innerHTML = getWeatherDescription(window.weatherData.daily.weather_code[dayIndex]);
+        
+        // Calculate average humidity for the day
+        const startHour = dayIndex * 24;
+        const endHour = startHour + 24;
+        let totalHumidity = 0;
+        let count = 0;
+        for (let i = startHour; i < endHour && i < window.weatherData.hourly.relative_humidity_2m.length; i++) {
+            totalHumidity += window.weatherData.hourly.relative_humidity_2m[i];
+            count++;
+        }
+        const avgHumidity = count > 0 ? Math.round(totalHumidity / count) : 0;
+        document.getElementById('current-humidity').textContent = 'Humidity: ' + avgHumidity + '%';
+    }
 }
 
 function updateDailyWeather(dayIndex) {
@@ -186,28 +212,27 @@ function updateWeatherChart(dayIndex) {
 
 function createDayBar() {
     const dayBar = document.getElementById('dayBar');
-    const today = new Date();
+    dayBar.innerHTML = '';
     const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     
     for (let i = 0; i < 7; i++) {
-        const date = new Date(today);
-        date.setDate(today.getDate() + i);
+        const date = new Date();
+        date.setDate(date.getDate() + i);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const dateString = `${year}-${month}-${day}`;
         const dayName = i === 0 ? 'Today' : dayNames[date.getDay()];
         
         const dayItem = document.createElement('div');
-        dayItem.className = 'day-item';
-        if (i === 0) {
-            dayItem.classList.add('active');
-        }
+        dayItem.className = 'day-item' + (i === 0 ? ' active' : '');
         dayItem.textContent = window.translateText ? window.translateText(dayName) : dayName;
-        dayItem.dataset.dayIndex = i;
+        dayItem.dataset.date = dateString;
         
         dayItem.addEventListener('click', function() {
-            document.querySelectorAll('.day-item').forEach(item => item.classList.remove('active'));
+            document.querySelectorAll('#dayBar .day-item').forEach(item => item.classList.remove('active'));
             this.classList.add('active');
-            const dayIndex = parseInt(this.dataset.dayIndex);
-            updateDailyWeather(dayIndex);
-            updateHourlyWeather(dayIndex);
+            fetchWeatherForDate(this.dataset.date);
         });
         
         dayBar.appendChild(dayItem);
@@ -373,6 +398,24 @@ function fetchPollenForDate(date, dayIndex = 0) {
         .catch(error => console.error('Error fetching pollen data:', error));
 }
 
+function fetchWeatherForDate(date) {
+    const lat = typeof currentLat !== 'undefined' ? currentLat : 44.3302;
+    const lon = typeof currentLon !== 'undefined' ? currentLon : 23.7949;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code&hourly=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto&start_date=${date}&end_date=${date}`;
+    
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (!data.error) {
+                window.weatherData = data;
+                updateCurrentWeather(0);
+                updateDailyWeather(0);
+                updateHourlyWeather(0);
+            }
+        })
+        .catch(error => console.error('Error fetching weather data:', error));
+}
+
 function getPollenLevel(value) {
     const val = value || 0;
     let text, bgColor, textColor;
@@ -509,7 +552,7 @@ function selectCity(city) {
             
             // Rebuild all components
             if (newWeatherData && newWeatherData.current) {
-                updateCurrentWeather();
+                updateCurrentWeather(0);
                 updateDailyWeather(0);
                 updateHourlyWeather(0);
                 createDayBar();
@@ -554,7 +597,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize weather components
     if (window.weatherData && window.weatherData.current) {
         try {
-            updateCurrentWeather();
+            updateCurrentWeather(0);
             updateDailyWeather(0);
             updateHourlyWeather(0);
             createDayBar();
@@ -608,7 +651,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     const todayDate = new Date();
-    const todayString = todayDate.toISOString().split('T')[0];
+    const year = todayDate.getFullYear();
+    const month = String(todayDate.getMonth() + 1).padStart(2, '0');
+    const day = String(todayDate.getDate()).padStart(2, '0');
+    const todayString = `${year}-${month}-${day}`;
     const maxDate = new Date(todayDate);
     maxDate.setDate(todayDate.getDate() + 4);
     const maxDateString = maxDate.toISOString().split('T')[0];
@@ -617,9 +663,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const minDateString = minDate.toISOString().split('T')[0];
     
     const pollenDateSelector = document.getElementById('pollenDateSelect');
+    const weatherDateSelector = document.getElementById('weatherDateSelect');
+    
     pollenDateSelector.value = todayString;
     pollenDateSelector.min = minDateString;
     pollenDateSelector.max = maxDateString;
+    
+    weatherDateSelector.value = todayString;
+    weatherDateSelector.min = minDateString;
+    weatherDateSelector.max = maxDateString;
     
     pollenDateSelect.addEventListener('change', function() {
         const selectedDate = this.value;
@@ -628,13 +680,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
+    weatherDateSelector.addEventListener('change', function() {
+        const selectedDate = this.value;
+        if (selectedDate) {
+            fetchWeatherForDate(selectedDate);
+        }
+    });
+    
     // Add event listeners for weather chart checkboxes
     const weatherCheckboxes = ['temperature-chart', 'humidity-chart', 'windspeed-chart'];
     weatherCheckboxes.forEach(id => {
         document.getElementById(id).addEventListener('change', function() {
-            const activeDay = document.querySelector('#dayBar .day-item.active');
-            const dayIndex = activeDay ? parseInt(activeDay.dataset.dayIndex) : 0;
-            updateWeatherChart(dayIndex);
+            updateWeatherChart(0);
         });
     });
     
@@ -645,6 +702,19 @@ document.addEventListener('DOMContentLoaded', function() {
             const activeDay = document.querySelector('#pollenDayBar .day-item.active');
             const dayOffset = activeDay ? parseInt(activeDay.dataset.dayOffset) : 0;
             updatePollenChart(0, currentPollenData);
+        });
+    });
+    
+    // Make checkbox-item divs clickable
+    document.querySelectorAll('.checkbox-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+            if (e.target.type !== 'checkbox') {
+                const checkbox = this.querySelector('input[type="checkbox"]');
+                if (checkbox) {
+                    checkbox.checked = !checkbox.checked;
+                    checkbox.dispatchEvent(new Event('change'));
+                }
+            }
         });
     });
     
@@ -788,11 +858,9 @@ document.addEventListener('DOMContentLoaded', function() {
         this.textContent = isFahrenheit ? '°C' : '°F';
         
         // Update all temperature displays
-        updateCurrentWeather();
-        const activeDay = document.querySelector('.day-item.active');
-        const dayIndex = activeDay ? parseInt(activeDay.dataset.dayIndex) : 0;
-        updateDailyWeather(dayIndex);
-        updateHourlyWeather(dayIndex);
+        updateCurrentWeather(0);
+        updateDailyWeather(0);
+        updateHourlyWeather(0);
     });
     
 

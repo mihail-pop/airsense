@@ -23,15 +23,20 @@
         <div class="header-left">
             <a href="/" class="home-link">
                 <img src="/static/core/icons/cloud.png" alt="AirSense" class="site-icon">
-                AirSense
+                <span class="logo-text">AirSense</span>
             </a>
         </div>
         <div class="header-right">
             <button id="langToggle" class="lang-toggle">RO</button>
             {% if user.is_authenticated %}
                 <a href="/history/">History</a>
-                <a href="/profile/">{{ user.full_name }}</a>
-                <a href="/logout/">Logout</a>
+                <div class="account-dropdown">
+                    <button class="account-trigger" onclick="toggleDropdown()">{{ user.full_name }} ▼</button>
+                    <div class="dropdown-menu" id="accountDropdown">
+                        <a href="/profile/">Profile</a>
+                        <a href="/logout/">Logout</a>
+                    </div>
+                </div>
             {% else %}
                 <a href="/register/">Register</a>
                 <a href="/login/">Login</a>
@@ -53,6 +58,19 @@
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js');
+        }
+        
+        function toggleDropdown() {
+            document.getElementById('accountDropdown').classList.toggle('show');
+        }
+        
+        window.onclick = function(event) {
+            if (!event.target.matches('.account-trigger')) {
+                var dropdown = document.getElementById('accountDropdown');
+                if (dropdown && dropdown.classList.contains('show')) {
+                    dropdown.classList.remove('show');
+                }
+            }
         }
     </script>
     {% block extra_js %}{% endblock %}

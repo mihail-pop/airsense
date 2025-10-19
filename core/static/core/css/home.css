@@ -3,12 +3,15 @@ body {
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     min-height: 100vh;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
+    box-sizing: border-box;
 }
 
 
@@ -67,6 +70,8 @@ body {
     width: 300px;
     font-size: 16px;
     transition: all 0.3s ease;
+    box-sizing: border-box;
+    -webkit-appearance: none;
 }
 
 #cityInput:focus {
@@ -84,7 +89,9 @@ body {
     cursor: pointer;
     font-weight: 500;
     transition: all 0.3s ease;
-    font-size:1.1em;
+    font-size: 1.1em;
+    min-height: 44px;
+    touch-action: manipulation;
 }
 
 #searchCity:hover {
@@ -131,59 +138,298 @@ h2 {
 
 @media (max-width: 768px) {
     .container {
-        padding: 15px;
+        padding: 10px;
+    }
+    
+    h1 {
+        font-size: 2em;
+        margin-bottom: 15px;
+    }
+    
+    h2 {
+        font-size: 1.3em;
     }
     
     .city-search {
         flex-direction: column;
         gap: 10px;
+        margin: 15px 0;
     }
     
     #cityInput {
         width: 100%;
-        max-width: 300px;
+        max-width: none;
+        font-size: 16px;
+    }
+    
+    #searchCity {
+        width: 100%;
+        max-width: 200px;
+        align-self: center;
     }
     
     .site-header {
-        flex-direction: column;
-        height: auto;
-        padding: 10px;
-        gap: 10px;
+        flex-wrap: wrap;
+        height: 50px;
+        padding: 4px 10px;
+        gap: 8px;
+        justify-content: space-between;
     }
     
     .home-link {
         margin-left: 0;
         font-size: 1.3em;
+        flex-shrink: 0;
+    }
+    
+    .logo-text {
+        display: none;
     }
     
     .site-icon {
         position: static;
         transform: none;
-        width: 40px;
-        height: 40px;
+        width: 32px;
+        height: 32px;
     }
     
     .header-right {
         margin-right: 0;
         flex-wrap: wrap;
-        justify-content: center;
+        justify-content: flex-end;
+        gap: 8px;
     }
     
     main {
         padding: 0 10px;
     }
     
+    .weather-section, .pollen-forecast-section, .pollen-section, .feeling-section {
+        padding: 20px 15px;
+        margin: 20px 0;
+    }
+    
+    .current-weather {
+        padding: 20px 15px;
+        margin: 20px 0;
+    }
+    
+    #current-temp {
+        font-size: 2.5em;
+    }
+    
+    .temp-toggle {
+        position: static;
+        margin-bottom: 15px;
+        align-self: center;
+    }
+    
     .pollen-checkboxes {
         grid-template-columns: 1fr;
+        gap: 10px;
     }
     
     .day-bar {
         gap: 5px;
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding: 10px 0;
+        scrollbar-width: thin;
+    }
+    
+    .day-bar::-webkit-scrollbar {
+        height: 4px;
+    }
+    
+    .day-bar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 2px;
+    }
+    
+    .day-bar::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 2px;
     }
     
     .day-item {
         padding: 8px 12px;
         font-size: 0.9em;
+        flex-shrink: 0;
+        min-width: 80px;
+    }
+    
+    .pollen-day-bar {
+        overflow-x: auto;
+        padding: 10px 0;
+        scrollbar-width: thin;
+    }
+    
+    .pollen-day-bar::-webkit-scrollbar {
+        height: 4px;
+    }
+    
+    .pollen-day-bar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 2px;
+    }
+    
+    .pollen-day-bar::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 2px;
+    }
+    
+    .pollen-day-bar .day-item {
+        flex-shrink: 0;
+        min-width: 70px;
+    }
+    
+    .weather-chart-controls, .pollen-type-selector {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+    
+    .weather-chart-controls .checkbox-item, .pollen-type-selector .checkbox-item {
+        justify-content: flex-start;
+        padding: 8px 10px;
+        min-height: 36px;
+        font-size: 0.9em;
+    }
+    
+    .pollen-checkboxes {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+    
+    .pollen-checkboxes label {
+        padding: 8px 10px;
+        min-height: 36px;
+        font-size: 0.9em;
+    }
+    
+    #feelingText {
+        width: 100%;
+        height: 100px;
+        font-size: 16px;
+    }
+    
+    #feelingForm {
+        width: 100%;
+    }
+    
+    #feelingForm button {
+        width: 100%;
+        max-width: 200px;
+        align-self: center;
+    }
+    
+    #hourly-table, #pollen-hourly-table {
+        font-size: 0.8em;
+    }
+    
+    #hourly-table th, #hourly-table td,
+    #pollen-hourly-table th, #pollen-hourly-table td {
+        padding: 8px 6px;
+        white-space: nowrap;
+    }
+    
+    .hourly-weather, .hourly-pollen {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .weather-chart, .pollen-chart {
+        height: 250px;
+        margin: 15px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 5px;
+    }
+    
+    h1 {
+        font-size: 1.8em;
+    }
+    
+    .weather-section, .pollen-forecast-section, .pollen-section, .feeling-section {
+        padding: 15px 10px;
+        margin: 15px 0;
+    }
+    
+    .current-weather {
+        padding: 15px 10px;
+    }
+    
+    #current-temp {
+        font-size: 2em;
+    }
+    
+    .day-item {
+        padding: 6px 8px;
+        font-size: 0.8em;
+        min-width: 70px;
+    }
+    
+    .pollen-day-bar .day-item {
+        min-width: 60px;
+        padding: 4px 6px;
+    }
+    
+    #hourly-table, #pollen-hourly-table {
+        font-size: 0.75em;
+    }
+    
+    #hourly-table th, #hourly-table td,
+    #pollen-hourly-table th, #pollen-hourly-table td {
+        padding: 6px 4px;
+        white-space: nowrap;
+    }
+    
+    .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        padding: 2px 8px;
+        height: 44px;
+    }
+    
+    .home-link {
+        font-size: 1.1em;
+    }
+    
+    .logo-text {
+        display: none;
+    }
+    
+    .site-icon {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .weather-chart, .pollen-chart {
+        height: 200px;
+    }
+    
+    .header-right {
+        font-size: 0.85em;
+        gap: 6px;
+    }
+    
+    .header-right a, .header-right .lang-toggle {
+        padding: 4px 6px;
+        font-size: 0.8em;
+        white-space: nowrap;
+    }
+    
+    .account-trigger {
+        font-size: 0.8em;
+        padding: 4px 6px;
+        white-space: nowrap;
+    }
+    
+    .dropdown-menu {
+        right: -10px;
     }
 }
 
@@ -222,23 +468,29 @@ h2 {
 }
 
 .pollen-type-selector {
-    display: flex;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 15px;
     margin: 15px 0;
-    flex-wrap: wrap;
 }
 
 .pollen-type-selector .checkbox-item {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 10px;
     cursor: pointer;
-    padding: 3px 6px;
+    padding: 12px 15px;
     background: #f8f9fa;
     border-radius: 8px;
     transition: all 0.3s ease;
     border: 2px solid transparent;
+    min-height: 44px;
+    touch-action: manipulation;
+}
+
+.pollen-type-selector .checkbox-item:hover {
+    background: #e3f2fd;
+    border-color: #2196f3;
 }
 
 .pollen-type-selector .checkbox-item:hover {
@@ -265,11 +517,18 @@ h2 {
     align-items: center;
     gap: 10px;
     cursor: pointer;
-    padding: 10px 15px;
+    padding: 12px 15px;
     background: #f8f9fa;
     border-radius: 8px;
     transition: all 0.3s ease;
     border: 2px solid transparent;
+    min-height: 44px;
+    touch-action: manipulation;
+}
+
+.weather-chart-controls .checkbox-item:hover {
+    background: #e3f2fd;
+    border-color: #2196f3;
 }
 
 .weather-chart-controls .checkbox-item:hover {
@@ -291,11 +550,25 @@ h2 {
     margin: 20px 0;
 }
 
-#pollenDateSelect {
-    padding: 10px;
-    font-size: 1em;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+#pollenDateSelect, #weatherDateSelect {
+    padding: 8px 12px;
+    font-size: 0.9em;
+    border-radius: 8px;
+    border: 2px solid #e3f2fd;
+    background: white;
+    color: #333;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+#pollenDateSelect:focus, #weatherDateSelect:focus {
+    outline: none;
+    border-color: #2196f3;
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+}
+
+#pollenDateSelect:hover, #weatherDateSelect:hover {
+    border-color: #2196f3;
 }
 
 .pollen-day-bar {
@@ -303,6 +576,7 @@ h2 {
     justify-content: center;
     gap: 8px;
     flex-wrap: wrap;
+    -webkit-overflow-scrolling: touch;
 }
 
 .pollen-day-bar .day-item {
@@ -322,6 +596,7 @@ h2 {
     background: white;
     border-radius: 5px;
     overflow: hidden;
+    min-width: 600px;
 }
 
 #pollen-hourly-table th {
@@ -432,6 +707,7 @@ h2 {
     justify-content: center;
     gap: 10px;
     flex-wrap: wrap;
+    -webkit-overflow-scrolling: touch;
 }
 
 .day-item {
@@ -443,6 +719,11 @@ h2 {
     font-weight: 500;
     transition: all 0.3s ease;
     color: #333;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: manipulation;
 }
 
 .day-item:hover {
@@ -472,6 +753,13 @@ h2 {
     background: white;
     border-radius: 5px;
     overflow: hidden;
+}
+
+.table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 5px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 #hourly-table th {
@@ -518,11 +806,13 @@ h2 {
     align-items: center;
     gap: 10px;
     cursor: pointer;
-    padding: 10px 15px;
+    padding: 12px 15px;
     background: #f8f9fa;
     border-radius: 8px;
     transition: all 0.3s ease;
     border: 2px solid transparent;
+    min-height: 44px;
+    touch-action: manipulation;
 }
 
 .pollen-checkboxes label:hover {
@@ -580,6 +870,8 @@ h2 {
     font-weight: 500;
     font-size: 16px;
     transition: all 0.3s ease;
+    min-height: 44px;
+    touch-action: manipulation;
 }
 
 #feelingForm button:hover {
@@ -728,12 +1020,12 @@ h2 {
 .site-header {
     background: #007bff;
     color: white;
-    padding: 15px 20px;
+    padding: 10px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-    height: 40px;
+    margin-bottom: 15px;
+    min-height: 35px;
     position: relative;
 }
 
@@ -742,35 +1034,35 @@ h2 {
     text-decoration: none;
     font-size: 1.5em;
     font-weight: bold;
-    margin-left: 20rem;
     display: flex;
     align-items: center;
     gap: 8px;
     position: relative;
+    flex-shrink: 0;
 }
 
 .site-icon {
-    width: 76px;
-    height: 76px;
-    position: absolute;
-    top: 50%;
-    left: -84px;
-    transform: translateY(-50%);
-    z-index: 10;
+    width: 48px;
+    height: 48px;
 }
 
 .header-right {
     display: flex;
     gap: 15px;
-    margin-right: 10rem;
+    flex-wrap: wrap;
 }
 
 .header-right a {
     color: white;
     text-decoration: none;
-    padding: 8px 12px;
+    padding: 10px 16px;
     border-radius: 4px;
     transition: background 0.3s;
+    font-size: 1em;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
 }
 
 .header-right a:hover {
@@ -782,16 +1074,75 @@ h2 {
     color: white;
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 4px;
-    padding: 8px 12px;
+    padding: 10px 16px;
     cursor: pointer;
-    font-size: 0.9em;
+    font-size: 1em;
     font-weight: 500;
     transition: all 0.3s ease;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
 }
 
 .header-right .lang-toggle:hover {
     background: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.5);
+}
+
+.account-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.account-trigger {
+    background: transparent;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 500;
+    transition: background 0.3s;
+    border-radius: 4px;
+    font-family: inherit;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.account-trigger:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    min-width: 120px;
+    display: none;
+    z-index: 1000;
+    margin-top: 5px;
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+.dropdown-menu a {
+    display: block;
+    color: #333 !important;
+    padding: 10px 15px;
+    text-decoration: none;
+    transition: background 0.3s;
+}
+
+.dropdown-menu a:hover {
+    background: #f8f9fa !important;
 }
 
 main {
