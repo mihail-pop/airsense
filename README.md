@@ -1,7 +1,7 @@
 # AirSense: AI-Powered Allergy Forecast & Recommendation App
 
 **Developed for Hackathon Craiova 2025 by Team Cloud**
-*(Alin Radu, Andrei Moisă, Andrei Șugubete, Mihail Popescu)*
+*(Alin Radu Andrei Moisă, Andrei Șugubete, Mihail Popescu)*
 
 ### **Know Before You Go: Your Personal AI Allergy Assistant**
 
