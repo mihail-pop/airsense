@@ -2,184 +2,113 @@
 
 {% block title %}Politica de Confidențialitate AirSense{% endblock %}
 
-{% block extra_css %}
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            color: #1f2937;
-            background-color: #f9fafb;
-        }
-        .policy-table th, .policy-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #e5e7eb;
-        }
-        .policy-table th {
-            background-color: #f3f4f6;
-            font-weight: 600;
-        }
-        @media (max-width: 768px) {
-            .policy-table thead {
-                display: none;
-            }
-            .policy-table, .policy-table tbody, .policy-table tr, .policy-table td {
-                display: block;
-                width: 100%;
-            }
-            .policy-table tr {
-                margin-bottom: 1rem;
-                border: 1px solid #e5e7eb;
-                border-radius: 0.5rem;
-            }
-            .policy-table td {
-                text-align: right;
-                position: relative;
-                padding-left: 50%;
-            }
-            .policy-table td::before {
-                content: attr(data-label);
-                position: absolute;
-                left: 0;
-                width: 50%;
-                padding-left: 12px;
-                font-weight: 600;
-                text-align: left;
-                color: #4b5563;
-            }
-        }
-    </style>
-{% endblock %}
+{% block extra_css %}{% endblock %}
 
 {% block content %}
-<div class="p-4 sm:p-8">
-    <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-xl p-6 md:p-10 lg:p-12">
+<div class="container">
+    <div class="weather-section">
 
-        <!-- Header and Introduction -->
-        <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-700 mb-4 border-b-4 border-blue-100 pb-2">
-            Politica de Confidențialitate (GDPR)
-        </h1>
-        <p class="text-sm font-medium text-gray-500 mb-6">
-            <strong>Data ultimei actualizări: 18 Octombrie 2025</strong>
+        <h1>Politica de Confidențialitate (GDPR)</h1>
+        <p>Data ultimei actualizări: 18 Octombrie 2025</p>
+
+        <p>
+            Această Politică de Confidențialitate descrie modul în care <strong>AirSense</strong>, cu sediul/datele de contact la <strong>restlessstone18@gmail.com</strong> și pagina de proiect la <a href="https://github.com/mihail-pop/airsense" target="_blank">https://github.com/mihail-pop/airsense</a>, (denumită în continuare "noi" sau "Operatorul"), colectează, utilizează și protejează datele dumneavoastră cu caracter personal, în conformitate cu prevederile Regulamentului (UE) 2016/679 (GDPR).
         </p>
 
-        <p class="text-gray-700 mb-6 leading-relaxed">
-            Această Politică de Confidențialitate descrie modul în care <strong>AirSense</strong>, cu sediul/datele de contact la <strong>restlessstone18@gmail.com</strong> și pagina de proiect la <a href="https://github.com/mihail-pop/airsense" target="_blank" class="text-blue-500 hover:underline">https://github.com/mihail-pop/airsense</a>, (denumită în continuare "noi" sau "Operatorul"), colectează, utilizează și protejează datele dumneavoastră cu caracter personal, în conformitate cu prevederile Regulamentului (UE) 2016/679 (GDPR).
-        </p>
-
-        <p class="text-gray-700 mb-8 font-semibold leading-relaxed p-3 bg-blue-50 rounded-lg border border-blue-200">
+        <div class="message success">
             Confidențialitatea datelor dumneavoastră este de o importanță maximă pentru noi. Prelucrăm datele doar în scopul îmbunătățirii experienței de utilizare a aplicației și pentru a furniza rezultatele solicitate, fără a le folosi în scopuri comerciale sau pentru antrenarea de modele de inteligență artificială.
-        </p>
+        </div>
 
-        <!-- 1. Ce Date cu Caracter Personal Colectăm -->
-        <h2 class="text-2xl font-bold text-blue-600 mt-8 mb-4">1. Ce Date cu Caracter Personal Colectăm</h2>
-        <p class="text-gray-700 mb-4">
+        <h2>1. Ce Date cu Caracter Personal Colectăm</h2>
+        <p>
             Colectăm datele pe care ni le furnizați direct, necesare pentru a crea contul dumneavoastră și pentru a utiliza funcționalitățile aplicației:
         </p>
 
-        <div class="overflow-x-auto rounded-lg shadow-md mb-8">
-            <table class="min-w-full bg-white border-collapse policy-table">
-                <thead class="hidden md:table-header-group">
-                    <tr class="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
-                        <th class="py-3 px-6">Categorie de Date</th>
-                        <th class="py-3 px-6">Exemple de Date</th>
-                        <th class="py-3 px-6">Scopul Colectării</th>
-                        <th class="py-3 px-6">Temeiul Legal (GDPR)</th>
-                    </tr>
-                </thead>
-                <tbody class="text-gray-600 text-sm font-light">
-                    <!-- Row 1 -->
-                    <tr class="hover:bg-gray-50 transition duration-300">
-                        <td data-label="Categorie de Date" class="md:py-3 md:px-6 font-medium">
-                            <span class="md:hidden text-lg font-bold block text-blue-700 mb-1">Date de Identificare și Contact</span>
-                            <span class="hidden md:block"><strong>Date de Identificare și Contact</strong></span>
-                        </td>
-                        <td data-label="Exemple de Date" class="md:py-3 md:px-6">Nume/Prenume, Adresă de Email (pentru login/cont)</td>
-                        <td data-label="Scopul Colectării" class="md:py-3 md:px-6">Crearea și gestionarea contului de utilizator.</td>
-                        <td data-label="Temeiul Legal (GDPR)" class="md:py-3 md:px-6">Executarea unui contract (Termenii și Condițiile aplicației).</td>
-                    </tr>
-                    <!-- Row 2 -->
-                    <tr class="hover:bg-gray-50 transition duration-300">
-                        <td data-label="Categorie de Date" class="md:py-3 md:px-6 font-medium">
-                            <span class="md:hidden text-lg font-bold block text-blue-700 mb-1">Date Speciale (Sănătate/Interese)</span>
-                            <span class="hidden md:block"><strong>Date Speciale (Sănătate/Interese)</strong></span>
-                        </td>
-                        <td data-label="Exemple de Date" class="md:py-3 md:px-6">Alergii/Interese în polen (dacă sunt introduse voluntar)</td>
-                        <td data-label="Scopul Colectării" class="md:py-3 md:px-6">Furnizarea rezultatelor personalizate de la sistemul AI.</td>
-                        <td data-label="Temeiul Legal (GDPR)" class="md:py-3 md:px-6">Consimțământul explicit al persoanei vizate (Art. 9(2)(a) GDPR).</td>
-                    </tr>
-                    <!-- Row 3 -->
-                    <tr class="hover:bg-gray-50 transition duration-300">
-                        <td data-label="Categorie de Date" class="md:py-3 md:px-6 font-medium">
-                            <span class="md:hidden text-lg font-bold block text-blue-700 mb-1">Date de Utilizare și Inputuri</span>
-                            <span class="hidden md:block"><strong>Date de Utilizare și Inputuri</strong></span>
-                        </td>
-                        <td data-label="Exemple de Date" class="md:py-3 md:px-6">Locație (pentru prognoze), Vârsta (opțional, pentru context), Rezultate/Inputuri anterioare.</td>
-                        <td data-label="Scopul Colectării" class="md:py-3 md:px-6">Optimizarea experienței de utilizare (UX) și furnizarea de rezultate precise (AI-ul care rulează datele).</td>
-                        <td data-label="Temeiul Legal (GDPR)" class="md:py-3 md:px-6">Interesul legitim (îmbunătățirea serviciilor) și/sau executarea unui contract.</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <table id="hourly-table">
+            <thead>
+                <tr>
+                    <th>Categorie de Date</th>
+                    <th>Exemple de Date</th>
+                    <th>Scopul Colectării</th>
+                    <th>Temeiul Legal (GDPR)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Date de Identificare și Contact</strong></td>
+                    <td>Nume/Prenume, Adresă de Email (pentru login/cont)</td>
+                    <td>Crearea și gestionarea contului de utilizator.</td>
+                    <td>Executarea unui contract (Termenii și Condițiile aplicației).</td>
+                </tr>
+                <tr>
+                    <td><strong>Date Speciale (Sănătate/Interese)</strong></td>
+                    <td>Alergii/Interese în polen (dacă sunt introduse voluntar)</td>
+                    <td>Furnizarea rezultatelor personalizate de la sistemul AI.</td>
+                    <td>Consimțământul explicit al persoanei vizate (Art. 9(2)(a) GDPR).</td>
+                </tr>
+                <tr>
+                    <td><strong>Date de Utilizare și Inputuri</strong></td>
+                    <td>Locație (pentru prognoze), Vârsta (opțional, pentru context), Rezultate/Inputuri anterioare.</td>
+                    <td>Optimizarea experienței de utilizare (UX) și furnizarea de rezultate precise (AI-ul care rulează datele).</td>
+                    <td>Interesul legitim (îmbunătățirea serviciilor) și/sau executarea unui contract.</td>
+                </tr>
+            </tbody>
+        </table>
 
-        <!-- 2. Scopurile Prelucrării Datelor -->
-        <h2 class="text-2xl font-bold text-blue-600 mt-8 mb-4">2. Scopurile Prelucrării Datelor</h2>
-        <p class="text-gray-700 mb-4">
+        <h2>2. Scopurile Prelucrării Datelor</h2>
+        <p>
             Prelucrăm datele dumneavoastră exclusiv în următoarele scopuri:
         </p>
-        <ol class="list-decimal list-inside space-y-3 text-gray-700 ml-4">
+        <ol>
             <li>
-                <strong class="text-blue-600">Gestionarea Contului:</strong> Crearea, autentificarea și administrarea contului dumneavoastră de utilizator.
+                <strong>Gestionarea Contului:</strong> Crearea, autentificarea și administrarea contului dumneavoastră de utilizator.
             </li>
             <li>
-                <strong class="text-blue-600">Funcționalitatea Aplicației și User Experience (UX):</strong> Utilizarea datelor (ex: locație, inputuri) pentru a oferi funcționalitățile de bază ale aplicației și pentru a îmbunătăți modul în care interacționați cu ea.
+                <strong>Funcționalitatea Aplicației și User Experience (UX):</strong> Utilizarea datelor (ex: locație, inputuri) pentru a oferi funcționalitățile de bază ale aplicației și pentru a îmbunătăți modul în care interacționați cu ea.
             </li>
             <li>
-                <strong class="text-blue-600">Furnizarea Rezultatelor (Sistemul AI):</strong> Inputurile dumneavoastră sunt procesate de un sistem de inteligență artificială pentru a genera rezultatele solicitate. 
-                <span class="font-bold text-red-600">ATENȚIE: Acest sistem AI este configurat să NU stocheze, învețe sau să se antreneze pe baza datelor sau inputurilor utilizatorilor.</span> Datele sunt procesate pe moment pentru a genera răspunsul și nu sunt reținute pentru antrenare viitoare.
+                <strong>Furnizarea Rezultatelor (Sistemul AI):</strong> Inputurile dumneavoastră sunt procesate de un sistem de inteligență artificială pentru a genera rezultatele solicitate. 
+                <strong>ATENȚIE: Acest sistem AI este configurat să NU stocheze, învețe sau să se antreneze pe baza datelor sau inputurilor utilizatorilor.</strong> Datele sunt procesate pe moment pentru a genera răspunsul și nu sunt reținute pentru antrenare viitoare.
             </li>
             <li>
-                <strong class="text-blue-600">Suport Tehnic:</strong> Răspunsul la solicitările dumneavoastră de suport și depanarea problemelor tehnice.
+                <strong>Suport Tehnic:</strong> Răspunsul la solicitările dumneavoastră de suport și depanarea problemelor tehnice.
             </li>
         </ol>
-        <p class="mt-4 p-3 bg-red-50 text-red-700 font-semibold rounded-lg border border-red-200">
+        <div class="message error">
             <strong>NU</strong> folosim datele dumneavoastră în scopuri comerciale, de marketing direct, de profilare detaliată sau pentru vânzarea lor către terți.
-        </p>
+        </div>
 
-        <!-- 3. Temeiul Legal al Prelucrării -->
-        <h2 class="text-2xl font-bold text-blue-600 mt-8 mb-4">3. Temeiul Legal al Prelucrării</h2>
-        <p class="text-gray-700 mb-4">
+        <h2>3. Temeiul Legal al Prelucrării</h2>
+        <p>
             Prelucrăm datele dumneavoastră pe baza următoarelor temeiuri legale, conform Art. 6 și Art. 9 din GDPR:
         </p>
-        <ul class="list-disc list-inside space-y-3 text-gray-700 ml-4">
+        <ul>
             <li>
-                <strong class="text-blue-600">Executarea unui Contract:</strong> Prelucrarea este necesară pentru a vă oferi serviciile aplicației, conform Termenilor și Condițiilor acceptate.
+                <strong>Executarea unui Contract:</strong> Prelucrarea este necesară pentru a vă oferi serviciile aplicației, conform Termenilor și Condițiilor acceptate.
             </li>
             <li>
-                <strong class="text-blue-600">Consimțământul (pentru date speciale):</strong> Prelucrarea datelor referitoare la sănătate (ex: alergii) se face exclusiv pe baza consimțământului dumneavoastră explicit și voluntar. Vă puteți retrage consimțământul oricând, fără a afecta legalitatea prelucrării efectuate înainte de retragere.
+                <strong>Consimțământul (pentru date speciale):</strong> Prelucrarea datelor referitoare la sănătate (ex: alergii) se face exclusiv pe baza consimțământului dumneavoastră explicit și voluntar. Vă puteți retrage consimțământul oricând, fără a afecta legalitatea prelucrării efectuate înainte de retragere.
             </li>
             <li>
-                <strong class="text-blue-600">Interesul Legitim:</strong> Prelucrarea datelor de utilizare (anonimizate, unde este posibil) pentru a asigura buna funcționare, securitatea și pentru a îmbunătăți continuu serviciul (UX).
-            </li>
-        </ul>
-
-        <!-- 4. Stocarea Datelor -->
-        <h2 class="text-2xl font-bold text-blue-600 mt-8 mb-4">4. Stocarea Datelor</h2>
-        <ul class="list-disc list-inside space-y-3 text-gray-700 ml-4">
-            <li>
-                <strong class="text-blue-600">Durata de Stocare:</strong> Datele cu caracter personal sunt stocate doar pe perioada necesară îndeplinirii scopurilor menționate mai sus sau până la solicitarea dumneavoastră de ștergere (exercitarea dreptului de a fi uitat).
-            </li>
-            <li>
-                <strong class="text-blue-600">Securitatea Datelor:</strong> Am implementat măsuri de securitate tehnice și organizatorice adecvate pentru a proteja datele dumneavoastră împotriva accesului neautorizat, pierderii sau distrugerii.
+                <strong>Interesul Legitim:</strong> Prelucrarea datelor de utilizare (anonimizate, unde este posibil) pentru a asigura buna funcționare, securitatea și pentru a îmbunătăți continuu serviciul (UX).
             </li>
         </ul>
 
-        <!-- 5. Drepturile Persoanei Vizate -->
-        <h2 class="text-2xl font-bold text-blue-600 mt-8 mb-4">5. Drepturile Persoanei Vizate</h2>
-        <p class="text-gray-700 mb-4">
+        <h2>4. Stocarea Datelor</h2>
+        <ul>
+            <li>
+                <strong>Durata de Stocare:</strong> Datele cu caracter personal sunt stocate doar pe perioada necesară îndeplinirii scopurilor menționate mai sus sau până la solicitarea dumneavoastră de ștergere (exercitarea dreptului de a fi uitat).
+            </li>
+            <li>
+                <strong>Securitatea Datelor:</strong> Am implementat măsuri de securitate tehnice și organizatorice adecvate pentru a proteja datele dumneavoastră împotriva accesului neautorizat, pierderii sau distrugerii.
+            </li>
+        </ul>
+
+        <h2>5. Drepturile Persoanei Vizate</h2>
+        <p>
             În conformitate cu GDPR, beneficiați de următoarele drepturi în legătură cu datele dumneavoastră:
         </p>
-        <ul class="list-disc list-inside space-y-3 text-gray-700 ml-4">
+        <ul>
             <li><strong>Dreptul de Acces:</strong> Puteți solicita o copie a datelor pe care le deținem despre dumneavoastră.</li>
             <li><strong>Dreptul la Rectificare:</strong> Puteți solicita corectarea datelor inexacte sau completarea datelor incomplete.</li>
             <li><strong>Dreptul la Ștergerea Datelor ("Dreptul de a fi uitat"):</strong> Puteți solicita ștergerea datelor dumneavoastră, în anumite condiții.</li>
@@ -188,35 +117,27 @@
             <li><strong>Dreptul la Opoziție:</strong> Vă puteți opune prelucrării datelor dumneavoastră, în anumite condiții.</li>
             <li><strong>Dreptul de a Retrage Consimțământul:</strong> Acolo unde prelucrarea se bazează pe consimțământ, aveți dreptul de a-l retrage oricând.</li>
         </ul>
-        <p class="mt-4 text-gray-700">
+        <p>
             Pentru exercitarea acestor drepturi, vă rugăm să ne contactați la adresa de email specificată mai jos.
         </p>
 
-        <!-- 6. Contact și Plângeri -->
-        <h2 class="text-2xl font-bold text-blue-600 mt-8 mb-4">6. Contact și Plângeri</h2>
-        <p class="text-gray-700 mb-4">
+        <h2>6. Contact și Plângeri</h2>
+        <p>
             Dacă aveți întrebări sau nelămuriri cu privire la prelucrarea datelor dumneavoastră, vă rugăm să ne contactați la:
         </p>
-        <p class="text-lg font-semibold text-blue-700 mb-6 p-3 bg-blue-100 rounded-lg inline-block">
+        <div class="user-status">
             Email: restlessstone18@gmail.com
-        </p>
-
-        <p class="text-gray-700 mb-4">
-            De asemenea, aveți dreptul de a depune o plângere la autoritatea națională de supraveghere a prelucrării datelor, respectiv:
-        </p>
-        <div class="bg-gray-100 p-4 rounded-lg border border-gray-300">
-            <h3 class="text-xl font-bold text-gray-800 mb-2">Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter Personal (ANSPDCP)</h3>
-            <p class="text-gray-700"><strong>Adresă:</strong> B-dul G-ral. Gheorghe Magheru nr. 28-30, Sector 1, cod poștal 010336, București, România</p>
-            <p class="text-gray-700"><strong>Telefon:</strong> +40.318.059.211 / +40.318.059.212</p>
-            <p class="text-gray-700"><strong>E-mail:</strong> anspdcp@dataprotection.ro</p>
-            <p class="text-gray-700"><strong>Web:</strong> <a href="http://www.dataprotection.ro" target="_blank" class="text-blue-500 hover:underline">www.dataprotection.ro</a></p>
         </div>
 
-        <!-- Legal Disclaimer -->
-        <div class="mt-8 pt-4 border-t border-gray-300">
-            <p class="text-sm italic text-gray-500">
-                <strong>Notă Legală:</strong> Acest model este un punct de plecare. Conformitatea deplină cu GDPR necesită o analiză detaliată a tuturor fluxurilor de date din aplicația dumneavoastră și poate necesita adaptări suplimentare. <strong>Recomandarea fermă este de a consulta un avocat specializat în GDPR.</strong>
-            </p>
+        <p>
+            De asemenea, aveți dreptul de a depune o plângere la autoritatea națională de supraveghere a prelucrării datelor, respectiv:
+        </p>
+        <div class="interaction-card">
+            <h3>Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter Personal (ANSPDCP)</h3>
+            <p><strong>Adresă:</strong> B-dul G-ral. Gheorghe Magheru nr. 28-30, Sector 1, cod poștal 010336, București, România</p>
+            <p><strong>Telefon:</strong> +40.318.059.211 / +40.318.059.212</p>
+            <p><strong>E-mail:</strong> anspdcp@dataprotection.ro</p>
+            <p><strong>Web:</strong> <a href="http://www.dataprotection.ro" target="_blank">www.dataprotection.ro</a></p>
         </div>
 
     </div>

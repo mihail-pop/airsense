@@ -2,150 +2,84 @@
 
 {% block title %}AirSense Privacy Policy{% endblock %}
 
-{% block extra_css %}
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            color: #1f2937;
-            background-color: #f9fafb;
-        }
-        .policy-table th, .policy-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #e5e7eb;
-        }
-        .policy-table th {
-            background-color: #f3f4f6;
-            font-weight: 600;
-        }
-        @media (max-width: 768px) {
-            .policy-table thead {
-                display: none;
-            }
-            .policy-table, .policy-table tbody, .policy-table tr, .policy-table td {
-                display: block;
-                width: 100%;
-            }
-            .policy-table tr {
-                margin-bottom: 1rem;
-                border: 1px solid #e5e7eb;
-                border-radius: 0.5rem;
-            }
-            .policy-table td {
-                text-align: right;
-                position: relative;
-                padding-left: 50%;
-            }
-            .policy-table td::before {
-                content: attr(data-label-ro); /* Default to Romanian for attr */
-                position: absolute;
-                left: 0;
-                width: 50%;
-                padding-left: 12px;
-                font-weight: 600;
-                text-align: left;
-                color: #4b5563;
-            }
-        }
-    </style>
-    <!-- Translation System Script is now in a separate translations.js file -->
-{% endblock %}
+{% block extra_css %}{% endblock %}
 
 {% block content %}
-<div class="p-4 sm:p-8">
-    <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-xl p-6 md:p-10 lg:p-12">
+<div class="container">
+    <div class="weather-section">
 
-        <!-- Header and Introduction -->
-        <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-700 mb-4 border-b-4 border-blue-100 pb-2" data-translate="Privacy Policy (GDPR)">
-            Privacy Policy (GDPR)
-        </h1>
-        <p class="text-sm font-medium text-gray-500 mb-6">
+        <h1 data-translate="Privacy Policy (GDPR)">Privacy Policy (GDPR)</h1>
+        
+        <p style="text-align: center; color: #666; margin-bottom: 30px;">
             <strong data-translate="Last updated: October 18, 2025">Last updated: October 18, 2025</strong>
         </p>
 
-        <p class="text-gray-700 mb-6 leading-relaxed" data-translate="This Privacy Policy describes how AirSense...">
-            This Privacy Policy describes how <strong>AirSense</strong>, with headquarters/contact details at <strong>restlessstone18@gmail.com</strong> and project page at <a href="https://github.com/mihail-pop/airsense" target="_blank" class="text-blue-500 hover:underline">https://github.com/mihail-pop/airsense</a>, (hereinafter referred to as "we" or the "Controller"), collects, uses, and protects your personal data, in accordance with the provisions of Regulation (EU) 2016/679 (GDPR).
+        <p style="margin-bottom: 20px; line-height: 1.6;" data-translate="This Privacy Policy describes how AirSense...">
+            This Privacy Policy describes how <strong>AirSense</strong>, with headquarters/contact details at <strong>restlessstone18@gmail.com</strong> and project page at <a href="https://github.com/mihail-pop/airsense" target="_blank" style="color: #2196f3;">https://github.com/mihail-pop/airsense</a>, (hereinafter referred to as "we" or the "Controller"), collects, uses, and protects your personal data, in accordance with the provisions of Regulation (EU) 2016/679 (GDPR).
         </p>
 
-        <p class="text-gray-700 mb-8 font-semibold leading-relaxed p-3 bg-blue-50 rounded-lg border border-blue-200" data-translate="The privacy of your data is of utmost importance to us...">
+        <div class="message success" data-translate="The privacy of your data is of utmost importance to us...">
             The privacy of your data is of utmost importance to us. We process data only for the purpose of improving the user experience of the application and providing the requested results, without using it for commercial purposes or for training artificial intelligence models.
-        </p>
+        </div>
 
-        <!-- 1. What Personal Data We Collect -->
-        <h2 class="text-2xl font-bold text-blue-600 mt-8 mb-4" data-translate="What Personal Data We Collect">1. What Personal Data We Collect</h2>
-        <p class="text-gray-700 mb-4" data-translate="We collect the data you provide directly to us...">
+        <h2 data-translate="What Personal Data We Collect">1. What Personal Data We Collect</h2>
+        <p style="margin-bottom: 20px;" data-translate="We collect the data you provide directly to us...">
             We collect the data you provide directly to us, necessary to create your account and use the application's features:
         </p>
 
-        <div class="overflow-x-auto rounded-lg shadow-md mb-8">
-            <table class="min-w-full bg-white border-collapse policy-table">
-                <thead class="hidden md:table-header-group">
-                    <tr class="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
-                        <th class="py-3 px-6" data-translate="Data Category">Data Category</th>
-                        <th class="py-3 px-6" data-translate="Data Examples">Data Examples</th>
-                        <th class="py-3 px-6" data-translate="Purpose of Collection">Purpose of Collection</th>
-                        <th class="py-3 px-6" data-translate="Legal Basis (GDPR)">Legal Basis (GDPR)</th>
-                    </tr>
-                </thead>
-                <tbody class="text-gray-600 text-sm font-light">
-                    <!-- Row 1 -->
-                    <tr class="hover:bg-gray-50 transition duration-300">
-                        <td data-label-ro="Categorie de Date" data-label-en="Data Category" class="md:py-3 md:px-6 font-medium">
-                            <span class="md:hidden text-lg font-bold block text-blue-700 mb-1" data-translate="Identification and Contact Data">Identification and Contact Data</span>
-                            <span class="hidden md:block"><strong data-translate="Identification and Contact Data">Identification and Contact Data</strong></span>
-                        </td>
-                        <td data-label-ro="Exemple de Date" data-label-en="Data Examples" class="md:py-3 md:px-6" data-translate="Name/Surname, Email Address (for login/account)">Name/Surname, Email Address (for login/account)</td>
-                        <td data-label-ro="Scopul Colectării" data-label-en="Purpose of Collection" class="md:py-3 md:px-6" data-translate="User account creation and management.">User account creation and management.</td>
-                        <td data-label-ro="Temeiul Legal (GDPR)" data-label-en="Legal Basis (GDPR)" class="md:py-3 md:px-6" data-translate="Performance of a contract (App Terms and Conditions).">Performance of a contract (App Terms and Conditions).</td>
-                    </tr>
-                    <!-- Row 2 -->
-                    <tr class="hover:bg-gray-50 transition duration-300">
-                        <td data-label-ro="Categorie de Date" data-label-en="Data Category" class="md:py-3 md:px-6 font-medium">
-                            <span class="md:hidden text-lg font-bold block text-blue-700 mb-1" data-translate="Special Data (Health/Interests)">Special Data (Health/Interests)</span>
-                            <span class="hidden md:block"><strong data-translate="Special Data (Health/Interests)">Special Data (Health/Interests)</strong></span>
-                        </td>
-                        <td data-label-ro="Exemple de Date" data-label-en="Data Examples" class="md:py-3 md:px-6" data-translate="Allergies/Pollen Interests (if voluntarily entered)">Allergies/Pollen Interests (if voluntarily entered)</td>
-                        <td data-label-ro="Scopul Colectării" data-label-en="Purpose of Collection" class="md:py-3 md:px-6" data-translate="Providing personalized results from the AI system.">Providing personalized results from the AI system.</td>
-                        <td data-label-ro="Temeiul Legal (GDPR)" data-label-en="Legal Basis (GDPR)" class="md:py-3 md:px-6" data-translate="Explicit consent of the data subject (Art. 9(2)(a) GDPR).">Explicit consent of the data subject (Art. 9(2)(a) GDPR).</td>
-                    </tr>
-                    <!-- Row 3 -->
-                    <tr class="hover:bg-gray-50 transition duration-300">
-                        <td data-label-ro="Categorie de Date" data-label-en="Data Category" class="md:py-3 md:px-6 font-medium">
-                            <span class="md:hidden text-lg font-bold block text-blue-700 mb-1" data-translate="Usage Data and Inputs">Usage Data and Inputs</span>
-                            <span class="hidden md:block"><strong data-translate="Usage Data and Inputs">Usage Data and Inputs</strong></span>
-                        </td>
-                        <td data-label-ro="Exemple de Date" data-label-en="Data Examples" class="md:py-3 md:px-6" data-translate="Location (for forecasts), Age (optional, for context), Past results/Inputs.">Location (for forecasts), Age (optional, for context), Past results/Inputs.</td>
-                        <td data-label-ro="Scopul Colectării" data-label-en="Purpose of Collection" class="md:py-3 md:px-6" data-translate="Optimizing the user experience (UX)...">Optimizing the user experience (UX) and providing accurate results (AI data processing).</td>
-                        <td data-label-ro="Temeiul Legal (GDPR)" data-label-en="Legal Basis (GDPR)" class="md:py-3 md:px-6" data-translate="Legitimate interest (service improvement) and/or performance of a contract.">Legitimate interest (service improvement) and/or performance of a contract.</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <table id="hourly-table">
+            <thead>
+                <tr>
+                    <th data-translate="Data Category">Data Category</th>
+                    <th data-translate="Data Examples">Data Examples</th>
+                    <th data-translate="Purpose of Collection">Purpose of Collection</th>
+                    <th data-translate="Legal Basis (GDPR)">Legal Basis (GDPR)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong data-translate="Identification and Contact Data">Identification and Contact Data</strong></td>
+                    <td data-translate="Name/Surname, Email Address (for login/account)">Name/Surname, Email Address (for login/account)</td>
+                    <td data-translate="User account creation and management.">User account creation and management.</td>
+                    <td data-translate="Performance of a contract (App Terms and Conditions).">Performance of a contract (App Terms and Conditions).</td>
+                </tr>
+                <tr>
+                    <td><strong data-translate="Special Data (Health/Interests)">Special Data (Health/Interests)</strong></td>
+                    <td data-translate="Allergies/Pollen Interests (if voluntarily entered)">Allergies/Pollen Interests (if voluntarily entered)</td>
+                    <td data-translate="Providing personalized results from the AI system.">Providing personalized results from the AI system.</td>
+                    <td data-translate="Explicit consent of the data subject (Art. 9(2)(a) GDPR).">Explicit consent of the data subject (Art. 9(2)(a) GDPR).</td>
+                </tr>
+                <tr>
+                    <td><strong data-translate="Usage Data and Inputs">Usage Data and Inputs</strong></td>
+                    <td data-translate="Location (for forecasts), Age (optional, for context), Past results/Inputs.">Location (for forecasts), Age (optional, for context), Past results/Inputs.</td>
+                    <td data-translate="Optimizing the user experience (UX)...">Optimizing the user experience (UX) and providing accurate results (AI data processing).</td>
+                    <td data-translate="Legitimate interest (service improvement) and/or performance of a contract.">Legitimate interest (service improvement) and/or performance of a contract.</td>
+                </tr>
+            </tbody>
+        </table>
 
-        <!-- 2. Purposes of Data Processing -->
-        <h2 class="text-2xl font-bold text-blue-600 mt-8 mb-4" data-translate="Purposes of Data Processing">2. Purposes of Data Processing</h2>
-        <p class="text-gray-700 mb-4" data-translate="We process your data exclusively for the following purposes:">
+        <h2 data-translate="Purposes of Data Processing">2. Purposes of Data Processing</h2>
+        <p style="margin-bottom: 20px;" data-translate="We process your data exclusively for the following purposes:">
             We process your data exclusively for the following purposes:
         </p>
-        <ol class="list-decimal list-inside space-y-3 text-gray-700 ml-4">
+        <ol style="margin-left: 20px; line-height: 1.8;">
             <li data-translate="Account Management:">
-                <strong>Account Management:</strong> Creation, authentication, and administration of your user account.
+                <strong style="color: #1976d2;">Account Management:</strong> Creation, authentication, and administration of your user account.
             </li>
             <li data-translate="Application Functionality and User Experience (UX):">
-                <strong>Application Functionality and User Experience (UX):</strong> Using data (e.g., location, inputs) to provide the basic features of the application and to improve how you interact with it.
+                <strong style="color: #1976d2;">Application Functionality and User Experience (UX):</strong> Using data (e.g., location, inputs) to provide the basic features of the application and to improve how you interact with it.
             </li>
             <li data-translate="Providing Results (AI System):">
-                <strong>Providing Results (AI System):</strong> Your inputs are processed by an artificial intelligence system to generate the requested results. 
-                <span class="font-bold text-red-600">ATTENTION: This AI system is configured NOT to store, learn from, or train on user data or inputs.</span> Data is processed instantly to generate the response and is not retained for future training.
+                <strong style="color: #1976d2;">Providing Results (AI System):</strong> Your inputs are processed by an artificial intelligence system to generate the requested results. 
+                <span style="font-weight: bold; color: #c62828;">ATTENTION: This AI system is configured NOT to store, learn from, or train on user data or inputs.</span> Data is processed instantly to generate the response and is not retained for future training.
             </li>
             <li data-translate="Technical Support:">
-                <strong>Technical Support:</strong> Responding to your support requests and troubleshooting technical issues.
+                <strong style="color: #1976d2;">Technical Support:</strong> Responding to your support requests and troubleshooting technical issues.
             </li>
         </ol>
-        <p class="mt-4 p-3 bg-red-50 text-red-700 font-semibold rounded-lg border border-red-200" data-translate="We DO NOT use your data for commercial purposes...">
+        <div class="message error" data-translate="We DO NOT use your data for commercial purposes...">
             We <strong>DO NOT</strong> use your data for commercial purposes, direct marketing, detailed profiling, or for selling them to third parties.
-        </p>
+        </div>
 
         <!-- 3. Legal Basis for Processing -->
         <h2 class="text-2xl font-bold text-blue-600 mt-8 mb-4" data-translate="Legal Basis for Processing">3. Legal Basis for Processing</h2>
@@ -198,24 +132,23 @@
         <p class="text-gray-700 mb-4" data-translate="If you have questions or concerns...">
             If you have questions or concerns about the processing of your data, please contact us at:
         </p>
-        <p class="text-lg font-semibold text-blue-700 mb-6 p-3 bg-blue-100 rounded-lg inline-block">
+        <div class="user-status">
             Email: restlessstone18@gmail.com
-        </p>
+        </div>
 
         <p class="text-gray-700 mb-4" data-translate="You also have the right to file a complaint...">
             You also have the right to file a complaint with the national supervisory authority for data processing, namely:
         </p>
-        <div class="bg-gray-100 p-4 rounded-lg border border-gray-300">
-            <h3 class="text-xl font-bold text-gray-800 mb-2" data-translate="National Supervisory Authority...">National Supervisory Authority for Personal Data Processing (ANSPDCP)</h3>
-            <p class="text-gray-700"><strong>Adresă:</strong> B-dul G-ral. Gheorghe Magheru nr. 28-30, Sector 1, cod poștal 010336, București, România</p>
-            <p class="text-gray-700"><strong>Telefon:</strong> +40.318.059.211 / +40.318.059.212</p>
-            <p class="text-gray-700"><strong>E-mail:</strong> anspdcp@dataprotection.ro</p>
-            <p class="text-gray-700"><strong>Web:</strong> <a href="http://www.dataprotection.ro" target="_blank" class="text-blue-500 hover:underline">www.dataprotection.ro</a></p>
+        <div class="interaction-card">
+            <h3 data-translate="National Supervisory Authority...">National Supervisory Authority for Personal Data Processing (ANSPDCP)</h3>
+            <p><strong>Adresă:</strong> B-dul G-ral. Gheorghe Magheru nr. 28-30, Sector 1, cod poștal 010336, București, România</p>
+            <p><strong>Telefon:</strong> +40.318.059.211 / +40.318.059.212</p>
+            <p><strong>E-mail:</strong> anspdcp@dataprotection.ro</p>
+            <p><strong>Web:</strong> <a href="http://www.dataprotection.ro" target="_blank">www.dataprotection.ro</a></p>
         </div>
 
-        <!-- Legal Disclaimer -->
-        <div class="mt-8 pt-4 border-t border-gray-300">
-            <p class="text-sm italic text-gray-500" data-translate="Legal Note:">
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e3f2fd;">
+            <p style="font-size: 0.9em; font-style: italic; color: #666; text-align: center;" data-translate="Legal Note:">
                 <strong>Legal Note:</strong> This template is a starting point. Full GDPR compliance requires a detailed analysis of all data flows within your application and may require additional adaptations. <strong>The firm recommendation is to consult a lawyer specializing in GDPR.</strong>
             </p>
         </div>
